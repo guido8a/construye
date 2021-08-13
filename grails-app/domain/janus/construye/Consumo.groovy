@@ -29,7 +29,7 @@ class Consumo implements Serializable{
                 empresa column: 'empr__id'
                 obra column: 'obra__id'
                 bodega column: 'bdga__id'
-                tipoConsumo column: 'tpcn__id'
+                tipoConsumo column: 'tpcs__id'
                 transporta column: 'prsntrnp'
                 recibe column: 'prsnrcbe'
                 padre column: 'cnsmpdre'
