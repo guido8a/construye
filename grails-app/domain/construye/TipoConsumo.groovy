@@ -1,7 +1,7 @@
 package construye
 
 class TipoConsumo implements Serializable {
-    String codigo
+//    String codigo
     String descripcion
 
     static auditable = true
@@ -17,7 +17,7 @@ class TipoConsumo implements Serializable {
         }
     }
     static constraints = {
-        codigo(size: 1..1, blank: false, attributes: [title: 'numero'])
+//        codigo(size: 1..1, blank: false, attributes: [title: 'numero'])
         descripcion(size: 1..20, blank: false, nullable: false, attributes: [title: 'descripcion'])
     }
 }
