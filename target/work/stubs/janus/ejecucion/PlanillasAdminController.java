@@ -1,0 +1,26 @@
+package janus.ejecucion;
+
+import java.lang.*;
+import java.io.*;
+import java.net.*;
+import java.util.*;
+import groovy.lang.*;
+import groovy.util.*;
+
+public class PlanillasAdminController
+  extends janus.seguridad.Shield  implements
+    groovy.lang.GroovyObject {
+;
+public  groovy.lang.MetaClass getMetaClass() { return (groovy.lang.MetaClass)null;}
+public  void setMetaClass(groovy.lang.MetaClass mc) { }
+public  java.lang.Object invokeMethod(java.lang.String method, java.lang.Object arguments) { return null;}
+public  java.lang.Object getProperty(java.lang.String property) { return null;}
+public  void setProperty(java.lang.String property, java.lang.Object value) { }
+public  java.lang.Object getPreciosService() { return null;}
+public  void setPreciosService(java.lang.Object value) { }
+public  java.lang.Object list() { return null;}
+public  java.lang.Object form() { return null;}
+public  java.lang.Object save() { return null;}
+public  java.lang.Object detalle() { return null;}
+public  java.lang.Object saveDetalle() { return null;}
+}

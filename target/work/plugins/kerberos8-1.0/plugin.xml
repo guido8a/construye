@@ -1,0 +1,13 @@
+<plugin name='kerberos8' version='1.0' grailsVersion='2.5 &gt; *'>
+  <author>Your name</author>
+  <title>Kerberos8 Plugin</title>
+  <description>  --  kerberos. --
+</description>
+  <documentation>http://grails.org/plugin/kerberos8</documentation>
+  <type>Kerberos8GrailsPlugin</type>
+  <resources>
+    <resource>DefaultAuditConfig</resource>
+    <resource>kerberos.AuditLogEvent</resource>
+    <resource>kerberos.Krbs</resource>
+  </resources>
+</plugin>

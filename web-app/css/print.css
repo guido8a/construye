@@ -1,0 +1,20 @@
+.noprint {
+    display : none;
+}
+
+.siImprime {
+    display : block;
+}
+
+.soloPrint {
+    display : block !important;
+}
+
+@media print {
+    @page {
+        size   : landscape;
+        margin-top : 8%;
+        margin-left: 9%;
+        margin-bottom: 5%;
+    }
+}
