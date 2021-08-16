@@ -164,7 +164,7 @@
 
                     <div class="span1" style="margin-left: -5px !important;">
                         Cantidad
-                        <input type="text" name="item.cantidad" class="span12" id="item_cantidad" value="0"
+                        <input type="text" name="item.cantidad" class="span12" id="item_cantidad" value="1"
                                style="text-align: right">
                     </div>
 
@@ -495,9 +495,9 @@
     $("#btnCancelarEdicion").click(function () {
         $("#idItems").val("");
         $("#item_id").val("");
-        $("#item_cantidad").val(0);
+        $("#item_cantidad").val(1);
         $("#item_desc").val("").removeClass("readonly");
-        $("#item_precio").val("")
+        $("#item_precio").val(1)
         $("#item_unidad").val("").removeClass("readonly");
         $("#cdgo_buscar").val("").removeClass("readonly").attr("disabled", false);
         $("#btn_guardarItem").addClass("hidden");
@@ -847,7 +847,7 @@
                     $("#dlgLoad").dialog("close");
                     var parts = msg.split("_");
                     if (parts[0] == 'ok') {
-                        location.href = "${createLink(controller: 'transferencia', action: 'tranferencia')}/" + parts[1]
+                        location.href = "${createLink(controller: 'transferencia', action: 'transferencia')}/" + parts[1]
                     } else {
                         $.box({
                             imageClass: "box_info",
@@ -923,7 +923,7 @@
                     }
                 });
             }else{
-                if($("#item_cantidad").val() == '' || $("#item_cantidad").val() == ''){
+                if($("#item_cantidad").val() == '' || $("#item_cantidad").val() == '' || $("#item_cantidad").val() == 0){
                     $.box({
                         imageClass: "box_info",
                         text: "Ingrese una cantidad",
@@ -939,7 +939,7 @@
                         }
                     });
                 }else{
-                    if($("#item_precio").val() == '' || $("#item_precio").val() == ''){
+                    if($("#item_precio").val() == '' || $("#item_precio").val() == '' || $("#item_precio").val() == 0){
                         $.box({
                             imageClass: "box_info",
                             text: "Ingrese un precio",

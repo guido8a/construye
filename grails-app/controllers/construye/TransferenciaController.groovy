@@ -161,6 +161,9 @@ class TransferenciaController {
             println("error al desregistrar la trasnferencia " + transferencia.errors)
             render "no"
         }else{
+            def sql = "select * from bdga_kardex(null,'${transferencia?.id}',null,-1)"
+            def cn = dbConnectionService.getConnection()
+            cn.execute(sql);
             render "ok"
         }
     }
@@ -168,6 +171,10 @@ class TransferenciaController {
     def registrar_ajax(){
         def transferencia = Transferencia.get(params.id)
         transferencia.estado = 'R'
+
+        def sql = "select * from bdga_kardex(null,'${transferencia?.id}',null,1)"
+        def cn = dbConnectionService.getConnection()
+        cn.execute(sql);
 
         if(!transferencia.save(flush:true)){
             println("error al registrar la trasnferencia " + transferencia.errors)

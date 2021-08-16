@@ -43,7 +43,7 @@
         $("#cdgo_buscar").val($(this).attr("regCdgo"));
         $("#item_desc").val($(this).attr("regNmbr"));
         $("#item_unidad").val($(this).attr("regUn"));
-        $("#item_precio").val($(this).attr("regPc"));
+        $("#item_precio").val(1);
         $("#busqueda").dialog("close");
     });
 </script>
