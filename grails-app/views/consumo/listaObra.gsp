@@ -26,6 +26,11 @@
 </table>
 
 <script type="text/javascript">
+
+    if(${tipo == '2'}) {
+        cargarRequisiciones()
+    }
+
     $(".selecciona").click(function () {
         $("#obra__id").val($(this).attr("regId"));
         $("#input_codigo").val($(this).attr("regCdgo"));
@@ -33,7 +38,6 @@
         $("#buscarObra").dialog("close");
 
         if(${tipo == '2'}){
-            // $("#divRequisicion").removeClass("hidden")
             cargarRequisiciones();
         }
 
@@ -46,7 +50,8 @@
            type: 'POST',
            url: '${createLink(controller: 'consumo', action: 'requisicion_ajax')}',
            data:{
-               id: obra
+               id: obra,
+               consumo: '${consumo}'
            },
             success: function (msg) {
                 $("#divRequisicion").html(msg)

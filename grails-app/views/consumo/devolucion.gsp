@@ -29,7 +29,7 @@
         <i class="icon-list-ul"></i>
         Lista
     </a>
-    <a href="${g.createLink(controller: 'consumo', action: 'consumo')}" class="btn btn-ajax btn-new">
+    <a href="${g.createLink(controller: 'consumo', action: 'devolucion')}" class="btn btn-ajax btn-new">
         <i class="icon-file-alt"></i>
         Nuevo
     </a>
@@ -45,7 +45,7 @@
             Anular
         </a>
     </g:if>
-    <a href="${g.createLink(controller: 'consumo', action: 'consumo')}" class="btn btn-ajax btn-new">
+    <a href="${g.createLink(controller: 'consumo', action: 'devolucion')}" class="btn btn-ajax btn-new">
         <i class="icon-remove"></i>
         Cancelar
     </a>
@@ -131,7 +131,7 @@
                     </div>
                 </div>
 
-                <div class="span2">
+                <div class="span3">
                     Bodega
                     <div id="divBodega">
                         <g:select name="bodega_name_x" id="bodega_x" from="${''}" class="span12"  noSelection="[null: '--Seleccione una obra--']"/>
@@ -144,7 +144,7 @@
                               value="${consumo?.recibe?.id}" noSelection="[null: '--Seleccione--']"/>
                 </div>
 
-                <div class="span3" style="color: #01a; margin-left: 5px">
+                <div class="span2" style="color: #01a; margin-left: 5px">
                     Transporta: <br>
                     <g:select name="transporta" id="transporta" from="${recibe}" class="span12" optionKey="id"
                               value="${consumo?.transporta?.id}" noSelection="[null: '--Seleccione--']"/>
@@ -779,7 +779,8 @@
                     buscarPor: buscarPor,
                     criterio: criterio,
                     ordenar: ordenar,
-                    tipo: 2
+                    tipo: 2,
+                    consumo: '${consumo?.id}'
 
                 },
                 success: function (msg) {

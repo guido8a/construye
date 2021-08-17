@@ -5,7 +5,7 @@
   Time: 10:28
 --%>
 
-<g:select name="requisicion_name" id="requisicion" from="${requisiciones}"  class="span12 req" optionKey="id" data-id="${{it.id}}"   optionValue="${{"N° " + it.id + " - Recibe: " +  it.recibe.nombre + " " + it.recibe.apellido}}" />
+<g:select name="requisicion_name" id="requisicion" from="${requisiciones}" value="${consumo?.id ? consumo.padre.id : ''}"  class="span12 req" optionKey="id" optionValue="${{"N° " + it.id + " - Recibe: " +  it.recibe.nombre + " " + it.recibe.apellido}}" />
 
 <script type="text/javascript">
 
