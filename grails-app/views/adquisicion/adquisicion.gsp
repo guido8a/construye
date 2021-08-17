@@ -31,7 +31,7 @@
     </g:if>
 </div>
 
-<div class="span12 btn-group" role="navigation">
+<div class="span12 btn-group" role="navigation" style="background-color: #a8a8a8; padding: 5px; border-radius: 4px; width: 93%">
     <a href="#" class="btn  " id="btn_lista">
         <i class="icon-list-ul"></i>
         Lista
@@ -74,6 +74,7 @@
             </g:if>
         </g:if>
     </g:else>
+%{--
     <g:if test="${adquisicion?.id}">
         <a href="#" class="btn btn-ajax btn-new" id="imprimir" title="Imprimir">
             <i class="icon-print"></i>
@@ -84,6 +85,7 @@
             Excel
         </a>
     </g:if>
+--}%
 </div>
 
 
