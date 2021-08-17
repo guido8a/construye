@@ -109,7 +109,7 @@ class ConsumoController extends janus.seguridad.Shield {
                 "prsnnmbr||' '||prsnapll recibe " +
                 "from cnsm, obra, bdga, prsn rcbe "
         def txwh = "where obra.obra__id = cnsm.obra__id and bdga.bdga__id = cnsm.bdga__id and " +
-                "rcbe.prsn__id = cnsm.prsnrcbe "
+                "rcbe.prsn__id = cnsm.prsnrcbe and cnsm.tpcs__id = 1 "
         def sqlTx = ""
         def bsca = listaConsumo[params.buscarPor.toInteger()-1]
         def ordn = listaConsumo[params.ordenar.toInteger()-1]
@@ -142,7 +142,7 @@ class ConsumoController extends janus.seguridad.Shield {
         def cn = dbConnectionService.getConnection()
         datos = cn.rows(sqlTx)
         println "data: ${datos[0]}"
-        [data: datos]
+        [data: datos, tipo: params.tipo]
     }
 
     def listaItem() {
@@ -226,6 +226,9 @@ class ConsumoController extends janus.seguridad.Shield {
             println("error al registrar el consumo " + consumo.errors)
             render "no"
         }else{
+            def sql = "select * from bdga_kardex(null, null, '${consumo?.id}', 1)"
+            def cn = dbConnectionService.getConnection()
+            cn.execute(sql);
             render "ok"
         }
     }
@@ -237,8 +240,73 @@ class ConsumoController extends janus.seguridad.Shield {
             println("error al desregistrar el consumo " + consumo.errors)
             render "no"
         }else{
+            def sql = "select * from bdga_kardex(null, null, '${consumo?.id}', -1)"
+            def cn = dbConnectionService.getConnection()
+            cn.execute(sql);
             render "ok"
         }
     }
 
+    def devolucion(){
+        println("Devoluciones " + params)
+        def bodegas = Bodega.findAllByTipoNotEqual('T',[sort: 'nombre'])
+        def listaConsumo = [1: 'Obra', 2: 'Bodega', 3: 'Recibe (Apellido)', 4: 'Fecha']
+        def listaObra = [1: 'Obra', 2: 'Código']
+        def listaItems = [1: 'Nombre', 2: 'Código']
+        def dpto = Departamento.findAllByPermisosIlike("APU")
+        def recibe = Persona.findAllByDepartamentoInList(dpto)
+        def consumo
+        def items = []
+
+//        println "depto "+dpto
+        if (params.id) {
+            consumo = Consumo.get(params.id)
+        }
+
+        if(consumo){
+            items = DetalleConsumo.findAllByConsumo(consumo).sort{it.composicion.item.nombre}
+        }
+
+        [consumo: consumo, recibe: recibe, bodegas:bodegas, listaCnsm: listaConsumo, listaItems: listaItems,
+         listaObra: listaObra, items: items ]
+    }
+
+
+    def listaDevoluciones() {
+        println "listaDev" + params
+        def datos;
+        def listaConsumo = ['obranmbr', 'bdga.bdganmbr', 'prsnapll', 'cnsmfcha::text']
+
+        def select = "select cnsm__id, obracdgo, obranmbr, cnsmfcha, cnsmetdo, bdganmbr, " +
+                "prsnnmbr||' '||prsnapll recibe " +
+                "from cnsm, obra, bdga, prsn rcbe "
+        def txwh = "where obra.obra__id = cnsm.obra__id and bdga.bdga__id = cnsm.bdga__id and " +
+                "rcbe.prsn__id = cnsm.prsnrcbe and cnsm.tpcs__id = 2 "
+        def sqlTx = ""
+        def bsca = listaConsumo[params.buscarPor.toInteger()-1]
+        def ordn = listaConsumo[params.ordenar.toInteger()-1]
+
+        txwh += " and $bsca ilike '%${params.criterio}%'"
+        sqlTx = "${select} ${txwh} order by ${ordn} limit 100 ".toString()
+        println "sql: $sqlTx"
+
+        def cn = dbConnectionService.getConnection()
+        datos = cn.rows(sqlTx)
+//        println "data: ${datos[0]}"
+        [data: datos]
+    }
+
+    def requisicion_ajax(){
+        def obra = Obra.get(params.id)
+        def tipoConsumo = TipoConsumo.get(1)
+        def requisiciones = Consumo.findAllByObraAndTipoConsumo(obra, tipoConsumo)
+        return[requisiciones: requisiciones]
+    }
+
+    def bodega_ajax(){
+        println("params " + params)
+        def requisicion = Consumo.get(params.id)
+        def bodega = requisicion.bodega
+        return[bodega:bodega]
+    }
 }

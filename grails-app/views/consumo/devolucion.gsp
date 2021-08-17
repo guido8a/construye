@@ -4,7 +4,7 @@
 <head>
     <meta name="layout" content="main">
     <title>
-        Requisiciones
+        Devoluciones
     </title>
     <script src="${resource(dir: 'js/jquery/plugins/jquery-validation-1.9.0', file: 'jquery.validate.min.js')}"></script>
     <script src="${resource(dir: 'js/jquery/plugins/jquery-validation-1.9.0', file: 'messages_es.js')}"></script>
@@ -88,7 +88,7 @@
             <input type="hidden" id="obra__id" name="obra__id" value="${consumo?.obra?.id}">
             <input type="hidden" id="consumo__id" name="id" value="${consumo?.id}">
 
-            <p class="css-vertical-text">Requisición</p>
+            <p class="css-vertical-text">Devolución</p>
 
             <div class="linea" style="height: 100px;"></div>
 
@@ -103,9 +103,16 @@
                     <p class="help-block ui-helper-hidden"></p>
                 </div>
 
-                <div class="span9" style="margin-left: 10px">
+                <div class="span7" style="margin-left: 10px">
                     Descripción
                     <input type="text" name="nombre" class="span72" value="${consumo?.obra?.nombre}" id="obradscr">
+                </div>
+
+                <div class="span2">
+                    Tipo de Requisición
+                    <g:select name="tipoConsumo" id="tipoConsumo" from="${construye.TipoConsumo.get(2)}"
+                              class="span12" optionKey="id" optionValue="descripcion"
+                              value="${consumo?.tipoConsumo?.id}" />
                 </div>
 
                 <div class="span2" style="width: 105px; margin-left: 10px">
@@ -116,27 +123,28 @@
             </div>
 
             <div class="row-fluid">
+
                 <div class="span3">
-                    Bodega
-                    <g:select name="bodega" id="bodega" from="${bodegas}" class="span12" optionKey="id"
-                              optionValue="descripcion"
-                              value="${consumo?.bodega?.id}" noSelection="[null: '--Seleccione--']"/>
+                    Requisición
+                    <div id="divRequisicion">
+                    <g:select name="requisicion_name_x" id="requisicion_x" from="${''}" class="span12"  noSelection="[null: '--Seleccione una obra--']"/>
+                    </div>
                 </div>
 
                 <div class="span2">
-                    Tipo de Requisición
-                    <g:select name="tipoConsumo" id="tipoConsumo" from="${construye.TipoConsumo.get(1)}"
-                              class="span12" optionKey="id" optionValue="descripcion"
-                              value="${consumo?.tipoConsumo?.id}" />
+                    Bodega
+                    <div id="divBodega">
+                        <g:select name="bodega_name_x" id="bodega_x" from="${''}" class="span12"  noSelection="[null: '--Seleccione una obra--']"/>
+                    </div>
                 </div>
 
-                <div class="span3" style="color: #01a; margin-left: 10px">
+                <div class="span3" style="color: #01a; margin-left: 5px">
                     Recibe: <br>
                     <g:select name="recibe" id="recibe" from="${recibe}" class="span12" optionKey="id"
                               value="${consumo?.recibe?.id}" noSelection="[null: '--Seleccione--']"/>
                 </div>
 
-                <div class="span3" style="color: #01a; margin-left: 10px">
+                <div class="span3" style="color: #01a; margin-left: 5px">
                     Transporta: <br>
                     <g:select name="transporta" id="transporta" from="${recibe}" class="span12" optionKey="id"
                               value="${consumo?.transporta?.id}" noSelection="[null: '--Seleccione--']"/>
@@ -679,7 +687,7 @@
             var ordenar = $("#ordenarCnsm").val();
             $.ajax({
                 type: "POST",
-                url: "${createLink(controller: 'consumo', action:'listaConsumo')}",
+                url: "${createLink(controller: 'consumo', action:'listaDevoluciones')}",
                 data: {
                     buscarPor: buscarPor,
                     criterio: criterio,
@@ -771,7 +779,7 @@
                     buscarPor: buscarPor,
                     criterio: criterio,
                     ordenar: ordenar,
-                    tipo: 1
+                    tipo: 2
 
                 },
                 success: function (msg) {

@@ -31,6 +31,28 @@
         $("#input_codigo").val($(this).attr("regCdgo"));
         $("#obradscr").val($(this).attr("regNmbr"));
         $("#buscarObra").dialog("close");
+
+        if(${tipo == '2'}){
+            // $("#divRequisicion").removeClass("hidden")
+            cargarRequisiciones();
+        }
+
     });
+
+
+    function cargarRequisiciones(){
+        var obra = $(".selecciona").attr("regId");
+        $.ajax({
+           type: 'POST',
+           url: '${createLink(controller: 'consumo', action: 'requisicion_ajax')}',
+           data:{
+               id: obra
+           },
+            success: function (msg) {
+                $("#divRequisicion").html(msg)
+            }
+        });
+    }
+
 </script>
 
