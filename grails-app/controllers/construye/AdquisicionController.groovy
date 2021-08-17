@@ -223,7 +223,7 @@ class AdquisicionController {
             println("error al desregistrar la adquisicion " + adquisicion.errors )
             render "no"
         }else{
-            def sql = "select * from bdga_kardex('${adquisicion?.id}',null,null,-1)"
+            def sql = "select * from bdga_kardex('${adquisicion?.id}', null, null, -1)"
             def cn = dbConnectionService.getConnection()
             cn.execute(sql);
             render "ok"
