@@ -191,6 +191,31 @@ class ConsumoController extends janus.seguridad.Shield {
         [data: datos]
     }
 
+    def listaItemDvlc() {
+        println "listaItemDvlc" + params
+        def listaItems = ['itemnmbr', 'itemcdgo']
+        def datos
+//        def reqc = params.cmsn
+        def reqc = 1
+        def select = "select dtcs.comp__id, item.item__id, itemcdgo, itemnmbr, dtcscntd, dtcspcun, unddcdgo " +
+                "from cnsm, dtcs, comp, item, undd "
+        def txwh = "where cnsm.cnsm__id = ${reqc} and item.item__id = comp.item__id and " +
+                "comp.comp__id = dtcs.comp__id and dtcs.cnsm__id = cnsm.cnsm__id and " +
+                "undd.undd__id = item.undd__id "
+        def sqlTx = ""
+        def bsca = listaItems[params.buscarPor.toInteger()-1]
+        def ordn = listaItems[params.ordenar.toInteger()-1]
+        txwh += " and $bsca ilike '%${params.criterio}%' and grpo__id = ${params.grupo}"
+
+        sqlTx = "${select} ${txwh} order by ${ordn} limit 100 ".toString()
+        println "sql: $sqlTx"
+
+        def cn = dbConnectionService.getConnection()
+        datos = cn.rows(sqlTx)
+        println "data: ${datos[0]}"
+        [data: datos]
+    }
+
     def verificaItem(){
         println "verifica rubro "+params
         def comp = Composicion.get(params.id)
