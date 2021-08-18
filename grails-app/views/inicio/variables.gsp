@@ -76,7 +76,9 @@
                 </div>
 
                 <div class="span2">
-                    <g:textField type="text" name="factorReduccion" class="inputVar num2" autocomplete='off' value="${g.formatNumber(number: (paux?.factorReduccion) ?: par.factorReduccion, maxFractionDigits: 0, minFractionDigits: 0, format: '##,##0', locale: 'ec')}"/>
+                    <g:textField type="text" name="factorReduccion" class="inputVar num2" autocomplete='off'
+                                 value="${g.formatNumber(number: (paux?.factorReduccion) ?: par.factorReduccion,
+                                         maxFractionDigits: 0, minFractionDigits: 0, format: '##,##0', locale: 'ec')}"/>
                 </div>
 
                 <div class="span2" style="margin-left: 140px">

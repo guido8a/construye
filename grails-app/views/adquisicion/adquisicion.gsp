@@ -138,24 +138,34 @@
 
             <div class="row-fluid">
 
-                <div class="span1" style="width: 400px">
+                <div class="span6">
                     Observaciones
-                    <g:textField name="observaciones" value="${adquisicion?.observaciones}" maxlength="127" title="${adquisicion?.observaciones}" class="span12"/>
+                    <g:textField name="observaciones" value="${adquisicion?.observaciones}" maxlength="127"
+                                 title="${adquisicion?.observaciones}" class="span12"/>
                 </div>
 
-                <div class="span1" style="width: 150px;">
-                    Iva
-                    <g:textField name="iva" value="${adquisicion?.iva}"  title="Iva" class="span12"/>
+                <div class="span1" style="width: 80px;">
+                    IVA
+                    %{--<g:textField name="iva" value="${adquisicion?.iva}"  title="IVA" class="span12"/>--}%
+                    <g:textField name="iva"  title="IVA" class="span12"
+                       value="${g.formatNumber(number: adquisicion?.iva, maxFractionDigits: 2, minFractionDigits: 2,
+                               format: '##,##0', locale: 'ec')}" />
                 </div>
 
                 <div class="span1" style="width: 150px;">
                     Subtotal
-                    <g:textField name="subtotal" value="${adquisicion?.subtotal}" title="Subtotal" class="span12"/>
+                    %{--<g:textField name="subtotal" value="${adquisicion?.subtotal}" title="Subtotal" class="span12"/>--}%
+                    <g:textField name="subtotal"  title="Subtotal" class="span12"
+                        value="${g.formatNumber(number: adquisicion?.subtotal, maxFractionDigits: 2, minFractionDigits: 2,
+                                format: '##,##0', locale: 'ec')}"/>
                 </div>
 
                 <div class="span1" style="width: 150px;">
                     Total
-                    <g:textField name="total" value="${adquisicion?.total}" readonly="" title="Total" class="span12"/>
+                    %{--<g:textField name="total" value="${adquisicion?.total}" readonly="" title="Total" class="span12"/>--}%
+                    <g:textField name="total" readonly="" title="Total" class="span12"
+                        value="${g.formatNumber(number: adquisicion?.total, maxFractionDigits: 2, minFractionDigits: 2,
+                                format: '##,##0', locale: 'ec')}"/>
                 </div>
 
                 <div class="span1" style="width: 50px; color: #01a">

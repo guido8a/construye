@@ -69,6 +69,9 @@ class AdquisicionController {
 
         params.fecha = fecha
         params.fechaPago = fechaPago
+        params.iva = params.iva.replaceAll(',', '')
+        params.subtotal = params.subtotal.replaceAll(',', '')
+        params.total = params.total.replaceAll(',', '')
         adquisicion.properties = params
         adquisicion.bodega = bodega
         adquisicion.proveedor = proveedor
