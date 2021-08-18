@@ -304,7 +304,7 @@
                         <td class="col_hora" style="text-align: left" colspan="4"></td>
                         <td class="col_hora" style="text-align: right; font-weight: bold">TOTAL:</td>
                         <td style="text-align: right; font-weight: bold" class="cant">
-                            <g:formatNumber number="${total}" format="##,#####0" minFractionDigits="5" maxFractionDigits="5" locale="ec"/>
+                            <g:formatNumber number="${total}" format="##,##0" minFractionDigits="5" maxFractionDigits="5" locale="ec"/>
                         </td>
                         <td class="col_hora" style="text-align: left"></td>
                     </tr>
