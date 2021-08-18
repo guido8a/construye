@@ -213,7 +213,7 @@
                                id="btn_guardarItem">
                                 <i class="icon-save"></i>
                             </a>
-                            <a class="btn btn-small btn-primary btn-ajax hidden" href="#" rel="tooltip" title="Cancelar edición"
+                            <a class="btn btn-small btn-primary btn-ajax" href="#" rel="tooltip" title="Cancelar edición"
                                id="btnCancelarEdicion">
                                 <i class="icon-remove"></i>
                             </a>
@@ -572,20 +572,20 @@
         $("#cdgo_buscar").val(codigo).addClass("readonly").attr("disabled", true);
         $("#btn_guardarItem").removeClass("hidden");
         $("#btn_agregarItem").addClass("hidden");
-        $("#btnCancelarEdicion").removeClass("hidden");
+        // $("#btnCancelarEdicion").removeClass("hidden");
     });
 
     $("#btnCancelarEdicion").click(function () {
         $("#idItems").val("");
         $("#item_id").val("");
-        $("#item_cantidad").val(0);
+        $("#item_cantidad").val(1);
         $("#item_desc").val("").removeClass("readonly");
-        $("#item_precio").val("").removeClass("readonly").attr("disabled", false);
-        $("#item_unidad").val("").removeClass("readonly");
+        $("#item_precio").val("");
+        $("#item_unidad").val("");
         $("#cdgo_buscar").val("").removeClass("readonly").attr("disabled", false);
         $("#btn_guardarItem").addClass("hidden");
         $("#btn_agregarItem").removeClass("hidden")
-        $("#btnCancelarEdicion").addClass("hidden")
+        // $("#btnCancelarEdicion").addClass("hidden")
     });
 
     var urlS = "${resource(dir:'images', file:'spinner_24.gif')}";
@@ -1044,7 +1044,38 @@
                     if (msg == 'ok') {
                         location.href = "${createLink(controller: 'consumo', action: 'devolucion')}/" + '${consumo?.id}'
                     } else {
-                        alert("Error al guardar")
+                        if(msg == 'er'){
+                            $.box({
+                                imageClass: "box_info",
+                                text: "El item seleccionado ya se encuentra agregado ",
+                                title: "Alerta",
+                                iconClose: false,
+                                dialog: {
+                                    resizable: false,
+                                    draggable: false,
+                                    buttons: {
+                                        "Aceptar": function () {
+                                        }
+                                    }
+                                }
+                            });
+                        }else{
+                            $.box({
+                                imageClass: "box_info",
+                                text: "Error al guardar la devolución",
+                                title: "Error",
+                                iconClose: false,
+                                dialog: {
+                                    resizable: false,
+                                    draggable: false,
+                                    buttons: {
+                                        "Aceptar": function () {
+                                        }
+                                    }
+                                }
+                            });
+                        }
+
                     }
                 }
             });

@@ -238,7 +238,19 @@ class ConsumoController extends janus.seguridad.Shield {
         if(params.id){
             detalle = DetalleConsumo.get(params.id)
         }else{
-            detalle = new DetalleConsumo()
+
+            def detalles = DetalleConsumo.findAllByConsumo(consumo)
+
+            if(detalles){
+                if(composicion.item in detalles.composicion.item){
+                    render "er"
+                    return false;
+                }else{
+                    detalle = new DetalleConsumo()
+                }
+            }else{
+                detalle = new DetalleConsumo()
+            }
         }
 
         detalle.composicion = composicion
