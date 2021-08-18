@@ -141,7 +141,7 @@ class ConsumoController extends janus.seguridad.Shield {
 
         def cn = dbConnectionService.getConnection()
         datos = cn.rows(sqlTx)
-        println "data: ${datos[0]}"
+        println "data: ${datos}"
         [data: datos, tipo: params.tipo, consumo:params.consumo]
     }
 
@@ -301,6 +301,7 @@ class ConsumoController extends janus.seguridad.Shield {
         def obra = Obra.get(params.id)
         def tipoConsumo = TipoConsumo.get(1)
         def requisiciones = Consumo.findAllByObraAndTipoConsumo(obra, tipoConsumo)
+        println("requisiciones " + requisiciones)
         def consumo = new Consumo()
         if(params.consumo){
             consumo = Consumo.get(params.consumo)
@@ -310,8 +311,16 @@ class ConsumoController extends janus.seguridad.Shield {
 
     def bodega_ajax(){
         println("params " + params)
-        def requisicion = Consumo.get(params.id)
-        def bodega = requisicion.bodega
+        def requisicion
+        def bodega
+        if(params.id){
+            requisicion = Consumo.get(params.id)
+            bodega = requisicion.bodega
+        }else{
+            bodega = ''
+        }
+
+
         return[bodega:bodega]
     }
 }

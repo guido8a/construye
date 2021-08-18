@@ -27,9 +27,9 @@
 
 <script type="text/javascript">
 
-    if(${tipo == '2'}) {
-        cargarRequisiciones()
-    }
+    %{--if(${tipo == '2'}) {--}%
+    %{--    cargarRequisiciones()--}%
+    %{--}--}%
 
     $(".selecciona").click(function () {
         $("#obra__id").val($(this).attr("regId"));
@@ -38,19 +38,18 @@
         $("#buscarObra").dialog("close");
 
         if(${tipo == '2'}){
-            cargarRequisiciones();
+            cargarRequisiciones($(this).attr("regId"));
         }
 
     });
 
-
-    function cargarRequisiciones(){
-        var obra = $(".selecciona").attr("regId");
+    function cargarRequisiciones(id){
+        // var obra = $(".selecciona").attr("regId");
         $.ajax({
            type: 'POST',
            url: '${createLink(controller: 'consumo', action: 'requisicion_ajax')}',
            data:{
-               id: obra,
+               id: id,
                consumo: '${consumo}'
            },
             success: function (msg) {
