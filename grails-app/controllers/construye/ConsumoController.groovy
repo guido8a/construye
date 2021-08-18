@@ -58,6 +58,7 @@ class ConsumoController extends janus.seguridad.Shield {
         def consumo
         def prsn = Persona.get(session.usuario.id)
         def fecha = new Date().parse('dd-MM-yyyy', params.fecha)
+        def tipoConsumo = TipoConsumo.get(1)
         params.remove("obra")
         params.remove("fecha")
         if (params.id) {
@@ -71,6 +72,8 @@ class ConsumoController extends janus.seguridad.Shield {
         consumo.empresa = prsn.empresa
         consumo.obra = Obra.get(params.obra__id)
         consumo.fecha = fecha
+        consumo.observaciones = params.observaciones
+        consumo.tipoConsumo = tipoConsumo
 
         println "fecha: $fecha --> ${consumo.fecha}"
         if (!consumo.save(flush: true)) {
@@ -340,8 +343,10 @@ class ConsumoController extends janus.seguridad.Shield {
         }else{
             bodega = ''
         }
-
-
         return[bodega:bodega]
+    }
+
+    def guardarDevolucion_ajax(){
+
     }
 }

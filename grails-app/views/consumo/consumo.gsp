@@ -84,7 +84,7 @@
 <div id="list-grupo" class="span12" role="main" style="margin-top: 10px;margin-left: -10px">
 
     <div style="border-bottom: 1px solid black;padding-left: 50px;position: relative;">
-        <g:form name="frmRubro" action="save" style="height: 100px;">
+        <g:form name="frmRubro" action="save" style="height: 160px;">
             <input type="hidden" id="obra__id" name="obra__id" value="${consumo?.obra?.id}">
             <input type="hidden" id="consumo__id" name="id" value="${consumo?.id}">
 
@@ -98,7 +98,6 @@
                     <input type="text" name="obra" class="span20 allCaps required input-small"
                            value="${consumo?.obra?.codigo}"
                            id="input_codigo" maxlength="30" minlength="2">
-
 
                     <p class="help-block ui-helper-hidden"></p>
                 </div>
@@ -123,14 +122,6 @@
                               value="${consumo?.bodega?.id}" noSelection="[null: '--Seleccione--']"/>
                 </div>
 
-                <g:hiddenField name="tipoConsumo" value="${construye.TipoConsumo.get(1)}"/>
-%{--                <div class="span2">--}%
-%{--                    Tipo de Requisición--}%
-%{--                    <g:select name="tipoConsumo" id="tipoConsumo" from="${construye.TipoConsumo.get(1)}"--}%
-%{--                              class="span12" optionKey="id" optionValue="descripcion"--}%
-%{--                              value="${consumo?.tipoConsumo?.id}" />--}%
-%{--                </div>--}%
-
                 <div class="span3" style="color: #01a; margin-left: 10px">
                     Recibe: <br>
                     <g:select name="recibe" id="recibe" from="${recibe}" class="span12" optionKey="id"
@@ -147,6 +138,12 @@
                     Estado
                     <g:textField name="estado" value="${consumo?.estado ?: 'N'}" readonly="true"
                                  title="${consumo?.estado == 'R' ? 'Registrado' : 'Ingresado'}" class="span12"/>
+                </div>
+            </div>
+            <div class="row-fluid">
+                <div class="span11">
+                    Observaciones
+                    <g:textField name="observaciones" value="${consumo?.observaciones}" title="${consumo?.observaciones}" class="span12"/>
                 </div>
             </div>
         </g:form>
@@ -860,6 +857,7 @@
             var rcbe = $("#recibe").val()
             var trnp = $("#transporta").val()
             var tipo = $("#tipoConsumo").val()
+            var obr = $("#observaciones").val()
 
             if (obra == '' || obra == null) {
                 $.box({
@@ -941,7 +939,24 @@
                                     }
                                 });
                             } else {
-                                $("#frmRubro").submit()
+                                if (obr == 'null' || obr == '') {
+                                    $.box({
+                                        imageClass: "box_info",
+                                        text: "Ingrese las observaciones",
+                                        title: "Alerta",
+                                        iconClose: false,
+                                        dialog: {
+                                            resizable: false,
+                                            draggable: false,
+                                            buttons: {
+                                                "Aceptar": function () {
+                                                }
+                                            }
+                                        }
+                                    });
+                                } else {
+                                    $("#frmRubro").submit()
+                                }
                             }
                         }
                     }

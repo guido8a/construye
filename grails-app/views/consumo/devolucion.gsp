@@ -84,7 +84,7 @@
 <div id="list-grupo" class="span12" role="main" style="margin-top: 10px;margin-left: -10px">
 
     <div style="border-bottom: 1px solid black;padding-left: 50px;position: relative;">
-        <g:form name="frmRubro" action="save" style="height: 100px;">
+        <g:form name="frmRubro" action="save" style="height: 160px;">
             <input type="hidden" id="obra__id" name="obra__id" value="${consumo?.obra?.id}">
             <input type="hidden" id="consumo__id" name="id" value="${consumo?.id}">
 
@@ -93,28 +93,26 @@
             <div class="linea" style="height: 100px;"></div>
 
             <div class="row-fluid">
-                <div class="span2" style="width: 150px;">
+                <div class="span2" style="width: 130px;">
                     Obra
                     <input type="text" name="obra" class="span20 allCaps required input-small"
-                           value="${consumo?.obra?.codigo}"
-                           id="input_codigo" maxlength="30" minlength="2">
+                           value="${consumo?.obra?.codigo}" id="input_codigo" readonly="true"
+                           maxlength="30" minlength="2">
 
 
                     <p class="help-block ui-helper-hidden"></p>
                 </div>
 
-                <div class="span9" style="margin-left: 10px">
-                    Descripción
-                    <input type="text" name="nombre" class="span12" value="${consumo?.obra?.nombre}" id="obradscr">
+                <div class="span1" style="margin-top: 20px; width: 80px">
+                    <a class="btn btn-small btn-primary btn-ajax" href="#" rel="tooltip" title="Agregar" id="buscar_codigo">
+                        <i class="icon-search"></i> Buscar
+                    </a>
                 </div>
 
-%{--                <div class="span2">--}%
-                    <g:hiddenField name="tipoConsumo" value="${construye.TipoConsumo.get(2)}"/>
-%{--                    Tipo de Requisición--}%
-%{--                    <g:select name="tipoConsumo" id="tipoConsumo" from="${construye.TipoConsumo.get(2)}"--}%
-%{--                              class="span12" optionKey="id" optionValue="descripcion"--}%
-%{--                              value="${consumo?.tipoConsumo?.id}" />--}%
-%{--                </div>--}%
+                <div class="span8" style="margin-left: 10px">
+                    Descripción
+                    <input type="text" name="nombre" class="span12" value="${consumo?.obra?.nombre}" id="obradscr" readonly="true">
+                </div>
 
                 <div class="span2" style="width: 105px; margin-left: 10px">
                     Fecha
@@ -155,6 +153,12 @@
                     Estado
                     <g:textField name="estado" value="${consumo?.estado ?: 'N'}" readonly="true"
                                  title="${consumo?.estado == 'R' ? 'Registrado' : 'Ingresado'}" class="span12"/>
+                </div>
+            </div>
+            <div class="row-fluid">
+                <div class="span11">
+                    Observaciones
+                    <g:textField name="observaciones" value="${consumo?.observaciones}" title="${consumo?.observaciones}" class="span12"/>
                 </div>
             </div>
         </g:form>
@@ -425,6 +429,21 @@
 
 <script type="text/javascript">
 
+    cargarRequisiciones($("#obra__id").val());
+
+    function cargarRequisiciones(id){
+        $.ajax({
+            type: 'POST',
+            url: '${createLink(controller: 'consumo', action: 'requisicion_ajax')}',
+            data:{
+                id: id,
+                consumo: '${consumo?.id}'
+            },
+            success: function (msg) {
+                $("#divRequisicion").html(msg)
+            }
+        });
+    }
 
     $("#btnDesRegistrar").click(function () {
         $("#dlgLoad").dialog("open");
@@ -747,7 +766,8 @@
         }
 
         <g:if test="${!consumo?.id}">
-        $("#input_codigo").dblclick(function () {
+        // $("#input_codigo").dblclick(function () {
+        $("#buscar_codigo").click(function () {
             $("#buscarObra").dialog("open");
             $(".ui-dialog-titlebar-close").html("x")
             return false;
@@ -950,7 +970,7 @@
                                     }
                                 });
                             } else {
-                                $("#frmRubro").submit()
+                                guardarDevolucion();
                             }
                         }
                     }
@@ -958,6 +978,39 @@
                 }
             }
         });
+
+
+        function guardarDevolucion(){
+            $("#dlgLoad").dialog("open");
+            $.ajax({
+                type: 'POST',
+                url: '${createLink(controller: 'consumo', action: 'guardarDevolucion_ajax')}',
+                data: $("#frmAdquisicion").serialize(),
+                success: function (msg) {
+                    $("#dlgLoad").dialog("close");
+                    var parts = msg.split("_")
+                    if (parts[0] == 'ok') {
+                        location.href = "${createLink(controller: 'adquisicion', action: 'adquisicion')}/" + parts[1]
+                    } else {
+                        $.box({
+                            imageClass: "box_info",
+                            text: "Error al guardar la adquisición",
+                            title: "Error",
+                            iconClose: false,
+                            dialog: {
+                                resizable: false,
+                                draggable: false,
+                                buttons: {
+                                    "Aceptar": function () {
+                                    }
+                                }
+                            }
+                        });
+                    }
+                }
+            });
+        }
+
 
         function guardarDetalleConsumo(id) {
             $.ajax({

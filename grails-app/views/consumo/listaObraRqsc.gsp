@@ -26,6 +26,7 @@
 </table>
 
 <script type="text/javascript">
+
     $(".selecciona").click(function () {
         $("#obra__id").val($(this).attr("regId"));
         $("#input_codigo").val($(this).attr("regCdgo"));
@@ -35,20 +36,19 @@
         cargarRequisiciones($(this).attr("regId"));
     });
 
-    function cargarRequisiciones(id){
-        // var obra = $(".selecciona").attr("regId");
-        $.ajax({
-           type: 'POST',
-           url: '${createLink(controller: 'consumo', action: 'requisicion_ajax')}',
-           data:{
-               id: id,
-               consumo: '${consumo}'
-           },
-            success: function (msg) {
-                $("#divRequisicion").html(msg)
-            }
-        });
-    }
+    %{--function cargarRequisiciones(id){--}%
+    %{--    $.ajax({--}%
+    %{--       type: 'POST',--}%
+    %{--       url: '${createLink(controller: 'consumo', action: 'requisicion_ajax')}',--}%
+    %{--       data:{--}%
+    %{--           id: id,--}%
+    %{--           consumo: '${consumo?.id}'--}%
+    %{--       },--}%
+    %{--        success: function (msg) {--}%
+    %{--            $("#divRequisicion").html(msg)--}%
+    %{--        }--}%
+    %{--    });--}%
+    %{--}--}%
 
 </script>
 
