@@ -103,17 +103,18 @@
                     <p class="help-block ui-helper-hidden"></p>
                 </div>
 
-                <div class="span7" style="margin-left: 10px">
+                <div class="span9" style="margin-left: 10px">
                     Descripción
-                    <input type="text" name="nombre" class="span72" value="${consumo?.obra?.nombre}" id="obradscr">
+                    <input type="text" name="nombre" class="span12" value="${consumo?.obra?.nombre}" id="obradscr">
                 </div>
 
-                <div class="span2">
-                    Tipo de Requisición
-                    <g:select name="tipoConsumo" id="tipoConsumo" from="${construye.TipoConsumo.get(2)}"
-                              class="span12" optionKey="id" optionValue="descripcion"
-                              value="${consumo?.tipoConsumo?.id}" />
-                </div>
+%{--                <div class="span2">--}%
+                    <g:hiddenField name="tipoConsumo" value="${construye.TipoConsumo.get(2)}"/>
+%{--                    Tipo de Requisición--}%
+%{--                    <g:select name="tipoConsumo" id="tipoConsumo" from="${construye.TipoConsumo.get(2)}"--}%
+%{--                              class="span12" optionKey="id" optionValue="descripcion"--}%
+%{--                              value="${consumo?.tipoConsumo?.id}" />--}%
+%{--                </div>--}%
 
                 <div class="span2" style="width: 105px; margin-left: 10px">
                     Fecha

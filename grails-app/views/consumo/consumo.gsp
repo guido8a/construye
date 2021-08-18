@@ -123,12 +123,13 @@
                               value="${consumo?.bodega?.id}" noSelection="[null: '--Seleccione--']"/>
                 </div>
 
-                <div class="span2">
-                    Tipo de Requisición
-                    <g:select name="tipoConsumo" id="tipoConsumo" from="${construye.TipoConsumo.get(1)}"
-                              class="span12" optionKey="id" optionValue="descripcion"
-                              value="${consumo?.tipoConsumo?.id}" />
-                </div>
+                <g:hiddenField name="tipoConsumo" value="${construye.TipoConsumo.get(1)}"/>
+%{--                <div class="span2">--}%
+%{--                    Tipo de Requisición--}%
+%{--                    <g:select name="tipoConsumo" id="tipoConsumo" from="${construye.TipoConsumo.get(1)}"--}%
+%{--                              class="span12" optionKey="id" optionValue="descripcion"--}%
+%{--                              value="${consumo?.tipoConsumo?.id}" />--}%
+%{--                </div>--}%
 
                 <div class="span3" style="color: #01a; margin-left: 10px">
                     Recibe: <br>
