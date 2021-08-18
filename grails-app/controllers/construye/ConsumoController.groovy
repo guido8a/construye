@@ -145,6 +145,27 @@ class ConsumoController extends janus.seguridad.Shield {
         [data: datos, tipo: params.tipo, consumo:params.consumo]
     }
 
+    def listaObraRqsc() {
+        println "listaObra" + params
+        def listaObra = ['obranmbr', 'obracdgo']
+        def datos;
+        def select = "select obra.obra__id, obracdgo, obranmbr " +
+                "from obra "
+        def txwh = "where obra.obra__id in (select obra__id from cnsm where tpcs__id = 1) "
+        def sqlTx = ""
+        def bsca = listaObra[params.buscarPor.toInteger()-1]
+        def ordn = listaObra[params.ordenar.toInteger()-1]
+        txwh += " and $bsca ilike '%${params.criterio}%'"
+
+        sqlTx = "${select} ${txwh} order by ${ordn} limit 100 ".toString()
+        println "sql: $sqlTx"
+
+        def cn = dbConnectionService.getConnection()
+        datos = cn.rows(sqlTx)
+        println "data: ${datos}"
+        [data: datos, tipo: params.tipo, consumo:params.consumo]
+    }
+
     def listaItem() {
         println "listaItem" + params
         def listaItems = ['itemnmbr', 'itemcdgo']
@@ -297,7 +318,7 @@ class ConsumoController extends janus.seguridad.Shield {
     }
 
     def requisicion_ajax(){
-        println("params req " + params)
+        println("params requisicion_ajax " + params)
         def obra = Obra.get(params.id)
         def tipoConsumo = TipoConsumo.get(1)
         def requisiciones = Consumo.findAllByObraAndTipoConsumo(obra, tipoConsumo)

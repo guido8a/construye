@@ -31,6 +31,24 @@
         $("#input_codigo").val($(this).attr("regCdgo"));
         $("#obradscr").val($(this).attr("regNmbr"));
         $("#buscarObra").dialog("close");
+
+        cargarRequisiciones($(this).attr("regId"));
     });
+
+    function cargarRequisiciones(id){
+        // var obra = $(".selecciona").attr("regId");
+        $.ajax({
+           type: 'POST',
+           url: '${createLink(controller: 'consumo', action: 'requisicion_ajax')}',
+           data:{
+               id: id,
+               consumo: '${consumo}'
+           },
+            success: function (msg) {
+                $("#divRequisicion").html(msg)
+            }
+        });
+    }
+
 </script>
 
