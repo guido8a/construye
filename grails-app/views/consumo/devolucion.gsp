@@ -193,15 +193,14 @@
                     </div>
 
                     <div class="span1" style="margin-left: -5px !important;">
+                        <g:hiddenField name="item_cantidad_hide" value="${0}"/>
                         Cantidad
-                        <input type="text" name="item.cantidad" class="span12" id="item_cantidad" value="0"
-                               style="text-align: right">
+                        <input type="text" name="item.cantidad" class="span12" id="item_cantidad" value="0" style="text-align: right">
                     </div>
 
                     <div class="span2">
                         P. Unitario
-                        <input type="text" name="item.precio" class="span8" id="item_precio" value="1"
-                               style="text-align: right; color: #44a;">
+                        <input type="text" name="item.precio" class="span8" id="item_precio" value="1" disabled="true"  style="text-align: right; color: #44a;">
                     </div>
 
                     <g:if test="${consumo?.estado != 'R' || consumo?.estado != 'A'}">
@@ -765,14 +764,14 @@
             });
         }
 
-        <g:if test="${!consumo?.id}">
+%{--        <g:if test="${!consumo?.id}">--}%
         // $("#input_codigo").dblclick(function () {
         $("#buscar_codigo").click(function () {
             $("#buscarObra").dialog("open");
             $(".ui-dialog-titlebar-close").html("x")
             return false;
         });
-        </g:if>
+%{--        </g:if>--}%
 
         $("#buscarObra").dialog({
             autoOpen: false,
@@ -1043,7 +1042,7 @@
                 },
                 success: function (msg) {
                     if (msg == 'ok') {
-                        location.href = "${createLink(controller: 'consumo', action: 'consumo')}/" + '${consumo?.id}'
+                        location.href = "${createLink(controller: 'consumo', action: 'devolucion')}/" + '${consumo?.id}'
                     } else {
                         alert("Error al guardar")
                     }
@@ -1072,18 +1071,36 @@
                     }
                 });
                 return false
-            }
-            $("#dlgLoad").dialog("open")
-            $.ajax({
-                type: "POST", url: "${g.createLink(controller: 'consumo', action:'verificaItem')}",
-                data: "id=" + id,
-                success: function (msg) {
-                    $("#dlgLoad").dialog("close");
-                    if (msg == "ok") {
-                        guardarDetalleConsumo(id);
-                    }
+            }else{
+                if($("#item_cantidad").val() > $("#item_cantidad_hide").val()){
+                    $.box({
+                        imageClass: "box_info",
+                        text: "La cantidad ingresada es mayor a " + $("#item_cantidad_hide").val(),
+                        title: "Alerta",
+                        iconClose: false,
+                        dialog: {
+                            resizable: false,
+                            draggable: false,
+                            buttons: {
+                                "Aceptar": function () {
+                                }
+                            }
+                        }
+                    });
+                }else{
+                    $("#dlgLoad").dialog("open");
+                    $.ajax({
+                        type: "POST", url: "${g.createLink(controller: 'consumo', action:'verificaItem')}",
+                        data: "id=" + id,
+                        success: function (msg) {
+                            $("#dlgLoad").dialog("close");
+                            if (msg == "ok") {
+                                guardarDetalleConsumo(id);
+                            }
+                        }
+                    });
                 }
-            });
+             }
         });
         </g:if>
         <g:else>

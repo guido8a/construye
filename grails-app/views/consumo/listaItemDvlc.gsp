@@ -27,7 +27,7 @@
                 <td style="width: 12%">${dt.dtcspcun}</td>
                 <td style="width: 8%"><div style="text-align: center" class="selecciona" id="reg_${i}"
                                            regId="${dt?.comp__id}" regNmbr="${dt?.itemnmbr}" regCdgo="${dt?.itemcdgo}"
-                                           regUn="${dt?.unddcdgo}" regPc="${dt?.dtcspcun}" data-id="${dt?.item__id}">
+                                           regUn="${dt?.unddcdgo}" regPc="${dt?.dtcspcun}" data-id="${dt?.item__id}" data-cant="${dt?.dtcscntd}">
                     <button class="btn btn-small btn-success"><i class="icon-check"></i></button>
                 </div></td>
             </tr>
@@ -39,6 +39,7 @@
 <script type="text/javascript">
     $(".selecciona").click(function () {
         var id = $(this).attr("regId");
+        var c = $(this).data("cant")
         %{--location.href = "${g.createLink(action: 'consumo', controller: 'consumo')}" + "?id=" + id--}%
         $("#item_id").val($(this).attr("regId"));
         $("#item_id_original").val($(this).data("id"));
@@ -46,6 +47,8 @@
         $("#item_desc").val($(this).attr("regNmbr"));
         $("#item_unidad").val($(this).attr("regUn"));
         $("#item_precio").val($(this).attr("regPc"));
+        $("#item_cantidad").val(c);
+        $("#item_cantidad_hide").val(c)
         $("#busqueda").dialog("close");
     });
 </script>
