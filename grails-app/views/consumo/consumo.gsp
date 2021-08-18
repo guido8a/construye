@@ -891,10 +891,10 @@
                         }
                     });
                 } else {
-                    if (tipo == 'null') {
+                    if (rcbe == 'null') {
                         $.box({
                             imageClass: "box_info",
-                            text: "Seleccione un tipo de requisición",
+                            text: "Seleccione quien recibe",
                             title: "Alerta",
                             iconClose: false,
                             dialog: {
@@ -907,10 +907,10 @@
                             }
                         });
                     } else {
-                        if (rcbe == 'null') {
+                        if (trnp == 'null') {
                             $.box({
                                 imageClass: "box_info",
-                                text: "Seleccione quien recibe",
+                                text: "Seleccione quien transporta",
                                 title: "Alerta",
                                 iconClose: false,
                                 dialog: {
@@ -923,10 +923,10 @@
                                 }
                             });
                         } else {
-                            if (trnp == 'null') {
+                            if (obr == 'null' || obr == '') {
                                 $.box({
                                     imageClass: "box_info",
-                                    text: "Seleccione quien transporta",
+                                    text: "Ingrese las observaciones",
                                     title: "Alerta",
                                     iconClose: false,
                                     dialog: {
@@ -939,24 +939,7 @@
                                     }
                                 });
                             } else {
-                                if (obr == 'null' || obr == '') {
-                                    $.box({
-                                        imageClass: "box_info",
-                                        text: "Ingrese las observaciones",
-                                        title: "Alerta",
-                                        iconClose: false,
-                                        dialog: {
-                                            resizable: false,
-                                            draggable: false,
-                                            buttons: {
-                                                "Aceptar": function () {
-                                                }
-                                            }
-                                        }
-                                    });
-                                } else {
-                                    $("#frmRubro").submit()
-                                }
+                                $("#frmRubro").submit()
                             }
                         }
                     }

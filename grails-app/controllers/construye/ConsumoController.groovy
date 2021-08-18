@@ -64,11 +64,11 @@ class ConsumoController extends janus.seguridad.Shield {
         if (params.id) {
             consumo = Consumo.get(params.id)
             consumo.properties = params
-            consumo.fechaModificacion = new Date()
         } else {
             consumo = new Consumo(params)
         }
 
+        consumo.fechaModificacion = new Date()
         consumo.empresa = prsn.empresa
         consumo.obra = Obra.get(params.obra__id)
         consumo.fecha = fecha
@@ -242,7 +242,6 @@ class ConsumoController extends janus.seguridad.Shield {
         }
     }
 
-
     def registrar_ajax(){
         def consumo = Consumo.get(params.id)
         consumo.estado = 'R'
@@ -347,6 +346,40 @@ class ConsumoController extends janus.seguridad.Shield {
     }
 
     def guardarDevolucion_ajax(){
+        println("params save dev " + params)
+        def persona = Persona.get(session.usuario.id)
+        def empresa = persona.empresa
+        def devolucion
+        def obra = Obra.get(params.obra__id)
+        def fecha = new Date().parse('dd-MM-yyyy', params.fecha)
+        def tipoConsumo = TipoConsumo.get(2)
+        def bodega = Bodega.get(params.bodega)
+        def padre = Consumo.get(params.requisicion_name)
+
+        if(params.id){
+            devolucion = Consumo.get(params.id)
+        }else{
+            devolucion = new Consumo()
+            devolucion.estado = 'N'
+            devolucion.empresa = empresa
+            devolucion.tipoConsumo = tipoConsumo
+        }
+
+        devolucion.obra = obra
+        devolucion.bodega = bodega
+        devolucion.fecha = fecha
+        devolucion.fechaModificacion = new Date()
+        devolucion.padre = padre
+        devolucion.recibe = Persona.get(params.recibe)
+        devolucion.transporta = Persona.get(params.transporta)
+        devolucion.observaciones = params.observaciones
+
+        if(!devolucion.save(flush:true)){
+            println("error al guardar la devolucion " + devolucion.errors)
+            render "no"
+        }else{
+            render "ok_" + devolucion?.id
+        }
 
     }
 }

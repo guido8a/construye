@@ -84,7 +84,7 @@
 <div id="list-grupo" class="span12" role="main" style="margin-top: 10px;margin-left: -10px">
 
     <div style="border-bottom: 1px solid black;padding-left: 50px;position: relative;">
-        <g:form name="frmRubro" action="save" style="height: 160px;">
+        <g:form name="frmDevolucion" action="guardarDevolucion_ajax" style="height: 160px;">
             <input type="hidden" id="obra__id" name="obra__id" value="${consumo?.obra?.id}">
             <input type="hidden" id="consumo__id" name="id" value="${consumo?.id}">
 
@@ -884,11 +884,12 @@
         });
 
         $("#guardar").click(function () {
-            var obra = $("#obra__id").val()
-            var bdga = $("#bodega").val()
-            var rcbe = $("#recibe").val()
-            var trnp = $("#transporta").val()
-            var tipo = $("#tipoConsumo").val()
+            var obra = $("#obra__id").val();
+            var bdga = $("#bodega").val();
+            var rcbe = $("#recibe").val();
+            var trnp = $("#transporta").val();
+            var obr = $("#observaciones").val();
+            var req = $("#requisicion").val();
 
             if (obra == '' || obra == null) {
                 $.box({
@@ -906,10 +907,10 @@
                     }
                 });
             } else {
-                if (bdga == 'null') {
+                if (req == 'null') {
                     $.box({
                         imageClass: "box_info",
-                        text: "Seleccione una bodega",
+                        text: "Seleccione una requisición",
                         title: "Alerta",
                         iconClose: false,
                         dialog: {
@@ -922,10 +923,10 @@
                         }
                     });
                 } else {
-                    if (tipo == 'null') {
+                    if (bdga == 'null') {
                         $.box({
                             imageClass: "box_info",
-                            text: "Seleccione un tipo de requisición",
+                            text: "Seleccione una bodega",
                             title: "Alerta",
                             iconClose: false,
                             dialog: {
@@ -970,7 +971,24 @@
                                     }
                                 });
                             } else {
-                                guardarDevolucion();
+                                if (obr == 'null' || obr == '') {
+                                    $.box({
+                                        imageClass: "box_info",
+                                        text: "Ingrese las observaciones",
+                                        title: "Alerta",
+                                        iconClose: false,
+                                        dialog: {
+                                            resizable: false,
+                                            draggable: false,
+                                            buttons: {
+                                                "Aceptar": function () {
+                                                }
+                                            }
+                                        }
+                                    });
+                                } else {
+                                    guardarDevolucion();
+                                }
                             }
                         }
                     }
@@ -985,16 +1003,16 @@
             $.ajax({
                 type: 'POST',
                 url: '${createLink(controller: 'consumo', action: 'guardarDevolucion_ajax')}',
-                data: $("#frmAdquisicion").serialize(),
+                data: $("#frmDevolucion").serialize(),
                 success: function (msg) {
                     $("#dlgLoad").dialog("close");
-                    var parts = msg.split("_")
+                    var parts = msg.split("_");
                     if (parts[0] == 'ok') {
-                        location.href = "${createLink(controller: 'adquisicion', action: 'adquisicion')}/" + parts[1]
+                        location.href = "${createLink(controller: 'consumo', action: 'devolucion')}/" + parts[1]
                     } else {
                         $.box({
                             imageClass: "box_info",
-                            text: "Error al guardar la adquisición",
+                            text: "Error al guardar la devolución",
                             title: "Error",
                             iconClose: false,
                             dialog: {
