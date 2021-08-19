@@ -34,16 +34,20 @@
         Nuevo
     </a>
     <g:if test="${consumo?.estado == 'N' || consumo?.estado == null}">
-        <a href="#" class="btn btn-ajax btn-new" id="guardar">
-            <i class="icon-save"></i>
-            Guardar
-        </a>
+        <g:if test="${items?.size() == 0}">
+            <a href="#" class="btn btn-ajax btn-new" id="guardar">
+                <i class="icon-save"></i>
+                Guardar
+            </a>
+        </g:if>
     </g:if>
     <g:if test="${consumo?.id}">
-        <a href="#" class="btn btn-ajax btn-new" id="borrar">
-            <i class="icon-trash"></i>
-            Anular
-        </a>
+        <g:if test="${consumo?.estado != 'A'}">
+            <a href="#" class="btn btn-ajax btn-new" id="borrar">
+                <i class="icon-trash"></i>
+                Anular
+            </a>
+        </g:if>
     </g:if>
     <a href="${g.createLink(controller: 'consumo', action: 'consumo')}" class="btn btn-ajax btn-new">
         <i class="icon-remove"></i>
@@ -93,7 +97,7 @@
             <div class="linea" style="height: 100px;"></div>
 
             <div class="row-fluid">
-                <div class="span2" style="width: 150px;">
+                <div class="span2" style="width: 130px;">
                     Obra
                     <input type="text" name="obra" class="span20 allCaps required input-small"
                            value="${consumo?.obra?.codigo}"
@@ -102,7 +106,17 @@
                     <p class="help-block ui-helper-hidden"></p>
                 </div>
 
-                <div class="span9" style="margin-left: 10px">
+                <g:if test="${items?.size() == 0}">
+                    <g:if test="${consumo?.estado != 'A'}">
+                        <div class="span1" style="margin-top: 20px; width: 80px">
+                            <a class="btn btn-small btn-primary btn-ajax" href="#" rel="tooltip" title="Agregar" id="buscar_codigo">
+                                <i class="icon-search"></i> Buscar
+                            </a>
+                        </div>
+                    </g:if>
+                </g:if>
+
+                <div class="span8" style="margin-left: 10px">
                     Descripción
                     <input type="text" name="nombre" class="span72" value="${consumo?.obra?.nombre}" id="obradscr">
                 </div>
@@ -179,7 +193,7 @@
 
                     <div class="span1" style="margin-left: -5px !important;">
                         Cantidad
-                        <input type="text" name="item.cantidad" class="span12" id="item_cantidad" value="0"
+                        <input type="text" name="item.cantidad" class="span12" id="item_cantidad" value="1"
                                style="text-align: right">
                     </div>
 
@@ -484,7 +498,7 @@
     });
 
     $(".borrarItem").click(function () {
-        $("#dlgLoad").dialog("open")
+
         var id = $(this).data("id");
         $.box({
             imageClass: "box_info",
@@ -497,6 +511,7 @@
                 height: 180,
                 buttons: {
                     "Aceptar": function () {
+                        $("#dlgLoad").dialog("open")
                         $.ajax({
                             type: 'POST',
                             url: '${createLink(controller: 'consumo', action: 'eliminarItem_ajax')}',
@@ -575,7 +590,7 @@
                 height: 180,
                 buttons: {
                     "Aceptar": function () {
-                        $("#btnRegistrar").replaceWith(spinner);
+                        // $("#btnRegistrar").replaceWith(spinner);
                         $.ajax({
                             type: 'POST',
                             url: '${createLink(controller: 'consumo', action: 'registrar_ajax')}',
@@ -619,7 +634,7 @@
                 height: 180,
                 buttons: {
                     "Aceptar": function () {
-                        $("#btnQuitarRegistro").replaceWith(spinner);
+                        // $("#btnQuitarRegistro").replaceWith(spinner);
                         $.ajax({
                             type: 'POST',
                             url: '${createLink(controller: 'consumo', action: 'desregistrar_ajax')}',
@@ -727,7 +742,6 @@
                     criterio: criterio,
                     ordenar: ordenar,
                     grupo: grupo
-
                 },
                 success: function (msg) {
                     $("#divTabla").html(msg);
@@ -735,13 +749,14 @@
             });
         }
 
-        <g:if test="${!consumo?.id}">
-        $("#input_codigo").dblclick(function () {
+        %{--        <g:if test="${!consumo?.id}">--}%
+//         $("#input_codigo").dblclick(function () {
+        $("#buscar_codigo").click(function () {
             $("#buscarObra").dialog("open");
             $(".ui-dialog-titlebar-close").html("x")
             return false;
         });
-        </g:if>
+        %{--        </g:if>--}%
 
         $("#buscarObra").dialog({
             autoOpen: false,
@@ -751,7 +766,7 @@
             width: 1000,
             height: 600,
             position: 'center',
-            title: 'Materiales y Equipos a Entregar'
+            title: 'Obras'
         });
 
         $("#btn-obras").click(function () {
@@ -770,7 +785,6 @@
                     criterio: criterio,
                     ordenar: ordenar,
                     tipo: 1
-
                 },
                 success: function (msg) {
                     $("#divTablaObra").html(msg);
@@ -789,17 +803,18 @@
                     draggable: false,
                     buttons: {
                         "Aceptar": function () {
+                            $("#dlgLoad").dialog("open");
                             $.ajax({
-                                type: "POST", url: "${g.createLink(controller: 'consumo',action:'borrarConsumo')}",
+                                type: "POST", url: "${g.createLink(controller: 'consumo',action:'anularDevolucion')}",
                                 data: "id=${consumo?.id}",
                                 success: function (msg) {
-                                    $("#dlgLoad").dialog("close")
+                                    $("#dlgLoad").dialog("close");
                                     if (msg == "ok") {
-                                        location.href = "${createLink(controller: 'consumo', action: 'consumo')}"
+                                        location.href = "${createLink(controller: 'consumo', action: 'consumo')}/" + '${consumo?.id}'
                                     } else {
                                         $.box({
                                             imageClass: "box_info",
-                                            text: "Error: el consumo seleccionado no se pudo eliminar. Esta referenciado en las siguientes obras: <br>" + msg,
+                                            text: "No se puede anular la requisición, tiene detalles asociados",
                                             title: "Alerta",
                                             iconClose: false,
                                             dialog: {
@@ -809,7 +824,7 @@
                                                     "Aceptar": function () {
                                                     }
                                                 },
-                                                width: 700
+                                                // width: 700
                                             }
                                         });
                                     }

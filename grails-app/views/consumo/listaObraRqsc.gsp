@@ -13,7 +13,7 @@
         <tr>
             <td style="width: 10%">${dt.obracdgo}</td>
             <td style="width: 82%">${dt.obranmbr}</td>
-            <td style="width: 8%"><div style="text-align: center" class="selecciona" id="reg_${i}"
+            <td style="width: 8%"><div style="text-align: center" class="seleccionaObraRQ" id="reg_${i}"
                                        regId="${dt?.obra__id}" regNmbr="${dt?.obranmbr}" regCdgo="${dt?.obracdgo}">
                 <button class="btn btn-small btn-success"><i class="icon-check"></i></button>
             </div></td>
@@ -27,7 +27,7 @@
 
 <script type="text/javascript">
 
-    $(".selecciona").click(function () {
+    $(".seleccionaObraRQ").click(function () {
         $("#obra__id").val($(this).attr("regId"));
         $("#input_codigo").val($(this).attr("regCdgo"));
         $("#obradscr").val($(this).attr("regNmbr"));
@@ -35,20 +35,6 @@
 
         cargarRequisiciones($(this).attr("regId"));
     });
-
-    %{--function cargarRequisiciones(id){--}%
-    %{--    $.ajax({--}%
-    %{--       type: 'POST',--}%
-    %{--       url: '${createLink(controller: 'consumo', action: 'requisicion_ajax')}',--}%
-    %{--       data:{--}%
-    %{--           id: id,--}%
-    %{--           consumo: '${consumo?.id}'--}%
-    %{--       },--}%
-    %{--        success: function (msg) {--}%
-    %{--            $("#divRequisicion").html(msg)--}%
-    %{--        }--}%
-    %{--    });--}%
-    %{--}--}%
 
 </script>
 

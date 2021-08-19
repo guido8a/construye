@@ -34,16 +34,20 @@
         Nuevo
     </a>
     <g:if test="${consumo?.estado == 'N' || consumo?.estado == null}">
-        <a href="#" class="btn btn-ajax btn-new" id="guardar">
-            <i class="icon-save"></i>
-            Guardar
-        </a>
+        <g:if test="${items?.size() == 0}">
+            <a href="#" class="btn btn-ajax btn-new" id="guardar">
+                <i class="icon-save"></i>
+                Guardar
+            </a>
+        </g:if>
     </g:if>
     <g:if test="${consumo?.id}">
-        <a href="#" class="btn btn-ajax btn-new" id="borrar">
-            <i class="icon-trash"></i>
-            Anular
-        </a>
+        <g:if test="${consumo?.estado != 'A'}">
+            <a href="#" class="btn btn-ajax btn-new" id="borrar">
+                <i class="icon-trash"></i>
+                Anular
+            </a>
+        </g:if>
     </g:if>
     <a href="${g.createLink(controller: 'consumo', action: 'devolucion')}" class="btn btn-ajax btn-new">
         <i class="icon-remove"></i>
@@ -99,15 +103,18 @@
                            value="${consumo?.obra?.codigo}" id="input_codigo" readonly="true"
                            maxlength="30" minlength="2">
 
-
                     <p class="help-block ui-helper-hidden"></p>
                 </div>
 
-                <div class="span1" style="margin-top: 20px; width: 80px">
-                    <a class="btn btn-small btn-primary btn-ajax" href="#" rel="tooltip" title="Agregar" id="buscar_codigo">
-                        <i class="icon-search"></i> Buscar
-                    </a>
-                </div>
+                <g:if test="${items?.size() == 0}">
+                    <g:if test="${consumo?.estado != 'A'}">
+                        <div class="span1" style="margin-top: 20px; width: 80px">
+                            <a class="btn btn-small btn-primary btn-ajax" href="#" rel="tooltip" title="Agregar" id="buscar_codigo">
+                                <i class="icon-search"></i> Buscar
+                            </a>
+                        </div>
+                    </g:if>
+                </g:if>
 
                 <div class="span8" style="margin-left: 10px">
                     Descripción
@@ -126,7 +133,7 @@
                 <div class="span3">
                     Requisición
                     <div id="divRequisicion">
-                    <g:select name="requisicion_name_x" id="requisicion_x" from="${''}" class="span12"  noSelection="[null: '--Seleccione una obra--']"/>
+                        <g:select name="requisicion_name_x" id="requisicion_x" from="${''}" class="span12"  noSelection="[null: '--Seleccione una obra--']"/>
                     </div>
                 </div>
 
@@ -152,7 +159,7 @@
                 <div class="span1" style="width: 50px; color: #01a">
                     Estado
                     <g:textField name="estado" value="${consumo?.estado ?: 'N'}" readonly="true"
-                                 title="${consumo?.estado == 'R' ? 'Registrado' : 'Ingresado'}" class="span12"/>
+                                 title="${consumo?.estado == 'R' ? 'Registrado' : (consumo?.estado == 'A' ? 'Anulado' : 'Ingresado')}" class="span12"/>
                 </div>
             </div>
             <div class="row-fluid">
@@ -253,6 +260,7 @@
                             ${item.composicion.item.unidad}
                         </td>
                         <td style="text-align: right" class="cant">
+                            %{--                            <g:hiddenField name="cantidad_original" value="${item.cantidad}"/>--}%
                             <g:formatNumber number="${item.cantidad}" format="##,###0" minFractionDigits="2"
                                             maxFractionDigits="2" locale="ec"/>
                         </td>
@@ -302,8 +310,6 @@
         </div>
 
     </g:if>
-
-
 
 </div>
 
@@ -513,7 +519,7 @@
     });
 
     $(".borrarItem").click(function () {
-        $("#dlgLoad").dialog("open")
+
         var id = $(this).data("id");
         $.box({
             imageClass: "box_info",
@@ -526,6 +532,7 @@
                 height: 180,
                 buttons: {
                     "Aceptar": function () {
+                        $("#dlgLoad").dialog("open")
                         $.ajax({
                             type: 'POST',
                             url: '${createLink(controller: 'consumo', action: 'eliminarItem_ajax')}',
@@ -548,7 +555,6 @@
                         })
                     },
                     "Cancelar": function () {
-
                     }
                 }
             }
@@ -595,7 +601,7 @@
         var idRubro = '${consumo?.id}';
         $.box({
             imageClass: "box_info",
-            text: "Está seguro de cambiar el estado de este" + '<p style="margin-left: 42px">' + "consumo a " + '<strong style="color: #1a7031">' + "APROBADO" + "?" + '</strong>' + '</p>',
+            text: "Está seguro de cambiar el estado de esta" + '<p style="margin-left: 42px">' + " devolución a " + '<strong style="color: #1a7031">' + "APROBADO" + "?" + '</strong>' + '</p>',
             title: "Registrar consumo",
             dialog: {
                 resizable: false,
@@ -613,13 +619,13 @@
                             },
                             success: function (msg) {
                                 if (msg == 'ok') {
-                                    $("#spanOk").html("Rubro registrado correctamente");
+                                    $("#spanOk").html("Devolución registrado correctamente");
                                     $("#divOk").show();
                                     setTimeout(function () {
                                         location.reload(true)
                                     }, 1000);
                                 } else {
-                                    $("#spanError").html("Error al cambiar el estado del consumo a registrado");
+                                    $("#spanError").html("Error al cambiar el estado de la devolución");
                                     $("#divError").show()
                                 }
                             }
@@ -638,9 +644,9 @@
         var idRubroR = '${consumo?.id}';
         $.box({
             imageClass: "box_info",
-            text: "Está seguro de cambiar el estado de este" + '<p style="margin-left: 42px">' + "consumo a " +
+            text: "Está seguro de cambiar el estado de esta" + '<p style="margin-left: 42px">' + "devolución a " +
                 '<strong style="color: #ff5c34">' + "NO APROBADO" + "?" + '</strong>' + '</p>',
-            title: "Quitar registro del consumo",
+            title: "Quitar registro de devolución",
             dialog: {
                 resizable: false,
                 draggable: false,
@@ -657,13 +663,13 @@
                             },
                             success: function (msg) {
                                 if (msg == 'ok') {
-                                    $("#spanOk").html("Se ha retirado el registro del consumo correctamente");
+                                    $("#spanOk").html("Se ha retirado el registro de devolución correctamente");
                                     $("#divOk").show();
                                     setTimeout(function () {
                                         location.reload(true)
                                     }, 1000);
                                 } else {
-                                    $("#spanError").html("Error al cambiar el estado del consumo a ingresado");
+                                    $("#spanError").html("Error al cambiar el estado de la devolución");
                                     $("#divError").show()
                                 }
                             }
@@ -755,8 +761,8 @@
                     buscarPor: buscarPor,
                     criterio: criterio,
                     ordenar: ordenar,
-                    grupo: grupo
-
+                    grupo: grupo,
+                    consumo: '${consumo?.id}'
                 },
                 success: function (msg) {
                     $("#divTabla").html(msg);
@@ -764,14 +770,14 @@
             });
         }
 
-%{--        <g:if test="${!consumo?.id}">--}%
+        %{--        <g:if test="${!consumo?.id}">--}%
         // $("#input_codigo").dblclick(function () {
         $("#buscar_codigo").click(function () {
             $("#buscarObra").dialog("open");
             $(".ui-dialog-titlebar-close").html("x")
             return false;
         });
-%{--        </g:if>--}%
+        %{--        </g:if>--}%
 
         $("#buscarObra").dialog({
             autoOpen: false,
@@ -781,7 +787,7 @@
             width: 1000,
             height: 600,
             position: 'center',
-            title: 'Materiales y Equipos a Entregar'
+            title: 'Obras'
         });
 
         $("#btn-obras").click(function () {
@@ -812,7 +818,7 @@
         $("#borrar").click(function () {
             $.box({
                 imageClass: "box_info",
-                text: "Desea anular la Requisición,<br>¿Está Seguro?",
+                text: "Desea anular la devolución,<br>¿Está Seguro?",
                 title: "Alerta",
                 iconClose: false,
                 dialog: {
@@ -820,17 +826,19 @@
                     draggable: false,
                     buttons: {
                         "Aceptar": function () {
+                            $("#dlgLoad").dialog("open");
                             $.ajax({
-                                type: "POST", url: "${g.createLink(controller: 'consumo',action:'borrarConsumo')}",
+                                type: "POST",
+                                url: "${g.createLink(controller: 'consumo',action:'anularDevolucion')}",
                                 data: "id=${consumo?.id}",
                                 success: function (msg) {
-                                    $("#dlgLoad").dialog("close")
+                                    $("#dlgLoad").dialog("close");
                                     if (msg == "ok") {
-                                        location.href = "${createLink(controller: 'consumo', action: 'consumo')}"
+                                        location.href = "${createLink(controller: 'consumo', action: 'devolucion')}/" + '${consumo?.id}'
                                     } else {
                                         $.box({
                                             imageClass: "box_info",
-                                            text: "Error: el consumo seleccionado no se pudo eliminar. Esta referenciado en las siguientes obras: <br>" + msg,
+                                            text: "No se puede anular la devolución, tiene items asociados",
                                             title: "Alerta",
                                             iconClose: false,
                                             dialog: {
@@ -840,7 +848,7 @@
                                                     "Aceptar": function () {
                                                     }
                                                 },
-                                                width: 700
+                                                // width: 700
                                             }
                                         });
                                     }
@@ -906,7 +914,7 @@
                     }
                 });
             } else {
-                if (req == 'null') {
+                if (req == null || req == '') {
                     $.box({
                         imageClass: "box_info",
                         text: "Seleccione una requisición",
@@ -922,7 +930,7 @@
                         }
                     });
                 } else {
-                    if (bdga == 'null') {
+                    if (bdga == null || bdga == '') {
                         $.box({
                             imageClass: "box_info",
                             text: "Seleccione una bodega",
@@ -1030,6 +1038,7 @@
 
 
         function guardarDetalleConsumo(id) {
+            $("#dlgLoad").dialog("open");
             $.ajax({
                 type: 'POST',
                 url: '${createLink(controller: 'consumo', action: 'guardarDetalleConsumo_ajax')}',
@@ -1041,13 +1050,15 @@
                     consumo: '${consumo?.id}'
                 },
                 success: function (msg) {
-                    if (msg == 'ok') {
+                    $("#dlgLoad").dialog("close");
+                    var parts = msg.split("_")
+                    if (parts[0] == 'ok') {
                         location.href = "${createLink(controller: 'consumo', action: 'devolucion')}/" + '${consumo?.id}'
                     } else {
-                        if(msg == 'er'){
+                        if(parts[0] == 'er'){
                             $.box({
                                 imageClass: "box_info",
-                                text: "El item seleccionado ya se encuentra agregado ",
+                                text: parts[1],
                                 title: "Alerta",
                                 iconClose: false,
                                 dialog: {
@@ -1062,7 +1073,7 @@
                         }else{
                             $.box({
                                 imageClass: "box_info",
-                                text: "Error al guardar la devolución",
+                                text: "Error al guardar el detalle de la devolución",
                                 title: "Error",
                                 iconClose: false,
                                 dialog: {
@@ -1075,7 +1086,6 @@
                                 }
                             });
                         }
-
                     }
                 }
             });
@@ -1084,7 +1094,6 @@
         <g:if test="${consumo}">
 
         $("#btn_agregarItem, #btn_guardarItem").click(function () {
-//            console.log("valor:" + $('#item_desc').val().length);
             var id = $("#item_id").val();
             if ($('#item_desc').val().length == 0) {
                 $.box({
@@ -1103,10 +1112,10 @@
                 });
                 return false
             }else{
-                if($("#item_cantidad").val() > $("#item_cantidad_hide").val()){
+                if($("#item_cantidad").val() == 0 || $("#item_cantidad").val() == null){
                     $.box({
                         imageClass: "box_info",
-                        text: "La cantidad ingresada es mayor a " + $("#item_cantidad_hide").val(),
+                        text: "Ingrese la cantidad",
                         title: "Alerta",
                         iconClose: false,
                         dialog: {
@@ -1119,19 +1128,19 @@
                         }
                     });
                 }else{
-                    $("#dlgLoad").dialog("open");
-                    $.ajax({
-                        type: "POST", url: "${g.createLink(controller: 'consumo', action:'verificaItem')}",
-                        data: "id=" + id,
-                        success: function (msg) {
-                            $("#dlgLoad").dialog("close");
-                            if (msg == "ok") {
-                                guardarDetalleConsumo(id);
-                            }
-                        }
-                    });
+                    // $("#dlgLoad").dialog("open");
+                    %{--$.ajax({--}%
+                    %{--    type: "POST", url: "${g.createLink(controller: 'consumo', action:'verificaItem')}",--}%
+                    %{--    data: "id=" + id,--}%
+                    %{--    success: function (msg) {--}%
+                    %{--        $("#dlgLoad").dialog("close");--}%
+                    %{--        if (msg == "ok") {--}%
+                    guardarDetalleConsumo(id);
+                    //         }
+                    //     }
+                    // });
                 }
-             }
+            }
         });
         </g:if>
         <g:else>

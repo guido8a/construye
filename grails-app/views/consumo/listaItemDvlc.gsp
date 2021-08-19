@@ -25,7 +25,7 @@
                     <g:formatNumber number="${dt.dtcscntd}" format="##,#####0" minFractionDigits="2" maxFractionDigits="2" locale="ec"/>
                 </td>
                 <td style="width: 12%">${dt.dtcspcun}</td>
-                <td style="width: 8%"><div style="text-align: center" class="selecciona" id="reg_${i}"
+                <td style="width: 8%"><div style="text-align: center" class="seleccionaDevolucion" id="reg_${i}"
                                            regId="${dt?.comp__id}" regNmbr="${dt?.itemnmbr}" regCdgo="${dt?.itemcdgo}"
                                            regUn="${dt?.unddcdgo}" regPc="${dt?.dtcspcun}" data-id="${dt?.item__id}" data-cant="${dt?.dtcscntd}">
                     <button class="btn btn-small btn-success"><i class="icon-check"></i></button>
@@ -37,7 +37,7 @@
 
 
 <script type="text/javascript">
-    $(".selecciona").click(function () {
+    $(".seleccionaDevolucion").click(function () {
         var id = $(this).attr("regId");
         var c = $(this).data("cant")
         %{--location.href = "${g.createLink(action: 'consumo', controller: 'consumo')}" + "?id=" + id--}%

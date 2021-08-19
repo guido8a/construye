@@ -83,25 +83,6 @@ class ConsumoController extends janus.seguridad.Shield {
         redirect(action: 'consumo', params: [id: consumo.id])
     } //save
 
-    def borrarConsumo() {
-        println "borrar consumo "+params
-        def consumo = Consumo.get(params.id)
-        def detalle = []
-        if (!consumo) {
-            flash.clase = "alert-error"
-            flash.message = "No se encontró Consumo con id " + params.id
-            redirect(action: "list")
-            return
-        } else {
-            println "detalle: ${detalle?.size()}"
-            if (detalle?.size() == 0) {
-                consumo.estado = 'A'
-                consumo.save(flush: true)
-                render "ok"
-                return
-            }
-        }
-    } //anular
 
     def listaConsumo() {
         println "listaConsumo" + params
@@ -195,8 +176,10 @@ class ConsumoController extends janus.seguridad.Shield {
         println "listaItemDvlc" + params
         def listaItems = ['itemnmbr', 'itemcdgo']
         def datos
-//        def reqc = params.cmsn
-        def reqc = 1
+        def padre = Consumo.get(params.consumo).padre.id
+//        def reqc = params.consumo
+        def reqc = padre
+//        def reqc = 1
         def select = "select dtcs.comp__id, item.item__id, itemcdgo, itemnmbr, dtcscntd, dtcspcun, unddcdgo " +
                 "from cnsm, dtcs, comp, item, undd "
         def txwh = "where cnsm.cnsm__id = ${reqc} and item.item__id = comp.item__id and " +
@@ -243,7 +226,7 @@ class ConsumoController extends janus.seguridad.Shield {
 
             if(detalles){
                 if(composicion.item in detalles.composicion.item){
-                    render "er"
+                    render "er_El item seleccionado ya se encuentra agregado"
                     return false;
                 }else{
                     detalle = new DetalleConsumo()
@@ -253,17 +236,44 @@ class ConsumoController extends janus.seguridad.Shield {
             }
         }
 
-        detalle.composicion = composicion
-        detalle.consumo = consumo
-        detalle.precioUnitario = params.precioUnitario.toDouble()
-        detalle.cantidad = params.cantidad.toDouble()
+        if(consumo?.padre){
+            def det2 = DetalleConsumo.findByConsumoAndComposicion(consumo.padre, composicion)
+//        println("cantidad original " + det2?.cantidad)
 
-        if(!detalle.save(flush:true)){
-            println("error al guardar el detalle de consumo " + errors)
-            render "no"
+            if(params.cantidad.toDouble() > det2?.cantidad){
+                render "er_La cantidad ingresada es mayor a " + det2?.cantidad
+            }else{
+                detalle.composicion = composicion
+                detalle.consumo = consumo
+                detalle.precioUnitario = params.precioUnitario.toDouble()
+                detalle.cantidad = params.cantidad.toDouble()
+
+                if(!detalle.save(flush:true)){
+                    println("error al guardar el detalle de consumo " + errors)
+                    render "no"
+                }else{
+                    render "ok"
+                }
+            }
         }else{
-            render "ok"
+            detalle.composicion = composicion
+            detalle.consumo = consumo
+            detalle.precioUnitario = params.precioUnitario.toDouble()
+            detalle.cantidad = params.cantidad.toDouble()
+
+            if(!detalle.save(flush:true)){
+                println("error al guardar el detalle de consumo " + errors)
+                render "no"
+            }else{
+                render "ok"
+            }
         }
+
+
+
+
+
+
     }
 
     def eliminarItem_ajax(){
@@ -283,7 +293,7 @@ class ConsumoController extends janus.seguridad.Shield {
         def consumo = Consumo.get(params.id)
         consumo.estado = 'R'
         if(!consumo.save(flush:true)){
-            println("error al registrar el consumo " + consumo.errors)
+            println("error al registrar el consumo/devolucion " + consumo.errors)
             render "no"
         }else{
             def sql = "select * from bdga_kardex(null, null, '${consumo?.id}', 1)"
@@ -360,13 +370,15 @@ class ConsumoController extends janus.seguridad.Shield {
         println("params requisicion_ajax " + params)
         def obra = Obra.get(params.id)
         def tipoConsumo = TipoConsumo.get(1)
-        def requisiciones = Consumo.findAllByObraAndTipoConsumo(obra, tipoConsumo)
+        def requisiciones = Consumo.findAllByObraAndTipoConsumoAndEstado(obra, tipoConsumo, 'R')
         println("requisiciones " + requisiciones)
         def consumo = new Consumo()
+        def items = []
         if(params.consumo){
             consumo = Consumo.get(params.consumo)
+            items = DetalleConsumo.findAllByConsumo(consumo)
         }
-        return[requisiciones: requisiciones, consumo: consumo]
+        return[requisiciones: requisiciones, consumo: consumo, items:items]
     }
 
     def bodega_ajax(){
@@ -417,6 +429,34 @@ class ConsumoController extends janus.seguridad.Shield {
         }else{
             render "ok_" + devolucion?.id
         }
-
     }
+
+
+    def guardarRequisicion_ajax(){
+//        println("params gur " + params)
+        def consumo = Consumo.get(params.id)
+        def requisicion = Consumo.get(params.req)
+
+        consumo.padre = requisicion
+
+        if(!consumo.save(flush:true)){
+            println("error al guardar la requisicion " + consumo.errors)
+            render "no"
+        }else{
+            render "ok"
+        }
+    }
+
+    def anularDevolucion() {
+        def consumo = Consumo.get(params.id)
+        def detalles = DetalleConsumo.findAllByConsumo(consumo)
+
+        if(detalles?.size() == 0) {
+            consumo.estado = 'A'
+            consumo.save(flush: true)
+            render "ok"
+        }else{
+            render "no"
+        }
+    } //anular
 }
