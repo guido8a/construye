@@ -31,7 +31,7 @@
     </g:if>
 </div>
 
-<div class="span12 btn-group" role="navigation">
+<div class="span12 btn-group" role="navigation" style="background-color: #a8a8a8; padding: 5px; border-radius: 4px; width: 93%">
     <a href="#" class="btn  " id="btn_lista">
         <i class="icon-list-ul"></i>
         Lista
@@ -47,10 +47,12 @@
         </a>
     </g:if>
     <g:if test="${transferencia?.id}">
-        <a href="#" class="btn btn-ajax btn-new" id="borrar">
-            <i class="icon-trash"></i>
-            Anular
-        </a>
+        <g:if test="${transferencia?.estado != 'A'}">
+            <a href="#" class="btn btn-ajax btn-new" id="borrar">
+                <i class="icon-trash"></i>
+                Anular
+            </a>
+        </g:if>
     </g:if>
     <a href="${g.createLink(controller: 'transferencia', action: 'transferencia')}" class="btn btn-ajax btn-new">
         <i class="icon-remove"></i>
@@ -120,7 +122,7 @@
                 <div class="span1" style="width: 50px; color: #01a">
                     Estado
                     <g:textField name="estado" value="${transferencia?.estado ?: 'N'}" readonly="true"
-                                 title="${transferencia?.estado == 'R' ? 'Registrado' : 'Ingresado'}" class="span12"/>
+                                 title="${transferencia?.estado == 'R' ? 'Registrado' : (transferencia?.estado == 'A' ? 'Anulado' : 'Ingresado')}" class="span12"/>
                 </div>
             </div>
 
@@ -147,12 +149,20 @@
                         <div style="display: inline-block">
                             Código
                         </div>
-                        <input type="text" name="item.codigo" id="cdgo_buscar" class="span24">
+                        <input type="text" name="item.codigo" id="cdgo_buscar" class="span12" readonly="true">
                         <input type="hidden" id="item_id">
                         <input type="hidden" id="idItems">
                     </div>
 
-                    <div class="span6">
+                    <g:if test="${transferencia?.estado == 'N'}">
+                        <div class="span1" style="margin-top: 20px; width: 80px">
+                            <a class="btn btn-small btn-primary btn-ajax" href="#" rel="tooltip" title="Agregar Item" id="btnBuscarItem">
+                                <i class="icon-search"></i> Buscar
+                            </a>
+                        </div>
+                    </g:if>
+
+                    <div class="span5">
                         Descripción
                         <input type="text" name="item.descripcion" id="item_desc" class="span11" disabled="disabled">
                     </div>
@@ -171,7 +181,7 @@
                     <div class="span2">
                         P. Unitario
                         <input type="text" name="item.precio" class="span8" id="item_precio" value="1"
-                               style="text-align: right; color: #44a;">
+                               style="text-align: right; color: #44a;" readonly="true">
                     </div>
 
                     <g:if test="${transferencia?.estado != 'R' || transferencia?.estado != 'A'}">
@@ -180,11 +190,11 @@
                                id="btn_agregarItem">
                                 <i class="icon-plus"></i>
                             </a>
-                            <a class="btn btn-small btn-success btn-ajax hidden" href="#" rel="tooltip" title="Guardar"
+                            <a class="btn btn-small btn-primary btn-ajax hidden" href="#" rel="tooltip" title="Guardar"
                                id="btn_guardarItem">
                                 <i class="icon-save"></i>
                             </a>
-                            <a class="btn btn-small btn-primary btn-ajax hidden" href="#" rel="tooltip" title="Cancelar edición"
+                            <a class="btn btn-small btn-primary btn-ajax" href="#" rel="tooltip" title="Cancelar"
                                id="btnCancelarEdicion">
                                 <i class="icon-remove"></i>
                             </a>
@@ -237,7 +247,7 @@
                                         </td>
                                         <td style="width: 50px;text-align: center" class="col_delete">
                                             <g:if test="${transferencia?.estado == 'N'}">
-                                                <a class="btn btn-small btn-success editarItem" href="#" rel="tooltip" title="Editar"
+                                                <a class="btn btn-small btn-primary editarItem" href="#" rel="tooltip" title="Editar"
                                                    data-id="${detalle.id}"
                                                    data-cant="${detalle.cantidad}" data-nombre="${detalle.item.nombre}"
                                                    data-precio="${detalle.precioUnitario}"
@@ -486,10 +496,10 @@
         $("#item_desc").val(nombre).addClass("readonly");
         $("#item_precio").val(precio)
         $("#item_unidad").val(unidad).addClass("readonly");
-        $("#cdgo_buscar").val(codigo).addClass("readonly").attr("disabled", true);
+        $("#cdgo_buscar").val(codigo)
         $("#btn_guardarItem").removeClass("hidden");
         $("#btn_agregarItem").addClass("hidden");
-        $("#btnCancelarEdicion").removeClass("hidden");
+        // $("#btnCancelarEdicion").removeClass("hidden");
     });
 
     $("#btnCancelarEdicion").click(function () {
@@ -499,10 +509,10 @@
         $("#item_desc").val("").removeClass("readonly");
         $("#item_precio").val(1)
         $("#item_unidad").val("").removeClass("readonly");
-        $("#cdgo_buscar").val("").removeClass("readonly").attr("disabled", false);
+        $("#cdgo_buscar").val("")
         $("#btn_guardarItem").addClass("hidden");
         $("#btn_agregarItem").removeClass("hidden")
-        $("#btnCancelarEdicion").addClass("hidden")
+        // $("#btnCancelarEdicion").addClass("hidden")
     });
 
     var urlS = "${resource(dir:'images', file:'spinner_24.gif')}";
@@ -521,6 +531,7 @@
                 height: 180,
                 buttons: {
                     "Aceptar": function () {
+                        $("#dlgLoad").dialog("open");
                         $.ajax({
                             type: 'POST',
                             url: '${createLink(controller: 'transferencia', action: 'registrar_ajax')}',
@@ -528,15 +539,41 @@
                                 id: idTransferencia
                             },
                             success: function (msg) {
+                                $("#dlgLoad").dialog("close");
                                 if (msg == 'ok') {
-                                    $("#spanOk").html("Transferencia registrada correctamente");
-                                    $("#divOk").show();
+                                    $.box({
+                                        imageClass: "box_info",
+                                        text: "Tranferencia registrada correctamente",
+                                        title: "Alerta",
+                                        iconClose: false,
+                                        dialog: {
+                                            resizable: false,
+                                            draggable: false,
+                                            buttons: {
+                                                "Aceptar": function () {
+                                                }
+                                            }
+                                        }
+                                    });
                                     setTimeout(function () {
                                         location.reload(true)
                                     }, 1000);
                                 } else {
-                                    $("#spanError").html("Error al cambiar el estado de la transferencia");
-                                    $("#divError").show()
+                                    $.box({
+                                        imageClass: "box_info",
+                                        text: "Error al registrar la transferencia",
+                                        title: "Alerta",
+                                        iconClose: false,
+                                        dialog: {
+                                            resizable: false,
+                                            draggable: false,
+                                            buttons: {
+                                                "Aceptar": function () {
+                                                }
+                                            },
+                                            // width: 700
+                                        }
+                                    });
                                 }
                             }
                         })
@@ -551,12 +588,12 @@
     });
 
     $("#btnQuitarRegistro").click(function () {
-        var idRubroR = '${consumo?.id}';
+        var idTransferencia = '${transferencia?.id}';
         $.box({
             imageClass: "box_info",
-            text: "Está seguro de cambiar el estado de este" + '<p style="margin-left: 42px">' + "consumo a " +
+            text: "Está seguro de cambiar el estado de esta" + '<p style="margin-left: 42px">' + "transferencia a " +
                 '<strong style="color: #ff5c34">' + "NO APROBADO" + "?" + '</strong>' + '</p>',
-            title: "Quitar registro del consumo",
+            title: "Quitar registro de la transferencia",
             dialog: {
                 resizable: false,
                 draggable: false,
@@ -564,23 +601,49 @@
                 height: 180,
                 buttons: {
                     "Aceptar": function () {
-                        $("#btnQuitarRegistro").replaceWith(spinner);
+                        $("#dlgLoad").dialog("open");
                         $.ajax({
                             type: 'POST',
-                            url: '${createLink(controller: 'consumo', action: 'desregistrar_ajax')}',
+                            url: '${createLink(controller: 'transferencia', action: 'quitarRegistrar_ajax')}',
                             data: {
-                                id: idRubroR
+                                id: idTransferencia
                             },
                             success: function (msg) {
+                                $("#dlgLoad").dialog("close");
                                 if (msg == 'ok') {
-                                    $("#spanOk").html("Se ha retirado el registro del consumo correctamente");
-                                    $("#divOk").show();
+                                    $.box({
+                                        imageClass: "box_info",
+                                        text: "Estado de la transferencia cambiada correctamente",
+                                        title: "Alerta",
+                                        iconClose: false,
+                                        dialog: {
+                                            resizable: false,
+                                            draggable: false,
+                                            buttons: {
+                                                "Aceptar": function () {
+                                                }
+                                            }
+                                        }
+                                    });
                                     setTimeout(function () {
                                         location.reload(true)
                                     }, 1000);
                                 } else {
-                                    $("#spanError").html("Error al cambiar el estado del consumo a ingresado");
-                                    $("#divError").show()
+                                    $.box({
+                                        imageClass: "box_info",
+                                        text: "Error al cambiar el estado de la transferencia",
+                                        title: "Alerta",
+                                        iconClose: false,
+                                        dialog: {
+                                            resizable: false,
+                                            draggable: false,
+                                            buttons: {
+                                                "Aceptar": function () {
+                                                }
+                                            },
+                                            // width: 700
+                                        }
+                                    });
                                 }
                             }
                         })
@@ -637,7 +700,8 @@
 
         <g:if test="${transferencia?.id}">
 
-        $("#cdgo_buscar").dblclick(function () {
+        // $("#cdgo_buscar").dblclick(function () {
+        $("#btnBuscarItem").click(function () {
             $("#busqueda").dialog("open");
             $(".ui-dialog-titlebar-close").html("x")
             return false;
@@ -726,7 +790,7 @@
         $("#borrar").click(function () {
             $.box({
                 imageClass: "box_info",
-                text: "Desea anular la Requisición,<br>¿Está Seguro?",
+                text: "Desea anular la Transferencia,<br>¿Está Seguro?",
                 title: "Alerta",
                 iconClose: false,
                 dialog: {
@@ -734,29 +798,47 @@
                     draggable: false,
                     buttons: {
                         "Aceptar": function () {
+                            $("#dlgLoad").dialog("open");
                             $.ajax({
-                                type: "POST", url: "${g.createLink(controller: 'consumo',action:'borrarConsumo')}",
-                                data: "id=${consumo?.id}",
+                                type: "POST", url: "${g.createLink(controller: 'transferencia',action:'anularTransferencia')}",
+                                data: "id=${transferencia?.id}",
                                 success: function (msg) {
-                                    $("#dlgLoad").dialog("close")
+                                    $("#dlgLoad").dialog("close");
                                     if (msg == "ok") {
-                                        location.href = "${createLink(controller: 'consumo', action: 'consumo')}"
+                                        location.href = "${createLink(controller: 'transferencia', action: 'transferencia')}/" + '${transferencia?.id}'
                                     } else {
-                                        $.box({
-                                            imageClass: "box_info",
-                                            text: "Error: el consumo seleccionado no se pudo eliminar. Esta referenciado en las siguientes obras: <br>" + msg,
-                                            title: "Alerta",
-                                            iconClose: false,
-                                            dialog: {
-                                                resizable: false,
-                                                draggable: false,
-                                                buttons: {
-                                                    "Aceptar": function () {
+                                        if(msg == 'er'){
+                                            $.box({
+                                                imageClass: "box_info",
+                                                text: "No se puede anular la transferencia, tiene detalles asociados",
+                                                title: "Alerta",
+                                                iconClose: false,
+                                                dialog: {
+                                                    resizable: false,
+                                                    draggable: false,
+                                                    buttons: {
+                                                        "Aceptar": function () {
+                                                        }
                                                     }
-                                                },
-                                                width: 700
-                                            }
-                                        });
+                                                }
+                                            });
+                                        }else{
+                                            $.box({
+                                                imageClass: "box_info",
+                                                text: "Error al anular la transferencia",
+                                                title: "Alerta",
+                                                iconClose: false,
+                                                dialog: {
+                                                    resizable: false,
+                                                    draggable: false,
+                                                    buttons: {
+                                                        "Aceptar": function () {
+                                                        }
+                                                    }
+                                                }
+                                            });
+                                        }
+
                                     }
                                 }
                             });
@@ -883,23 +965,42 @@
                 },
                 success: function (msg) {
                     $("#dlgLoad").dialog("close");
-                    if (msg == 'ok') {
+                    var parts = msg.split("_")
+                    if (parts[0] == 'ok') {
                         location.href = "${createLink(controller: 'transferencia', action: 'transferencia')}/" + '${transferencia?.id}'
                     } else {
-                        $.box({
-                            imageClass: "box_info",
-                            text: "Error al agregar el item",
-                            title: "Error",
-                            iconClose: false,
-                            dialog: {
-                                resizable: false,
-                                draggable: false,
-                                buttons: {
-                                    "Aceptar": function () {
+                        if(parts[0] == 'er'){
+                            $.box({
+                                imageClass: "box_info",
+                                text: parts[1],
+                                title: "Alerta",
+                                iconClose: false,
+                                dialog: {
+                                    resizable: false,
+                                    draggable: false,
+                                    buttons: {
+                                        "Aceptar": function () {
+                                        }
                                     }
                                 }
-                            }
-                        });
+                            });
+                        }else{
+                            $.box({
+                                imageClass: "box_info",
+                                text: "Error al agregar el item",
+                                title: "Error",
+                                iconClose: false,
+                                dialog: {
+                                    resizable: false,
+                                    draggable: false,
+                                    buttons: {
+                                        "Aceptar": function () {
+                                        }
+                                    }
+                                }
+                            });
+                        }
+
                     }
                 }
             });

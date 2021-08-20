@@ -122,8 +122,19 @@ class TransferenciaController {
         if(params.id){
             detalleTransferencia = DetalleTransferencia.get(params.id)
         }else{
-            detalleTransferencia = new DetalleTransferencia()
-        }
+
+            def detalles = DetalleTransferencia.findAllByTransferencia(transferencia)
+            if(detalles){
+                if(item.id in detalles.item.id){
+                    render "er_El item seleccionado ya se encuentra agregado"
+                    return false;
+                }else{
+                    detalleTransferencia = new DetalleTransferencia()
+                }
+            }else{
+                detalleTransferencia = new DetalleTransferencia()
+            }
+         }
 
         detalleTransferencia.item =  item
         detalleTransferencia.transferencia = transferencia
@@ -170,15 +181,30 @@ class TransferenciaController {
         def transferencia = Transferencia.get(params.id)
         transferencia.estado = 'R'
 
-        def sql = "select * from bdga_kardex(null,'${transferencia?.id}',null,1)"
-        def cn = dbConnectionService.getConnection()
-        cn.execute(sql);
-
         if(!transferencia.save(flush:true)){
             println("error al registrar la trasnferencia " + transferencia.errors)
             render "no"
         }else{
+            def sql = "select * from bdga_kardex(null,'${transferencia?.id}',null,1)"
+            def cn = dbConnectionService.getConnection()
+            cn.execute(sql);
             render "ok"
+        }
+    }
+
+    def anularTransferencia(){
+        def transferencia = Transferencia.get(params.id)
+        def detalles = DetalleTransferencia.findAllByTransferencia(transferencia)
+
+        if(detalles?.size() == 0) {
+            transferencia.estado = 'A'
+            if(!transferencia.save(flush: true)){
+                render "no"
+            }else{
+                render "ok"
+            }
+        }else{
+            render "er"
         }
     }
 

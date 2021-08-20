@@ -5,6 +5,7 @@
         <th style="width: 10%">Código</th>
         <th style="width: 82%">Descripción</th>
         <th style="width: 9%">Unidad</th>
+        <th style="width: 9%">Precio</th>
         <th style="width: 9%">Seleccionar</th>
     </tr>
     </thead>
@@ -25,7 +26,7 @@
                 </td>
                 <td style="width: 8%"><div style="text-align: center" class="selecciona" id="reg_${i}"
                                            regNmbr="${dt?.itemnmbr}" regCdgo="${dt?.itemcdgo}"
-                                           regUn="${dt?.unddcdgo}" data-id="${dt?.item__id}">
+                                           regUn="${dt?.unddcdgo}" data-id="${dt?.item__id}" data-pre="${dt?.exstpcun}">
                     <button class="btn btn-small btn-success"><i class="icon-check"></i></button>
                 </div></td>
             </tr>
@@ -37,13 +38,11 @@
 <script type="text/javascript">
     $(".selecciona").click(function () {
         var id = $(this).attr("regId");
-        %{--location.href = "${g.createLink(action: 'consumo', controller: 'consumo')}" + "?id=" + id--}%
-        // $("#item_id").val($(this).attr("regId"));
         $("#item_id").val($(this).data("id"));
         $("#cdgo_buscar").val($(this).attr("regCdgo"));
         $("#item_desc").val($(this).attr("regNmbr"));
         $("#item_unidad").val($(this).attr("regUn"));
-        $("#item_precio").val(1);
+        $("#item_precio").val($(this).data("pre"));
         $("#busqueda").dialog("close");
     });
 </script>
