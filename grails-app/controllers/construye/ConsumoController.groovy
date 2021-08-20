@@ -303,16 +303,23 @@ class ConsumoController extends janus.seguridad.Shield {
 
     def quitarRegistrar_ajax(){
         def consumo = Consumo.get(params.id)
-        consumo.estado = 'N'
-        if(!consumo.save(flush:true)){
-            println("error al desregistrar el consumo " + consumo.errors)
-            render "no"
+        def existe = Consumo.findAllByPadre(consumo)
+
+        if(existe){
+            render "er"
         }else{
-            def sql = "select * from bdga_kardex(null, null, '${consumo?.id}', -1)"
-            def cn = dbConnectionService.getConnection()
-            cn.execute(sql);
-            render "ok"
+            consumo.estado = 'N'
+            if(!consumo.save(flush:true)){
+                println("error al desregistrar el consumo " + consumo.errors)
+                render "no"
+            }else{
+                def sql = "select * from bdga_kardex(null, null, '${consumo?.id}', -1)"
+                def cn = dbConnectionService.getConnection()
+                cn.execute(sql);
+                render "ok"
+            }
         }
+
     }
 
     def devolucion(){

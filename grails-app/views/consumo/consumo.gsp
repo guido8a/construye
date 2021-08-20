@@ -453,14 +453,41 @@
                                 $("#dlgLoad").dialog("close");
                                 var parts = msg.split("_");
                                 if (parts[0] == 'ok') {
-                                    $("#spanOk").html("Estado cambiado correctamente");
-                                    $("#divOk").show();
                                     setTimeout(function () {
                                         location.reload(true)
                                     }, 1000);
                                 } else {
-                                    $("#spanError").html("Error al cambiar el estado de la requisición");
-                                    $("#divError").show()
+                                    if(parts[0] == 'er'){
+                                        $.box({
+                                            imageClass: "box_info",
+                                            text: "No es posible cambiar de estado a la requisición, ya tiene una devolución asociada",
+                                            title: "Alerta",
+                                            iconClose: false,
+                                            dialog: {
+                                                resizable: false,
+                                                draggable: false,
+                                                buttons: {
+                                                    "Aceptar": function () {
+                                                    }
+                                                }
+                                            }
+                                        });
+                                    }else{
+                                        $.box({
+                                            imageClass: "box_info",
+                                            text: "Error al cambiar el estado de la requisición",
+                                            title: "Alerta",
+                                            iconClose: false,
+                                            dialog: {
+                                                resizable: false,
+                                                draggable: false,
+                                                buttons: {
+                                                    "Aceptar": function () {
+                                                    }
+                                                }
+                                            }
+                                        });
+                                    }
                                 }
                             }
                         })
@@ -472,7 +499,7 @@
                 }
             }
         });
-    })
+    });
 
     function validarNumDec(ev) {
         /*
