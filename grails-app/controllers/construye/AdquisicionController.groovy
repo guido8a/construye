@@ -191,14 +191,14 @@ class AdquisicionController {
         def adquisicion = Adquisicion.get(params.id)
         def ivaParametros =  Parametros.get(1)?.iva?.toInteger() / 100
         def detalles = DetalleAdquisicion.findAllByAdquisicion(adquisicion)
-        def totalDetalles = detalles.subtotal.sum()
+        def totalDetalles = Math.round(detalles.subtotal.sum() * 100000) / 100000
         println("total detalles " + totalDetalles)
         println("iva parametros " + ivaParametros)
         def ivaDetalles = Math.round(totalDetalles/(1+ ivaParametros) * (ivaParametros) *100)/100
         def ivas = adquisicion.iva.toDouble()
         println "Total: ${adquisicion.total}, subtotal: ${adquisicion.subtotal}, iva: ${adquisicion.iva}, ivaDt: $ivaDetalles"
 
-        if(adquisicion.total.toDouble() != totalDetalles){
+        if(adquisicion.total != totalDetalles){
             render "er_El total de la adquisición es diferente del total de los items"
         }else{
             if(Math.abs(ivaDetalles - adquisicion.iva) <= 0.01){

@@ -154,14 +154,12 @@ class ConsumoController extends janus.seguridad.Shield {
         println "listaItem" + params
         def listaItems = ['itemnmbr', 'itemcdgo']
         def datos;
-        def select = "select comp__id, item.item__id, itemcdgo, itemnmbr, compcntd, compprco, unddcdgo " +
-                "from comp, item, undd "
-        def txwh = "where item.item__id = comp.item__id and obra__id = 8 and " +
-                "undd.undd__id = item.undd__id "
+        def select = "select * from rp_existencias(${params.grupo}, ${params.bdga}) rp, comp "
+        def txwh = "where comp.item__id = rp.item__id and exstcntd > 0 and obra__id = ${params.obra} "
         def sqlTx = ""
         def bsca = listaItems[params.buscarPor.toInteger()-1]
         def ordn = listaItems[params.ordenar.toInteger()-1]
-        txwh += " and $bsca ilike '%${params.criterio}%' and grpo__id = ${params.grupo}"
+        txwh += " and $bsca ilike '%${params.criterio}%' "
 
         sqlTx = "${select} ${txwh} order by ${ordn} limit 100 ".toString()
         println "sql: $sqlTx"

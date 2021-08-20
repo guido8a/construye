@@ -22,12 +22,12 @@
                 <td style="width: 10%">${dt.itemcdgo}</td>
                 <td style="width: 55%">${dt.itemnmbr}</td>
                 <td style="width: 15%">
-                    <g:formatNumber number="${dt.compcntd}" format="##,#####0" minFractionDigits="2" maxFractionDigits="2" locale="ec"/>
+                    <g:formatNumber number="${dt.exstcntd}" format="##,#####0" minFractionDigits="2" maxFractionDigits="2" locale="ec"/>
                 </td>
-                <td style="width: 12%">${dt.compprco}</td>
+                <td style="width: 12%">${dt.exstpcun}</td>
                 <td style="width: 8%"><div style="text-align: center" class="seleccionaItem" id="reg_${i}"
                                            regId="${dt?.comp__id}" regNmbr="${dt?.itemnmbr}" regCdgo="${dt?.itemcdgo}"
-                                           regUn="${dt?.unddcdgo}" regPc="${dt?.compprco}" data-id="${dt?.item__id}">
+                                           regUn="${dt?.unddcdgo}" regPc="${dt?.exstpcun}" data-id="${dt?.item__id}">
                     <button class="btn btn-small btn-success"><i class="icon-check"></i></button>
                 </div></td>
             </tr>

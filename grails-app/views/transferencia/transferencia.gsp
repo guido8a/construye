@@ -664,6 +664,7 @@
             var criterio = $(".criterio").val();
             var ordenar = $("#ordenar").val();
             var grupo = $("#buscarGrupo").val();
+            var bdga = $("#bodegaSale").val();
             $.ajax({
                 type: "POST",
                 url: "${createLink(controller: 'transferencia', action:'listaItem')}",
@@ -671,8 +672,8 @@
                     buscarPor: buscarPor,
                     criterio: criterio,
                     ordenar: ordenar,
-                    grupo: grupo
-
+                    grupo: grupo,
+                    bdga: bdga
                 },
                 success: function (msg) {
                     $("#divTabla").html(msg);
