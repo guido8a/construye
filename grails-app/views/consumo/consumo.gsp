@@ -24,7 +24,7 @@
     </g:if>
 </div>
 
-<div class="span12 btn-group" role="navigation">
+<div class="span12 btn-group" role="navigation" style="background-color: #a8a8a8; padding: 5px; border-radius: 4px; width: 93%">
     <a href="#" class="btn  " id="btn_lista">
         <i class="icon-list-ul"></i>
         Lista
@@ -101,7 +101,7 @@
                     Obra
                     <input type="text" name="obra" class="span20 allCaps required input-small"
                            value="${consumo?.obra?.codigo}"
-                           id="input_codigo" maxlength="30" minlength="2">
+                           id="input_codigo" maxlength="30" minlength="2" readonly="true">
 
                     <p class="help-block ui-helper-hidden"></p>
                 </div>
@@ -118,7 +118,7 @@
 
                 <div class="span8" style="margin-left: 10px">
                     Descripción
-                    <input type="text" name="nombre" class="span72" value="${consumo?.obra?.nombre}" id="obradscr">
+                    <input type="text" name="nombre" class="span72" value="${consumo?.obra?.nombre}" id="obradscr" readonly="true">
                 </div>
 
                 <div class="span2" style="width: 105px; margin-left: 10px">
@@ -176,12 +176,20 @@
                         <div style="display: inline-block">
                             Código
                         </div>
-                        <input type="text" name="item.codigo" id="cdgo_buscar" class="span24">
+                        <input type="text" name="item.codigo" id="cdgo_buscar" class="span12" readonly="true">
                         <input type="hidden" id="item_id">
                         <input type="hidden" id="idItems">
                     </div>
 
-                    <div class="span6">
+                    <g:if test="${consumo?.estado == 'N'}">
+                        <div class="span1" style="margin-top: 20px; width: 80px">
+                            <a class="btn btn-small btn-primary btn-ajax" href="#" rel="tooltip" title="Agregar Item" id="btnBuscarItem">
+                                <i class="icon-search"></i> Buscar
+                            </a>
+                        </div>
+                    </g:if>
+
+                    <div class="span5">
                         Descripción
                         <input type="text" name="item.descripcion" id="item_desc" class="span11" disabled="disabled">
                     </div>
@@ -200,7 +208,7 @@
                     <div class="span2">
                         P. Unitario
                         <input type="text" name="item.precio" class="span8" id="item_precio" value="1"
-                               style="text-align: right; color: #44a;">
+                               style="text-align: right; color: #44a;" readonly="true">
                     </div>
 
                     <g:if test="${consumo?.estado != 'R' || consumo?.estado != 'A'}">
@@ -209,11 +217,11 @@
                                id="btn_agregarItem">
                                 <i class="icon-plus"></i>
                             </a>
-                            <a class="btn btn-small btn-success btn-ajax hidden" href="#" rel="tooltip" title="Guardar"
+                            <a class="btn btn-small btn-primary btn-ajax hidden" href="#" rel="tooltip" title="Guardar"
                                id="btn_guardarItem">
                                 <i class="icon-save"></i>
                             </a>
-                            <a class="btn btn-small btn-primary btn-ajax hidden" href="#" rel="tooltip" title="Cancelar edición"
+                            <a class="btn btn-small btn-primary btn-ajax" href="#" rel="tooltip" title="Cancelar edición"
                                id="btnCancelarEdicion">
                                 <i class="icon-remove"></i>
                             </a>
@@ -266,7 +274,7 @@
                         </td>
                         <td style="width: 50px;text-align: center" class="col_delete">
                             <g:if test="${consumo?.estado == 'N'}">
-                                <a class="btn btn-small btn-success editarItem" href="#" rel="tooltip" title="Editar"
+                                <a class="btn btn-small btn-primary editarItem" href="#" rel="tooltip" title="Editar"
                                    data-id="${item.id}"
                                    data-cant="${item.cantidad}" data-nombre="${item.composicion.item.nombre}"
                                    data-precio="${item.precioUnitario}"
@@ -582,23 +590,23 @@
         $("#item_desc").val(nombre).addClass("readonly");
         $("#item_precio").val(precio).addClass("readonly").attr("disabled", true);
         $("#item_unidad").val(unidad).addClass("readonly");
-        $("#cdgo_buscar").val(codigo).addClass("readonly").attr("disabled", true);
+        $("#cdgo_buscar").val(codigo)
         $("#btn_guardarItem").removeClass("hidden");
         $("#btn_agregarItem").addClass("hidden");
-        $("#btnCancelarEdicion").removeClass("hidden");
+        // $("#btnCancelarEdicion").removeClass("hidden");
     });
 
     $("#btnCancelarEdicion").click(function () {
         $("#idItems").val("");
         $("#item_id").val("");
-        $("#item_cantidad").val(0);
+        $("#item_cantidad").val(1);
         $("#item_desc").val("").removeClass("readonly");
-        $("#item_precio").val("").removeClass("readonly").attr("disabled", false);
+        $("#item_precio").val(1).removeClass("readonly").attr("disabled", false);
         $("#item_unidad").val("").removeClass("readonly");
-        $("#cdgo_buscar").val("").removeClass("readonly").attr("disabled", false);
+        $("#cdgo_buscar").val("")
         $("#btn_guardarItem").addClass("hidden");
         $("#btn_agregarItem").removeClass("hidden")
-        $("#btnCancelarEdicion").addClass("hidden")
+        // $("#btnCancelarEdicion").addClass("hidden")
     });
 
     var urlS = "${resource(dir:'images', file:'spinner_24.gif')}";
@@ -734,7 +742,8 @@
 
         <g:if test="${consumo?.id}">
 
-        $("#cdgo_buscar").dblclick(function () {
+        // $("#cdgo_buscar").dblclick(function () {
+        $("#btnBuscarItem").click(function () {
             $("#busqueda").dialog("open");
             $(".ui-dialog-titlebar-close").html("x")
             return false;
@@ -1002,10 +1011,41 @@
                     consumo: '${consumo?.id}'
                 },
                 success: function (msg) {
-                    if (msg == 'ok') {
+                    var parts = msg.split("_")
+                    if (parts[0] == 'ok') {
                         location.href = "${createLink(controller: 'consumo', action: 'consumo')}/" + '${consumo?.id}'
                     } else {
-                        alert("Error al guardar")
+                        if(parts[0] == 'er'){
+                            $.box({
+                                imageClass: "box_info",
+                                text: parts[1],
+                                title: "Alerta",
+                                iconClose: false,
+                                dialog: {
+                                    resizable: false,
+                                    draggable: false,
+                                    buttons: {
+                                        "Aceptar": function () {
+                                        }
+                                    }
+                                }
+                            });
+                        }else{
+                            $.box({
+                                imageClass: "box_info",
+                                text: "Error al guardar el detalle de la requisición",
+                                title: "Error",
+                                iconClose: false,
+                                dialog: {
+                                    resizable: false,
+                                    draggable: false,
+                                    buttons: {
+                                        "Aceptar": function () {
+                                        }
+                                    }
+                                }
+                            });
+                        }
                     }
                 }
             });
@@ -1032,18 +1072,54 @@
                     }
                 });
                 return false
-            }
-            $("#dlgLoad").dialog("open")
-            $.ajax({
-                type: "POST", url: "${g.createLink(controller: 'consumo', action:'verificaItem')}",
-                data: "id=" + id,
-                success: function (msg) {
-                    $("#dlgLoad").dialog("close");
-                    if (msg == "ok") {
-                        guardarDetalleConsumo(id);
+            }else{
+                if($("#item_cantidad").val() == '' || $("#item_cantidad").val() == null || $("#item_cantidad").val() == 0){
+                    $.box({
+                        imageClass: "box_info",
+                        text: "Ingrese una cantidad",
+                        title: "Alerta",
+                        iconClose: false,
+                        dialog: {
+                            resizable: false,
+                            draggable: false,
+                            buttons: {
+                                "Aceptar": function () {
+                                }
+                            }
+                        }
+                    });
+                }else{
+                    if($("#item_precio").val() == '' || $("#item_precio").val() == null || $("#item_precio").val() == 0){
+                        $.box({
+                            imageClass: "box_info",
+                            text: "Ingrese un precio",
+                            title: "Alerta",
+                            iconClose: false,
+                            dialog: {
+                                resizable: false,
+                                draggable: false,
+                                buttons: {
+                                    "Aceptar": function () {
+                                    }
+                                }
+                            }
+                        });
+                    }else{
+                        $("#dlgLoad").dialog("open")
+                        $.ajax({
+                            type: "POST", url: "${g.createLink(controller: 'consumo', action:'verificaItem')}",
+                            data: "id=" + id,
+                            success: function (msg) {
+                                $("#dlgLoad").dialog("close");
+                                if (msg == "ok") {
+                                    guardarDetalleConsumo(id);
+                                }
+                            }
+                        });
                     }
                 }
-            });
+            }
+
         });
         </g:if>
         <g:else>

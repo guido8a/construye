@@ -24,7 +24,7 @@
     </g:if>
 </div>
 
-<div class="span12 btn-group" role="navigation">
+<div class="span12 btn-group" role="navigation" style="background-color: #a8a8a8; padding: 5px; border-radius: 4px; width: 93%">
     <a href="#" class="btn  " id="btn_lista">
         <i class="icon-list-ul"></i>
         Lista
@@ -184,12 +184,20 @@
                         <div style="display: inline-block">
                             Código
                         </div>
-                        <input type="text" name="item.codigo" id="cdgo_buscar" class="span24">
+                        <input type="text" name="item.codigo" id="cdgo_buscar" class="span12" readonly="true">
                         <input type="hidden" id="item_id">
                         <input type="hidden" id="idItems">
                     </div>
 
-                    <div class="span6">
+                    <g:if test="${consumo?.estado == 'N'}">
+                        <div class="span1" style="margin-top: 20px; width: 80px">
+                            <a class="btn btn-small btn-primary btn-ajax" href="#" rel="tooltip" title="Agregar Item" id="btnBuscarItem">
+                                <i class="icon-search"></i> Buscar
+                            </a>
+                        </div>
+                    </g:if>
+
+                    <div class="span5">
                         Descripción
                         <input type="text" name="item.descripcion" id="item_desc" class="span11" disabled="disabled">
                     </div>
@@ -202,7 +210,7 @@
                     <div class="span1" style="margin-left: -5px !important;">
                         <g:hiddenField name="item_cantidad_hide" value="${0}"/>
                         Cantidad
-                        <input type="text" name="item.cantidad" class="span12" id="item_cantidad" value="0" style="text-align: right">
+                        <input type="text" name="item.cantidad" class="span12" id="item_cantidad" value="1" style="text-align: right">
                     </div>
 
                     <div class="span2">
@@ -216,7 +224,7 @@
                                id="btn_agregarItem">
                                 <i class="icon-plus"></i>
                             </a>
-                            <a class="btn btn-small btn-success btn-ajax hidden" href="#" rel="tooltip" title="Guardar"
+                            <a class="btn btn-small btn-primary btn-ajax hidden" href="#" rel="tooltip" title="Guardar"
                                id="btn_guardarItem">
                                 <i class="icon-save"></i>
                             </a>
@@ -274,7 +282,7 @@
                         </td>
                         <td style="width: 50px;text-align: center" class="col_delete">
                             <g:if test="${consumo?.estado == 'N'}">
-                                <a class="btn btn-small btn-success editarItem" href="#" rel="tooltip" title="Editar"
+                                <a class="btn btn-small btn-primary editarItem" href="#" rel="tooltip" title="Editar"
                                    data-id="${item.id}"
                                    data-cant="${item.cantidad}" data-nombre="${item.composicion.item.nombre}"
                                    data-precio="${item.precioUnitario}"
@@ -575,7 +583,7 @@
         $("#item_desc").val(nombre).addClass("readonly");
         $("#item_precio").val(precio).addClass("readonly").attr("disabled", true);
         $("#item_unidad").val(unidad).addClass("readonly");
-        $("#cdgo_buscar").val(codigo).addClass("readonly").attr("disabled", true);
+        $("#cdgo_buscar").val(codigo)
         $("#btn_guardarItem").removeClass("hidden");
         $("#btn_agregarItem").addClass("hidden");
         // $("#btnCancelarEdicion").removeClass("hidden");
@@ -586,9 +594,9 @@
         $("#item_id").val("");
         $("#item_cantidad").val(1);
         $("#item_desc").val("").removeClass("readonly");
-        $("#item_precio").val("");
+        $("#item_precio").val(1);
         $("#item_unidad").val("");
-        $("#cdgo_buscar").val("").removeClass("readonly").attr("disabled", false);
+        $("#cdgo_buscar").val("")
         $("#btn_guardarItem").addClass("hidden");
         $("#btn_agregarItem").removeClass("hidden")
         // $("#btnCancelarEdicion").addClass("hidden")
@@ -727,9 +735,10 @@
 
         <g:if test="${consumo?.id}">
 
-        $("#cdgo_buscar").dblclick(function () {
+        // $("#cdgo_buscar").dblclick(function () {
+        $("#btnBuscarItem").click(function () {
             $("#busqueda").dialog("open");
-            $(".ui-dialog-titlebar-close").html("x")
+            $(".ui-dialog-titlebar-close").html("x");
             return false;
         });
         </g:if>

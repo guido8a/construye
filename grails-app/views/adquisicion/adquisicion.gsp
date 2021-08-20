@@ -47,10 +47,12 @@
         </a>
     </g:if>
     <g:if test="${adquisicion?.id}">
-        <a href="#" class="btn btn-ajax btn-new" id="borrar">
-            <i class="icon-trash"></i>
-            Anular
-        </a>
+        <g:if test="${consumo?.estado != 'A'}">
+            <a href="#" class="btn btn-ajax btn-new" id="borrar">
+                <i class="icon-trash"></i>
+                Anular
+            </a>
+        </g:if>
     </g:if>
     <a href="${g.createLink(controller: 'adquisicion', action: 'adquisicion')}" class="btn btn-ajax btn-new">
         <i class="icon-remove"></i>
@@ -74,18 +76,6 @@
             </g:if>
         </g:if>
     </g:else>
-%{--
-    <g:if test="${adquisicion?.id}">
-        <a href="#" class="btn btn-ajax btn-new" id="imprimir" title="Imprimir">
-            <i class="icon-print"></i>
-            Imprimir
-        </a>
-        <a href="#" class="btn btn-ajax btn-new" id="excel" title="Imprimir">
-            <i class="icon-print"></i>
-            Excel
-        </a>
-    </g:if>
---}%
 </div>
 
 
@@ -111,11 +101,13 @@
                     <p class="help-block ui-helper-hidden"></p>
                 </div>
 
-                <div class="span1" style="margin-top: 20px; width: 80px">
-                    <a class="btn btn-small btn-primary btn-ajax" href="#" rel="tooltip" title="Agregar" id="input_codigo">
-                        <i class="icon-search"></i> Buscar
-                    </a>
-                </div>
+                <g:if test="${adquisicion?.estado == 'N'}">
+                    <div class="span1" style="margin-top: 20px; width: 80px">
+                        <a class="btn btn-small btn-primary btn-ajax" href="#" rel="tooltip" title="Agregar" id="input_codigo">
+                            <i class="icon-search"></i> Buscar
+                        </a>
+                    </div>
+                </g:if>
 
                 <div class="span3">
                     Bodega
@@ -148,24 +140,24 @@
                     IVA
                     %{--<g:textField name="iva" value="${adquisicion?.iva}"  title="IVA" class="span12"/>--}%
                     <g:textField name="iva"  title="IVA" class="span12"
-                       value="${g.formatNumber(number: adquisicion?.iva, maxFractionDigits: 2, minFractionDigits: 2,
-                               format: '##,##0', locale: 'ec')}" />
+                                 value="${g.formatNumber(number: adquisicion?.iva, maxFractionDigits: 2, minFractionDigits: 2,
+                                         format: '##,##0', locale: 'ec')}" />
                 </div>
 
                 <div class="span1" style="width: 150px;">
                     Subtotal
                     %{--<g:textField name="subtotal" value="${adquisicion?.subtotal}" title="Subtotal" class="span12"/>--}%
                     <g:textField name="subtotal"  title="Subtotal" class="span12"
-                        value="${g.formatNumber(number: adquisicion?.subtotal, maxFractionDigits: 2, minFractionDigits: 2,
-                                format: '##,##0', locale: 'ec')}"/>
+                                 value="${g.formatNumber(number: adquisicion?.subtotal, maxFractionDigits: 2, minFractionDigits: 2,
+                                         format: '##,##0', locale: 'ec')}"/>
                 </div>
 
                 <div class="span1" style="width: 150px;">
                     Total
                     %{--<g:textField name="total" value="${adquisicion?.total}" readonly="" title="Total" class="span12"/>--}%
                     <g:textField name="total" readonly="" title="Total" class="span12"
-                        value="${g.formatNumber(number: adquisicion?.total, maxFractionDigits: 2, minFractionDigits: 2,
-                                format: '##,##0', locale: 'ec')}"/>
+                                 value="${g.formatNumber(number: adquisicion?.total, maxFractionDigits: 2, minFractionDigits: 2,
+                                         format: '##,##0', locale: 'ec')}"/>
                 </div>
 
                 <div class="span1" style="width: 50px; color: #01a">
@@ -191,12 +183,20 @@
                         <div style="display: inline-block">
                             Código
                         </div>
-                        <input type="text" name="item.codigo" id="cdgo_buscar" class="span24">
+                        <input type="text" name="item.codigo" id="cdgo_buscar" class="span12" readonly="true">
                         <input type="hidden" id="item_id_original">
                         <input type="hidden" id="idItems">
                     </div>
 
-                    <div class="span6">
+                    <g:if test="${adquisicion?.estado == 'N'}">
+                        <div class="span1" style="margin-top: 20px; width: 80px">
+                            <a class="btn btn-small btn-primary btn-ajax" href="#" rel="tooltip" title="Agregar Item" id="btnBuscarItem">
+                                <i class="icon-search"></i> Buscar
+                            </a>
+                        </div>
+                    </g:if>
+
+                    <div class="span5">
                         Descripción
                         <input type="text" name="item.descripcion" id="item_desc" class="span11" disabled="disabled">
                     </div>
@@ -208,7 +208,7 @@
 
                     <div class="span1" style="margin-left: -5px !important;">
                         Cantidad
-                        <input type="text" name="item.cantidad" class="span12" id="item_cantidad" value="0"
+                        <input type="text" name="item.cantidad" class="span12" id="item_cantidad" value="1"
                                style="text-align: right">
                     </div>
 
@@ -224,11 +224,11 @@
                                id="btn_agregarItem">
                                 <i class="icon-plus"></i>
                             </a>
-                            <a class="btn btn-small btn-success btn-ajax hidden" href="#" rel="tooltip" title="Guardar"
+                            <a class="btn btn-small btn-primary btn-ajax hidden" href="#" rel="tooltip" title="Guardar"
                                id="btn_guardarItem">
                                 <i class="icon-save"></i>
                             </a>
-                            <a class="btn btn-small btn-primary btn-ajax hidden" href="#" rel="tooltip" title="Cancelar edición"
+                            <a class="btn btn-small btn-primary btn-ajax" href="#" rel="tooltip" title="Cancelar edición"
                                id="btnCancelarEdicion">
                                 <i class="icon-remove"></i>
                             </a>
@@ -282,7 +282,7 @@
                         </td>
                         <td style="width: 50px;text-align: center" class="col_delete">
                             <g:if test="${adquisicion?.estado == 'N'}">
-                                <a class="btn btn-small btn-success editarItem" href="#" rel="tooltip" title="Editar"
+                                <a class="btn btn-small btn-primary editarItem" href="#" rel="tooltip" title="Editar"
                                    data-id="${detalle.id}"
                                    data-cant="${detalle.cantidad}" data-nombre="${detalle.item.nombre}"
                                    data-precio="${detalle.precioUnitario}"
@@ -520,10 +520,10 @@
         $("#item_desc").val(nombre).addClass("readonly");
         $("#item_precio").val(precio);
         $("#item_unidad").val(unidad).addClass("readonly");
-        $("#cdgo_buscar").val(codigo).addClass("readonly").attr("disabled", true);
+        $("#cdgo_buscar").val(codigo)
         $("#btn_guardarItem").removeClass("hidden");
         $("#btn_agregarItem").addClass("hidden");
-        $("#btnCancelarEdicion").removeClass("hidden");
+        // $("#btnCancelarEdicion").removeClass("hidden");
     });
 
     $("#btnCancelarEdicion").click(function () {
@@ -533,10 +533,10 @@
         $("#item_desc").val("").removeClass("readonly");
         $("#item_precio").val(1);
         $("#item_unidad").val("").removeClass("readonly");
-        $("#cdgo_buscar").val("").removeClass("readonly").attr("disabled", false);
+        $("#cdgo_buscar").val("")
         $("#btn_guardarItem").addClass("hidden");
         $("#btn_agregarItem").removeClass("hidden")
-        $("#btnCancelarEdicion").addClass("hidden")
+        // $("#btnCancelarEdicion").addClass("hidden")
     });
 
     var urlS = "${resource(dir:'images', file:'spinner_24.gif')}";
@@ -693,7 +693,8 @@
 
         <g:if test="${adquisicion?.id}">
 
-        $("#cdgo_buscar").dblclick(function () {
+        // $("#cdgo_buscar").dblclick(function () {
+        $("#btnBuscarItem").click(function () {
             $("#busqueda").dialog("open");
             $(".ui-dialog-titlebar-close").html("x");
             return false;
@@ -1011,7 +1012,7 @@
                     }
                 });
             }else{
-                if($("#item_cantidad").val() == '' || $("#item_cantidad").val() == ''){
+                if($("#item_cantidad").val() == '' || $("#item_cantidad").val() == null ||  $("#item_cantidad").val() == 0){
                     $.box({
                         imageClass: "box_info",
                         text: "Ingrese una cantidad",
@@ -1027,7 +1028,7 @@
                         }
                     });
                 }else{
-                    if($("#item_precio").val() == '' || $("#item_precio").val() == ''){
+                    if($("#item_precio").val() == '' || $("#item_precio").val() == null || $("#item_precio").val() == 0){
                         $.box({
                             imageClass: "box_info",
                             text: "Ingrese un precio",
