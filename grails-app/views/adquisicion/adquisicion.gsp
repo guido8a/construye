@@ -101,7 +101,7 @@
                     <p class="help-block ui-helper-hidden"></p>
                 </div>
 
-                <g:if test="${adquisicion?.estado == 'N'}">
+                <g:if test="${adquisicion?.estado == 'N' || adquisicion?.estado == null}">
                     <div class="span1" style="margin-top: 20px; width: 80px">
                         <a class="btn btn-small btn-primary btn-ajax" href="#" rel="tooltip" title="Agregar" id="input_codigo">
                             <i class="icon-search"></i> Buscar
