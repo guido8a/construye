@@ -135,7 +135,7 @@ class ConsumoController extends janus.seguridad.Shield {
         def datos;
         def select = "select obra.obra__id, obracdgo, obranmbr " +
                 "from obra "
-        def txwh = "where obra.obra__id in (select obra__id from cnsm where tpcs__id = 1) "
+        def txwh = "where obra.obra__id in (select obra__id from cnsm where tpcs__id = 1 and cnsmetdo = 'R') "
         def sqlTx = ""
         def bsca = listaObra[params.buscarPor.toInteger()-1]
         def ordn = listaObra[params.ordenar.toInteger()-1]
@@ -176,16 +176,14 @@ class ConsumoController extends janus.seguridad.Shield {
         println "listaItemDvlc" + params
         def listaItems = ['itemnmbr', 'itemcdgo']
         def datos
-        def padre = Consumo.get(params.consumo).padre.id
-//        def reqc = params.consumo
-        def reqc = padre
-//        def reqc = 1
+        def reqc = params.consumo
         def select = "select dtcs.comp__id, item.item__id, itemcdgo, itemnmbr, dtcscntd, dtcspcun, unddcdgo " +
-                "from cnsm, dtcs, comp, item, undd "
-        def txwh = "where cnsm.cnsm__id = ${reqc} and item.item__id = comp.item__id and " +
-                "comp.comp__id = dtcs.comp__id and dtcs.cnsm__id = cnsm.cnsm__id and " +
-                "undd.undd__id = item.undd__id "
+                "from cnsm d, cnsm pdre, dtcs, comp, item, undd "
+        def txwh = "where pdre.cnsm__id = d.cnsmpdre and d.cnsm__id = ${reqc} and item.item__id = comp.item__id and " +
+                "comp.comp__id = dtcs.comp__id and dtcs.cnsm__id = pdre.cnsm__id and " +
+                "undd.undd__id = item.undd__id and pdre.cnsmetdo = 'R' "
         def sqlTx = ""
+
         def bsca = listaItems[params.buscarPor.toInteger()-1]
         def ordn = listaItems[params.ordenar.toInteger()-1]
         txwh += " and $bsca ilike '%${params.criterio}%' and grpo__id = ${params.grupo}"
