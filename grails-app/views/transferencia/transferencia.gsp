@@ -101,14 +101,14 @@
 
             <div class="row-fluid">
                 <div class="span3">
-                    Bodega Sale
+                    Bodega
                     <g:select name="sale" id="bodegaSale" from="${bodegaSale}" class="span12" optionKey="id"
                               optionValue="descripcion"
                               value="${transferencia?.sale?.id}" noSelection="[null: '--Seleccione--']"/>
                 </div>
 
                 <div class="span3">
-                    Bodega Recibe
+                    Destinatario
                     <g:select name="recibe" id="bodegaRecibe" from="${bodegaRecibe}" class="span12" optionKey="id"
                               optionValue="descripcion"
                               value="${transferencia?.recibe?.id}" noSelection="[null: '--Seleccione--']"/>
