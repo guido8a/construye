@@ -76,6 +76,10 @@
             </g:if>
         </g:if>
     </g:else>
+    <a href="${createLink(controller: 'proveedor', action: 'proveedor')}" class="btn">
+        <i class="icon-check"></i>
+        Proveedor
+    </a>
 </div>
 
 

@@ -1,11 +1,15 @@
 package janus.pac
 
+import janus.EspecialidadProveedor
+import janus.Persona
 import org.springframework.dao.DataIntegrityViolationException
 
 
 class ProveedorController extends janus.seguridad.Shield {
 
     static allowedMethods = [save: "POST", update: "POST", delete: "POST"]
+
+    def dbConnectionService
 
     def index() {
         redirect(action: "list", params: params)
@@ -174,4 +178,76 @@ class ProveedorController extends janus.seguridad.Shield {
             redirect(action: "list")
         }
     } //delete
+
+
+    def proveedor(){
+
+    }
+
+    def tablaProveedores_ajax(){
+        def usuario = Persona.get(session.usuario.id)
+        def empresa = usuario.empresa
+
+        println("emrpesa " + empresa.id)
+
+        def tipo = params.campo
+        def parametro = ''
+
+        switch(tipo){
+            case "1":
+                parametro = 'nombre'
+                break;
+            case "2":
+                parametro = 'apellidoContacto'
+                break;
+            case "3":
+                parametro = 'ruc'
+                break;
+        }
+
+        def data = Proveedor.withCriteria {
+            eq("empresa", empresa)
+
+            if(params.busqueda != ''){
+                or{
+
+                    ilike(parametro, '%' + params.busqueda + '%')
+                }
+            }
+
+            order("nombre")
+        }
+
+        return[proveedores: data]
+    }
+
+
+    def saveProveedor_ajax(){
+        println("params " + params)
+        def usuario = Persona.get(session.usuario.id)
+        def empresa = usuario.empresa
+        def especialidad = EspecialidadProveedor.get(params."especialidad.id")
+        def proveedor
+
+        if(params.id){
+            proveedor = Proveedor.get(params.id)
+        }else{
+            proveedor = new Proveedor()
+            proveedor.empresa = empresa
+        }
+
+        proveedor.especialidad = especialidad
+        proveedor.tipo = params."tipo.id"
+        proveedor.properties = params
+
+        if(!proveedor.save(flush:true)){
+            println("error al guardar el proveedor " + proveedor.errors)
+            render "no"
+        }else{
+            render "ok"
+        }
+
+    }
+
+
 } //fin controller

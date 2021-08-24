@@ -13,7 +13,7 @@
             </div>
 
             <div class="controls">
-                <g:select id="especialidad" name="especialidad.id" from="${janus.EspecialidadProveedor.list()}" optionKey="id" optionValue="descripcion" class="many-to-one " value="${proveedorInstance?.especialidad?.id}" noSelection="['null': '']"/>
+                <g:select id="especialidad" name="especialidad.id" from="${janus.EspecialidadProveedor.list()}" optionKey="id" optionValue="descripcion" class="many-to-one " value="${proveedorInstance?.especialidad?.id}"/>
                 
                 <p class="help-block ui-helper-hidden"></p>
             </div>
@@ -27,8 +27,7 @@
             </div>
 
             <div class="controls">
-                <g:textField name="tipo" maxlength="1" class="" value="${proveedorInstance?.tipo}"/>
-                
+                <g:select id="tipo" name="tipo.id" from="${['J' : 'Jurídica', 'N': 'Natural', 'E' : 'Empresa Pública']}" optionKey="key" optionValue="value" class="many-to-one " value="${proveedorInstance?.tipo}"/>
                 <p class="help-block ui-helper-hidden"></p>
             </div>
         </div>
@@ -216,21 +215,6 @@
                 <p class="help-block ui-helper-hidden"></p>
             </div>
         </div>
-                
-        %{--<div class="control-group">--}%
-            %{--<div>--}%
-                %{--<span class="control-label label label-inverse">--}%
-                    %{--Estado--}%
-                %{--</span>--}%
-            %{--</div>--}%
-
-            %{--<div class="controls">--}%
-                %{--<g:textField name="estado" maxlength="1" class="" value="${proveedorInstance?.estado}"/>--}%
-                %{----}%
-                %{--<p class="help-block ui-helper-hidden"></p>--}%
-            %{--</div>--}%
-        %{--</div>--}%
-                %{----}%
         <div class="control-group">
             <div>
                 <span class="control-label label label-inverse">
@@ -239,8 +223,7 @@
             </div>
 
             <div class="controls">
-                <g:textField name="observaciones" maxlength="127" class="" value="${proveedorInstance?.observaciones}" style="width: 400px;"/>
-                
+                <g:textArea name="observaciones" maxlength="127" class="" value="${proveedorInstance?.observaciones}" style="resize: none"/>
                 <p class="help-block ui-helper-hidden"></p>
             </div>
         </div>
