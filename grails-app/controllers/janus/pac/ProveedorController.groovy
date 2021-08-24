@@ -132,7 +132,7 @@ class ProveedorController extends janus.seguridad.Shield {
             str += "</ul>"
 
             flash.message = str
-            redirect(action: 'list')
+            redirect(action: 'proveedor')
             return
         }
 
@@ -143,7 +143,7 @@ class ProveedorController extends janus.seguridad.Shield {
             flash.clase = "alert-success"
             flash.message = "Se ha creado correctamente Proveedor " + proveedorInstance.id
         }
-        redirect(action: 'list')
+        redirect(action: 'proveedor')
     } //save
 
     def show_ajax() {
@@ -210,7 +210,6 @@ class ProveedorController extends janus.seguridad.Shield {
 
             if(params.busqueda != ''){
                 or{
-
                     ilike(parametro, '%' + params.busqueda + '%')
                 }
             }
@@ -234,6 +233,7 @@ class ProveedorController extends janus.seguridad.Shield {
         }else{
             proveedor = new Proveedor()
             proveedor.empresa = empresa
+            proveedor.fechaContacto = new Date()
         }
 
         proveedor.especialidad = especialidad
@@ -246,8 +246,20 @@ class ProveedorController extends janus.seguridad.Shield {
         }else{
             render "ok"
         }
-
     }
+
+    def borrarProveedor_ajax(){
+        def proveedor = Proveedor.get(params.id)
+
+        try{
+            proveedor.delete(flush:true)
+            render "ok"
+        }catch(e){
+            println("error al borrar el proveedor " + proveedor.errors)
+            render "no"
+        }
+    }
+
 
 
 } //fin controller

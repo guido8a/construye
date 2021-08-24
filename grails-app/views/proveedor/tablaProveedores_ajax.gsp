@@ -67,8 +67,9 @@
                 var btnSave = $('<a href="#"  class="btn btn-success"><i class="icon-save"></i> Guardar</a>');
 
                 btnSave.click(function () {
-                    submitForm(btnSave);
-                    return false;
+                    // submitForm(btnSave);
+                    // return false;
+                    guardarProveedor();
                 });
 
                 $("#modalHeader").removeClass("btn-edit btn-show btn-delete").addClass("btn-edit");
@@ -80,6 +81,45 @@
         });
         return false;
     }); //click btn edit
+
+    $(".btn-delete").click(function () {
+
+        var id = $(this).data("id");
+        $.box({
+            imageClass: "box_info",
+            text: "Está seguro de eliminar a este proveedor?",
+            title: "Alerta",
+            iconClose: false,
+            dialog: {
+                resizable: false,
+                draggable: false,
+                buttons: {
+                    "Aceptar": function () {
+                        borrarProveedor(id)
+                    }
+                }
+            }
+        });
+
+
+        // var id = $(this).data("id");
+        // $("#id").val(id);
+        // var btnOk = $('<a href="#" data-dismiss="modal" class="btn">Cancelar</a>');
+        // var btnDelete = $('<a href="#" class="btn btn-danger"><i class="icon-trash"></i> Eliminar</a>');
+        //
+        // btnDelete.click(function () {
+        //     btnDelete.replaceWith(spinner);
+        //     $("#frmDelete-Proveedor").submit();
+        //     return false;
+        // });
+        //
+        // $("#modalHeader").removeClass("btn-edit btn-show btn-delete").addClass("btn-delete");
+        // $("#modalTitle").html("Eliminar Proveedor");
+        // $("#modalBody").html("<p>¿Está seguro de querer eliminar este Proveedor?</p>");
+        // $("#modalFooter").html("").append(btnOk).append(btnDelete);
+        // $("#modal-Proveedor").modal("show");
+        // return false;
+    });
 
 
 </script>

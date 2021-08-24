@@ -94,7 +94,7 @@
 
 </div>
 
-<div class="modal hide fade" id="modal-Proveedor" style="width: 900px;">
+<div class="modal hide fade" id="modal-Proveedor" style="width: 930px;">
     <div class="modal-header" id="modalHeader">
         <button type="button" class="close darker" data-dismiss="modal">
             <i class="icon-remove-circle"></i>
@@ -142,25 +142,92 @@
         cargarTablaProveedores($(".buscar").val(), $("#criterio").val());
     });
 
-    function submitForm(btn) {
-        if ($("#frmSave-Proveedor").valid()) {
-            btn.replaceWith(spinner);
+    // function submitForm(btn) {
+    //     if ($("#frmSave-Proveedor").valid()) {
+    //         btn.replaceWith(spinner);
+    //     }
+    //     $("#frmSave-Proveedor").submit();
+    // }
+
+    function guardarProveedor(){
+        if($("#frmSave-Proveedor").valid()){
+            $("#dlgLoad").dialog("open");
+            $.ajax({
+                type: 'POST',
+                url: '${createLink(controller: 'proveedor', action: 'saveProveedor_ajax')}',
+                data: $("#frmSave-Proveedor").serialize(),
+                success: function(msg){
+                    $("#dlgLoad").dialog("close");
+                    $("#modal-Proveedor").modal("hide");
+                    if(msg=='ok'){
+                        caja("Proveedor guardado correctamente","Alerta")
+                        cargarTablaProveedores($(".buscar").val(), $("#criterio").val());
+                    }else{
+                        caja("Error al guardar el proveedor","Error")
+                    }
+                }
+            });
         }
-        $("#frmSave-Proveedor").submit();
     }
+
+    function caja(texto, titulo){
+        return $.box({
+            imageClass: "box_info",
+            text: texto,
+            title: titulo,
+            iconClose: false,
+            dialog: {
+                resizable: false,
+                draggable: false,
+                buttons: {
+                    "Aceptar": function () {
+                    }
+                }
+            }
+        });
+    }
+
+    function borrarProveedor(id){
+        $.ajax({
+            type: 'POST',
+            url: '${createLink(controller: 'proveedor', action: 'borrarProveedor_ajax')}',
+            data:{
+                id: id
+            },
+            success: function(msg){
+                cargarTablaProveedores($(".buscar").val(), $("#criterio").val());
+                caja("Borrado correctamente", "Alerta")
+            }
+        })
+    }
+
+    $("#frmSave-Proveedor").validate({
+        errorPlacement : function (error, element) {
+            element.parent().find(".help-block").html(error).show();
+        },
+        success        : function (label) {
+            label.parent().hide();
+        },
+        errorClass     : "label label-important",
+        submitHandler  : function(form) {
+            $(".btn-success").replaceWith(spinner);
+            form.submit();
+        }
+    });
+
 
     $(function () {
 
         cargarTablaProveedores($(".buscar").val(), $("#criterio").val());
 
 
-        $('[rel=tooltip]').tooltip();
-
-        $(".paginate").paginate({
-            maxRows        : 10,
-            searchPosition : $("#busqueda-Proveedor"),
-            float          : "right"
-        });
+        // $('[rel=tooltip]').tooltip();
+        //
+        // $(".paginate").paginate({
+        //     maxRows        : 10,
+        //     searchPosition : $("#busqueda-Proveedor"),
+        //     float          : "right"
+        // });
 
         $(".btn-new").click(function () {
             $.ajax({
@@ -188,42 +255,7 @@
         }); //click btn new
 
 
-        function guardarProveedor(){
-            if ($("#frmSave-Proveedor").valid()) {
-                $("#dlgLoad").dialog("open");
-                $.ajax({
-                    type: 'POST',
-                    url: '${createLink(controller: 'proveedor', action: 'saveProveedor_ajax')}',
-                    data: $("#frmSave-Proveedor").serialize(),
-                    success: function(msg){
-                        $("#dlgLoad").dialog("close");
-                        $("#modal-Proveedor").modal("hide");
-                        if(msg=='ok'){
-                            caja("Proveedor guardado correctamente","Alerta")
-                        }else{
-                            caja("Error al guardar el proveedor","Error")
-                        }
-                    }
-                });
-            }
-        }
 
-        function caja(texto, titulo){
-            return $.box({
-                imageClass: "box_info",
-                text: texto,
-                title: titulo,
-                iconClose: false,
-                dialog: {
-                    resizable: false,
-                    draggable: false,
-                    buttons: {
-                        "Aceptar": function () {
-                        }
-                    }
-                }
-            });
-        }
 
         %{--$(".btn-edit").click(function () {--}%
         %{--    var id = $(this).data("id");--}%
@@ -272,26 +304,6 @@
         %{--    });--}%
         %{--    return false;--}%
         %{--}); //click btn show--}%
-
-        $(".btn-delete").click(function () {
-            var id = $(this).data("id");
-            $("#id").val(id);
-            var btnOk = $('<a href="#" data-dismiss="modal" class="btn">Cancelar</a>');
-            var btnDelete = $('<a href="#" class="btn btn-danger"><i class="icon-trash"></i> Eliminar</a>');
-
-            btnDelete.click(function () {
-                btnDelete.replaceWith(spinner);
-                $("#frmDelete-Proveedor").submit();
-                return false;
-            });
-
-            $("#modalHeader").removeClass("btn-edit btn-show btn-delete").addClass("btn-delete");
-            $("#modalTitle").html("Eliminar Proveedor");
-            $("#modalBody").html("<p>¿Está seguro de querer eliminar este Proveedor?</p>");
-            $("#modalFooter").html("").append(btnOk).append(btnDelete);
-            $("#modal-Proveedor").modal("show");
-            return false;
-        });
 
     });
 
