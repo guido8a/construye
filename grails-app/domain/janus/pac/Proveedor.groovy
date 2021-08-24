@@ -14,7 +14,6 @@ class Proveedor {
     String apellidoContacto //apellido del contacto o de la persona natural
     String garante
     String direccion
-    String fax
     String telefonos //ejemple 097438273 – 096234124 - 022234123
     Date fechaContacto //fecha de contacto o registro
     String email
@@ -26,8 +25,6 @@ class Proveedor {
     static auditable = true
     String origen       //Nacional, Extranjero o Mixto (N,E,M)
     String pagarNombre       //Nacional, Extranjero o Mixto (N,E,M)
-    String actividad
-    String nombreCheque
 
     static mapping = {
         table 'prve'
@@ -46,7 +43,6 @@ class Proveedor {
             apellidoContacto column: 'prveapct'
             garante column: 'prvegrnt'
             direccion column: 'prvedire'
-            fax column: 'prvefaxx'
             telefonos column: 'prvetelf'
             fechaContacto column: 'prvefccn'
             email column: 'prvemail'
@@ -55,11 +51,8 @@ class Proveedor {
             titulo column: 'prvettlr'
             estado column: 'prveetdo'
             observaciones column: 'prveobsr'
-            actividad column: 'prveactv'
             origen column: 'prveorgn'
             pagarNombre column: 'prvepago'
-            nombreCheque column: 'prvenbch'
-
         }
     }
     static constraints = {
@@ -72,7 +65,6 @@ class Proveedor {
         apellidoContacto(blank: true, nullable: true, maxSize: 31)
         garante(blank: true, nullable: true, maxSize: 40)
         direccion(blank: true, nullable: true, maxSize: 60)
-        fax(blank: true, nullable: true, maxSize: 11)
         telefonos(blank: true, nullable: true, maxSize: 40)
         fechaContacto(blank: true, nullable: true)
         email(blank: true, nullable: true, maxSize: 40)
@@ -81,12 +73,8 @@ class Proveedor {
         titulo(blank: true, nullable: true, maxSize: 4)
         estado(blank: true, nullable: true, maxSize: 1)
         observaciones(blank: true, nullable: true, maxSize: 127)
-        actividad(blank: true, nullable: true, maxSize: 255)
-        nombreCheque(blank: true, nullable: true, maxSize: 63)
         pagarNombre(blank: true, nullable: true, maxSize: 127)
-
         origen(blank: true, nullable: true, maxSize: 1, inList: ['N', 'E', 'M'])
-
     }
 
     String toString() {

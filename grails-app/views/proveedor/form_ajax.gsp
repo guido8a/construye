@@ -89,7 +89,7 @@
                 </span>
             </td>
             <td colspan="3">
-                <g:textArea name="direccion" maxlength="60" class="" value="${proveedorInstance?.direccion}" style="width: 650px; resize: none"/>
+                <g:textField name="direccion" maxlength="60" class="" value="${proveedorInstance?.direccion}" style="width: 650px; resize: none"/>
                 <p class="help-block ui-helper-hidden"></p>
             </td>
         </tr>
@@ -109,30 +109,50 @@
                 </span>
             </td>
             <td>
-                <g:textField name="email" maxlength="40" class="" value="${proveedorInstance?.email}"/>
+                <g:textField name="email" maxlength="40" class="email mail" value="${proveedorInstance?.email}"/>
                 <p class="help-block ui-helper-hidden"></p>
             </td>
         </tr>
         <tr>
             <td colspan="1">
                 <span class="control-label label label-inverse">
-                    Licencia
+                    Gerente
                 </span>
             </td>
             <td width="250px">
-                <g:textField name="licencia" maxlength="10" class="" value="${proveedorInstance?.licencia}"/>
+                <g:textField name="garante" maxlength="40" class="" value="${proveedorInstance?.garante}"/>
                 <p class="help-block ui-helper-hidden"></p>
             </td>
             <td width="100px">
                 <span class="control-label label label-inverse">
-                    Registro
+                    Título
                 </span>
             </td>
             <td>
-                <g:textField name="registro" maxlength="7" class="" value="${proveedorInstance?.registro}"/>
+                <g:textField name="titulo" maxlength="4" class="" value="${proveedorInstance?.titulo}"/>
                 <p class="help-block ui-helper-hidden"></p>
             </td>
         </tr>
+%{--        <tr>--}%
+%{--            <td colspan="1">--}%
+%{--                <span class="control-label label label-inverse">--}%
+%{--                    Licencia--}%
+%{--                </span>--}%
+%{--            </td>--}%
+%{--            <td width="250px">--}%
+%{--                <g:textField name="licencia" maxlength="10" class="" value="${proveedorInstance?.licencia}"/>--}%
+%{--                <p class="help-block ui-helper-hidden"></p>--}%
+%{--            </td>--}%
+%{--            <td width="100px">--}%
+%{--                <span class="control-label label label-inverse">--}%
+%{--                    Registro--}%
+%{--                </span>--}%
+%{--            </td>--}%
+%{--            <td>--}%
+%{--                <g:textField name="registro" maxlength="7" class="" value="${proveedorInstance?.registro}"/>--}%
+%{--                <p class="help-block ui-helper-hidden"></p>--}%
+%{--            </td>--}%
+%{--        </tr>--}%
         <tr>
             <td colspan="1">
                 <span class="control-label label label-inverse">
@@ -145,11 +165,11 @@
             </td>
             <td width="100px">
                 <span class="control-label label label-inverse">
-                    Nombre en el cheque
+                   Pago
                 </span>
             </td>
             <td>
-                <g:textField name="nombreCheque" maxlength="63" class="" value="${proveedorInstance?.nombreCheque}"/>
+                <g:textField name="nombreCheque" maxlength="63" class="" value="${proveedorInstance?.pagarNombre}"/>
                 <p class="help-block ui-helper-hidden"></p>
             </td>
         </tr>
