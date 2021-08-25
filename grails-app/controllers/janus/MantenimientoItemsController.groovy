@@ -57,6 +57,7 @@ class MantenimientoItemsController extends Shield {
             case "item_consultoria":
             case "item_material":
             case "item_equipo":
+                println "....1"
                 def tipoLista = Item.get(id).tipoLista
                 if (precios) {
                     if (ignore) {
@@ -64,7 +65,8 @@ class MantenimientoItemsController extends Shield {
                     } else {
                         hijos = []
                         if (tipoLista) {
-                            hijos = Lugar.findAllByTipoLista(tipoLista)
+//                            hijos = Lugar.findAllByTipoLista(tipoLista)
+                            hijos = Lugar.findAllByTipoListaAndTipo(tipoLista, 'B')
                         }
                     }
                 } else if(vae){
@@ -78,7 +80,7 @@ class MantenimientoItemsController extends Shield {
         tree += "<ul>"
         hijos.each { hijo ->
             def hijosH, desc, liId
-//            println "hijo ... "+tipo
+            println "hijo ... "+tipo
             switch (tipo) {
                 case "grupo_manoObra":
                     hijosH = Item.findAllByDepartamento(hijo, [sort: 'codigo'])
@@ -173,6 +175,7 @@ class MantenimientoItemsController extends Shield {
                     break;
                 case "item_material":
                 case "item_equipo":
+                    println "....2"
                     if (precios) {
                         hijosH = []
                         if (ignore) {
@@ -208,8 +211,11 @@ class MantenimientoItemsController extends Shield {
             tree += "<li id='" + liId + "' class='" + clase + "' rel='" + rel + "' " + extra + ">"
             tree += "<a href='#' class='label_arbol'>" + desc + "</a>"
             tree += "</li>"
+
+            println "hijos: ${hijos}, \n hijosH: ${hijosH}"
         }
         tree += "</ul>"
+
         return tree
     }
 

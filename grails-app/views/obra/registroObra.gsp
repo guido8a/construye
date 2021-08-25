@@ -808,7 +808,7 @@
 <div id="rbpcDialog">
     <fieldset>
         <div class="span5">
-            Está seguro de querer procesar los precios de Manono de Obra y Materiales para:
+            Está seguro de querer procesar los precios de Mano de Obra y Materiales para:
             <div style="font-weight: bold;">${obra?.nombre} ?</div>
         </div>
     </fieldset>

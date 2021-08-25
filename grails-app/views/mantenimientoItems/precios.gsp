@@ -86,14 +86,11 @@
             %{--</div>--}%
 
             <div class="btn-toolbar" style="margin-top: -30px;">
-                <div class="btn-group" data-toggle="buttons-checkbox">
-                    %{--<a href="#" id="all" class="btn toggleTipo">--}%
-                    %{--Todas las listas--}%
+                %{--<div class="btn-group" data-toggle="buttons-checkbox">--}%
+                    %{--<a href="#" id="ignore" class="btn toggleTipo">--}%
+                        %{--Todos los lugares--}%
                     %{--</a>--}%
-                    <a href="#" id="ignore" class="btn toggleTipo">
-                        Todos los lugares
-                    </a>
-                </div>
+                %{--</div>--}%
 
                 <div class="btn-group">
                     <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
