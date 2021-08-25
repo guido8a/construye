@@ -437,6 +437,10 @@
 <script type="text/javascript">
 
 
+    $("#imprimir").click(function () {
+        location.href = "${g.createLink(controller: 'reportes5',action: 'reporteRequisiciones')}?id=" + '${consumo?.id}';
+    });
+
     $("#btnDesRegistrar").click(function () {
         $("#dlgLoad").dialog("open");
         var idAdquisicion = '${consumo?.id}';
