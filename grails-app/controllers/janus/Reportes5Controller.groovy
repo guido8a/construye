@@ -1796,14 +1796,6 @@ class Reportes5Controller extends Shield{
         def fecha
         def fecha1
 
-        if(params.fecha){
-            fecha = new Date().parse("dd-MM-yyyy", params.fecha)
-        }
-
-        if(params.fechaSalida){
-            fecha1 = new Date().parse("dd-MM-yyyy", params.fechaSalida)
-        }
-
 //        def bandMat = 0
 //        def band = 0
 //        def bandTrans = params.trans
@@ -1907,33 +1899,34 @@ class Reportes5Controller extends Shield{
         headers.add(new Paragraph("Teléfono:" + empresa?.telefono ? empresa?.telefono  : '', times10bold));
         headers.add(new Paragraph("Email:" + empresa?.email ? empresa?.email : '', times10bold));
         headers.add(new Paragraph("Guayaquil -  Ecuador", times10bold));
-        headers.add(new Paragraph("REQUISICIONES", times10bold));
+        headers.add(new Paragraph("GUÍA DE REMISIÓN N° " + consumo?.id, times10bold));
         headers.add(new Paragraph(" ", times10bold));
         document.add(headers)
 
-        PdfPTable tablaCoeficiente = new PdfPTable(6);
+        PdfPTable tablaCoeficiente = new PdfPTable(4);
         tablaCoeficiente.setWidthPercentage(100);
-        tablaCoeficiente.setWidths(arregloEnteros([20,20, 20,30, 5,5]))
+        tablaCoeficiente.setWidths(arregloEnteros([20,30, 20,30]))
 
         reportesPdfService.addCellTb(tablaCoeficiente, new Paragraph("Fecha de emisión: ", times10bold), prmsHeaderHoja)
         reportesPdfService.addCellTb(tablaCoeficiente, new Paragraph((consumo?.fecha?.format("dd-MM-yyyy") ?: ''), times10normal), prmsHeaderHoja)
         reportesPdfService.addCellTb(tablaCoeficiente, new Paragraph("Punto de partida: ", times10bold), prmsHeaderHoja)
-        reportesPdfService.addCellTb(tablaCoeficiente, new Paragraph((consumo?.bodega?.descripcion ?: ''), times10normal), [border: Color.WHITE, colspan: 3])
+        reportesPdfService.addCellTb(tablaCoeficiente, new Paragraph((consumo?.bodega?.descripcion ?: ''), times10normal), prmsHeaderHoja)
 
         reportesPdfService.addCellTb(tablaCoeficiente, new Paragraph("Recibe: ", times10bold), prmsHeaderHoja)
         reportesPdfService.addCellTb(tablaCoeficiente, new Paragraph((consumo?.recibe?.nombre + " " + consumo?.recibe?.apellido), times10normal), prmsHeaderHoja)
         reportesPdfService.addCellTb(tablaCoeficiente, new Paragraph("Transporta: ", times10bold), prmsHeaderHoja)
-        reportesPdfService.addCellTb(tablaCoeficiente, new Paragraph((consumo?.transporta?.nombre + " " + consumo?.transporta?.apellido) , times10normal), [border: Color.WHITE, colspan: 3])
+        reportesPdfService.addCellTb(tablaCoeficiente, new Paragraph((consumo?.transporta?.nombre + " " + consumo?.transporta?.apellido) , times10normal), prmsHeaderHoja)
 
         reportesPdfService.addCellTb(tablaCoeficiente, new Paragraph("Destinatario (obra) :", times10bold), prmsHeaderHoja)
-        reportesPdfService.addCellTb(tablaCoeficiente, new Paragraph((consumo?.obra?.nombre ?: '') , times10normal), [border: Color.WHITE, colspan: 5])
+        reportesPdfService.addCellTb(tablaCoeficiente, new Paragraph((consumo?.obra?.nombre ?: '') , times10normal), [border: Color.WHITE, colspan: 3])
 
-        reportesPdfService.addCellTb(tablaCoeficiente, new Paragraph("" , times10normal), [border: Color.WHITE, colspan: 6])
+        reportesPdfService.addCellTb(tablaCoeficiente, new Paragraph("" , times10normal), [border: Color.WHITE, colspan: 4])
+        reportesPdfService.addCellTb(tablaCoeficiente, new Paragraph("" , times10normal), [border: Color.WHITE, colspan: 4])
 
         //EQUIPOS
-        PdfPTable tablaEquipos = new PdfPTable(6);
+        PdfPTable tablaEquipos = new PdfPTable(4);
         tablaEquipos.setWidthPercentage(100);
-        tablaEquipos.setWidths(arregloEnteros([10,40,10,10,15,15]))
+        tablaEquipos.setWidths(arregloEnteros([15,65,10,10]))
 
 //        reportesPdfService.addCellTb(tablaEquipos, new Paragraph("EQUIPOS", times12bold), tituloRubro)
 
@@ -1941,16 +1934,16 @@ class Reportes5Controller extends Shield{
         reportesPdfService.addCellTb(tablaEquipos, new Paragraph("DESCRIPCIÓN", times7bold), celdaCabecera)
         reportesPdfService.addCellTb(tablaEquipos, new Paragraph("UNIDAD", times7bold), celdaCabecera)
         reportesPdfService.addCellTb(tablaEquipos, new Paragraph("CANTIDAD", times7bold), celdaCabecera)
-        reportesPdfService.addCellTb(tablaEquipos, new Paragraph("C. UNITARIO", times7bold), celdaCabecera)
-        reportesPdfService.addCellTb(tablaEquipos, new Paragraph("C.TOTAL(\$)", times7bold), celdaCabecera)
+//        reportesPdfService.addCellTb(tablaEquipos, new Paragraph("C. UNITARIO", times7bold), celdaCabecera)
+//        reportesPdfService.addCellTb(tablaEquipos, new Paragraph("C.TOTAL(\$)", times7bold), celdaCabecera)
 
         detalles.eachWithIndex { r, i ->
             reportesPdfService.addCellTb(tablaEquipos, new Paragraph(r?.composicion?.item?.codigo, times8normal), prmsFilaIzquierda)
             reportesPdfService.addCellTb(tablaEquipos, new Paragraph(r?.composicion?.item?.nombre, times8normal), prmsFilaIzquierda)
-            reportesPdfService.addCellTb(tablaEquipos, new Paragraph(r?.composicion?.item?.unidad?.descripcion, times8normal), prmsFilaIzquierda)
+            reportesPdfService.addCellTb(tablaEquipos, new Paragraph(r?.composicion?.item?.unidad?.codigo, times8normal), prmsFilaIzquierda)
             reportesPdfService.addCellTb(tablaEquipos, new Paragraph(numero(r?.cantidad, 5)?.toString(), times8normal), prmsFila)
-            reportesPdfService.addCellTb(tablaEquipos, new Paragraph(numero(r?.precioUnitario, 5)?.toString(), times8normal), prmsFilaDerecha)
-            reportesPdfService.addCellTb(tablaEquipos, new Paragraph((numero((r?.cantidad * r?.precioUnitario), 5))?.toString(), times8normal), prmsFilaDerecha)
+//            reportesPdfService.addCellTb(tablaEquipos, new Paragraph(numero(r?.precioUnitario, 5)?.toString(), times8normal), prmsFilaDerecha)
+//            reportesPdfService.addCellTb(tablaEquipos, new Paragraph((numero((r?.cantidad * r?.precioUnitario), 5))?.toString(), times8normal), prmsFilaDerecha)
 
 //            totalHer += r["parcial"]
 //            totalHerRel += r["relativo"]

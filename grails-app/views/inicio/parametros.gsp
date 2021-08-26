@@ -21,7 +21,7 @@
                 <li><a href="#ejec">Ejecución</a></li>
             </ul>
 
-            <div id="gnrl" class="ui-widget-content" style="height: 580px">
+            <div id="gnrl" class="ui-widget-content" style="height: 610px">
                 <div class="item" texto="admn">
                     <g:link controller="administracion" action="list">Administración</g:link> del GADLR, autoridad principal.
                 </div><br>
@@ -79,11 +79,12 @@
                     en un calendario anual.
                 </div><br>
                 <div class="item" texto="iva">
-                    %{--<g:link controller="obra" action="cambiarIva" id="ivaPar" >IVA </g:link> permite cambiar el valor del IVA--}%
                     <a href="#" class="" id="btnCambiarIva" title="Cambiar Iva"
                        style="margin-top: -10px;"> IVA - permite cambiar el valor del IVA
-
                     </a>
+                </div><br>
+                <div class="item" texto="emp">
+                    <g:link controller="empresa" action="list">Empresas</g:link>
                 </div><br>
             </div>
 
@@ -259,6 +260,12 @@
          class="ui-widget-content ui-corner-all">
     </div>
 
+</div>
+
+<div id="emp" style="display:none">
+    <h3>Empresas</h3><br>
+
+    <p>Administración de datos de empresas</p>
 </div>
 
 <div id="admn" style="display:none">
