@@ -1859,16 +1859,16 @@ class Reportes5Controller extends Shield{
 
         Paragraph headersRemi = new Paragraph();
         headersRemi.setAlignment(Element.ALIGN_CENTER);
-        headersRemi.add(new Paragraph("GUÍA DE REMISIÓN N° " + consumo?.id, times10bold));
+        headersRemi.add(new Paragraph("GUÍA DE REMISIÓN N° " + consumo?.id, times14bold));
         headersRemi.add(new Paragraph(" ", times10bold));
 
         PdfPTable tablaCoeficiente = new PdfPTable(4);
         tablaCoeficiente.setWidthPercentage(100);
-        tablaCoeficiente.setWidths(arregloEnteros([20,30, 20,30]))
+        tablaCoeficiente.setWidths(arregloEnteros([15,50, 15,50]))
 
-        reportesPdfService.addCellTb(tablaCoeficiente, new Paragraph("Fecha de emisión: ", times10bold), prmsHeaderHoja)
+        reportesPdfService.addCellTb(tablaCoeficiente, new Paragraph("Fecha: ", times10bold), prmsHeaderHoja)
         reportesPdfService.addCellTb(tablaCoeficiente, new Paragraph((consumo?.fecha?.format("dd-MM-yyyy") ?: ''), times10normal), prmsHeaderHoja)
-        reportesPdfService.addCellTb(tablaCoeficiente, new Paragraph("Punto de partida: ", times10bold), prmsHeaderHoja)
+        reportesPdfService.addCellTb(tablaCoeficiente, new Paragraph("Bodega: ", times10bold), prmsHeaderHoja)
         reportesPdfService.addCellTb(tablaCoeficiente, new Paragraph((consumo?.bodega?.descripcion ?: ''), times10normal), prmsHeaderHoja)
 
         reportesPdfService.addCellTb(tablaCoeficiente, new Paragraph("" , times10normal), [border: Color.WHITE, colspan: 4])
@@ -1880,7 +1880,7 @@ class Reportes5Controller extends Shield{
 
         reportesPdfService.addCellTb(tablaCoeficiente, new Paragraph("" , times10normal), [border: Color.WHITE, colspan: 4])
 
-        reportesPdfService.addCellTb(tablaCoeficiente, new Paragraph("Destinatario (obra) :", times10bold), prmsHeaderHoja)
+        reportesPdfService.addCellTb(tablaCoeficiente, new Paragraph("Obra :", times10bold), prmsHeaderHoja)
         reportesPdfService.addCellTb(tablaCoeficiente, new Paragraph((consumo?.obra?.nombre ?: '') , times10normal), [border: Color.WHITE, colspan: 3])
 
         reportesPdfService.addCellTb(tablaCoeficiente, new Paragraph("" , times10normal), [border: Color.WHITE, colspan: 4])
