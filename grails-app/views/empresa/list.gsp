@@ -87,6 +87,22 @@
     </div>
 </div>
 
+<div class="modal large hide fade" id="modal-empresa_show" style="width: 600px;">
+    <div class="modal-header" id="modalHeader_show">
+        <button type="button" class="close darker" data-dismiss="modal">
+            <i class="icon-remove-circle"></i>
+        </button>
+
+        <h3 id="modalTitle_show"></h3>
+    </div>
+
+    <div class="modal-body" id="modalBody_show" >
+    </div>
+
+    <div class="modal-footer" id="modalFooter_show">
+    </div>
+</div>
+
 
 <script type="text/javascript">
 
@@ -100,11 +116,11 @@
             },
             success : function (msg) {
                 var btnOk = $('<a href="#" data-dismiss="modal" class="btn btn-primary">Aceptar</a>');
-                $("#modalHeader").removeClass("btn-edit btn-show btn-delete").addClass("btn-show");
-                $("#modalTitle").html("Ver Persona");
-                $("#modalBody").html(msg);
-                $("#modalFooter").html("").append(btnOk);
-                $("#modal-empresa").modal("show");
+                $("#modalHeader_show").removeClass("btn-edit btn-show btn-delete").addClass("btn-show");
+                $("#modalTitle_show").html("Ver Empresa");
+                $("#modalBody_show").html(msg);
+                $("#modalFooter_show").html("").append(btnOk);
+                $("#modal-empresa_show").modal("show");
             }
         });
         return false;

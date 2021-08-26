@@ -73,8 +73,9 @@
                         </span>
                     </td>
                     <td colspan="2">
-                        <g:textField name="lugar" maxlength="63" class="allCaps form-control" value="${empresaInstance?.lugar}" style="width: 210px;"/>
+                        <g:textField name="lugar" maxlength="63" class="required form-control" value="${empresaInstance?.lugar}" style="width: 210px;"/>
                         <p class="help-block ui-helper-hidden"></p>
+                        <span class="mandatory">*</span>
                     </td>
                 </tr>
                 <tr>

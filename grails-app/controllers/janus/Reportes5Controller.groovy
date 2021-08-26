@@ -1772,9 +1772,6 @@ class Reportes5Controller extends Shield{
 //        dropDown.setCellFeatures(cellFeatures);
 //        sheet.addCell(dropDown);
 
-
-
-
         workbook.write();
         workbook.close();
         def output = response.getOutputStream()
@@ -1784,44 +1781,13 @@ class Reportes5Controller extends Shield{
         output.write(file.getBytes());
     }
 
-
     def reporteRequisiciones () {
         println("params " + params)
-
 
         def consumo = Consumo.get(params.id)
         def detalles = DetalleConsumo.findAllByConsumo(consumo)
         def empresa = consumo.empresa
         def obra = consumo.obra
-        def fecha
-        def fecha1
-
-//        def bandMat = 0
-//        def band = 0
-//        def bandTrans = params.trans
-//        def lugar = params.lugar
-//        def indi = params.indi
-//        def listas = params.listas
-//        def total = 0, totalHer = 0, totalMan = 0, totalMat = 0, totalHerRel = 0, totalHerVae = 0, totalManRel = 0,
-//            totalManVae = 0, totalMatRel = 0, totalMatVae = 0, totalTRel=0, totalTVae=0
-//
-//        try {
-//            indi = indi.toDouble()
-//        } catch (e) {
-//            println "error parse " + e
-//            indi = 22
-//        }
-//
-//        if (params.obra) {
-//            obra = Obra.get(params.obra)
-//        }
-//
-//        def parametros = "" + rubro.id + ",'" + fecha.format("yyyy-MM-dd") + "'," + listas + "," + params.dsp0 + "," +
-//                params.dsp1 + "," + params.dsv0 + "," + params.dsv1 + "," + params.dsv2 + "," + params.chof + "," + params.volq
-//
-//        preciosService.ac_rbroV2(params.id, fecha.format("yyyy-MM-dd"), params.lugar)
-//        def res = preciosService.rb_preciosAsc(parametros, "")
-//        def vae = preciosService.rb_preciosVae(parametros, "")
 
         def prmsHeaderHoja = [border: Color.WHITE]
         def prmsFila = [border: Color.WHITE, align : Element.ALIGN_CENTER, valign: Element.ALIGN_MIDDLE]
@@ -1842,19 +1808,19 @@ class Reportes5Controller extends Shield{
         def prmsNum = [border: Color.BLACK, align: Element.ALIGN_RIGHT, valign: Element.ALIGN_MIDDLE]
 
         def celdaCabecera = [border: Color.BLACK, bg: new Color(220, 220, 220), align: Element.ALIGN_CENTER, valign: Element.ALIGN_MIDDLE, bordeBot: "1"]
-        def celdaCabeceraIzquierda = [bct: Color.BLACK, bcl: Color.WHITE, bcr:Color.WHITE, bcb: Color.WHITE, align: Element.ALIGN_LEFT, valign: Element.ALIGN_MIDDLE]
-        def celdaCabeceraDerecha = [bct: Color.BLACK, bcl: Color.WHITE, bcr:Color.WHITE, bcb: Color.WHITE, align: Element.ALIGN_RIGHT, valign: Element.ALIGN_MIDDLE]
-        def celdaCabeceraCentro = [bct: Color.BLACK, bcl: Color.WHITE, bcr:Color.WHITE, bcb: Color.WHITE, align: Element.ALIGN_CENTER, valign: Element.ALIGN_MIDDLE]
-        def celdaCabeceraCentro2 = [bcb: Color.BLACK, bcl: Color.WHITE, bcr:Color.WHITE, bct: Color.WHITE, align: Element.ALIGN_CENTER, valign: Element.ALIGN_MIDDLE]
-        def celdaCabeceraDerecha2 = [bcb: Color.BLACK, bcl: Color.WHITE, bcr:Color.WHITE, bct: Color.WHITE, align: Element.ALIGN_RIGHT, valign: Element.ALIGN_MIDDLE]
-        def celdaCabeceraIzquierda2 = [bcb: Color.BLACK, bcl: Color.WHITE, bcr:Color.WHITE, bct: Color.WHITE, align: Element.ALIGN_LEFT, valign: Element.ALIGN_MIDDLE]
+//        def celdaCabeceraIzquierda = [bct: Color.BLACK, bcl: Color.WHITE, bcr:Color.WHITE, bcb: Color.WHITE, align: Element.ALIGN_LEFT, valign: Element.ALIGN_MIDDLE]
+//        def celdaCabeceraDerecha = [bct: Color.BLACK, bcl: Color.WHITE, bcr:Color.WHITE, bcb: Color.WHITE, align: Element.ALIGN_RIGHT, valign: Element.ALIGN_MIDDLE]
+//        def celdaCabeceraCentro = [bct: Color.BLACK, bcl: Color.WHITE, bcr:Color.WHITE, bcb: Color.WHITE, align: Element.ALIGN_CENTER, valign: Element.ALIGN_MIDDLE]
+//        def celdaCabeceraCentro2 = [bcb: Color.BLACK, bcl: Color.WHITE, bcr:Color.WHITE, bct: Color.WHITE, align: Element.ALIGN_CENTER, valign: Element.ALIGN_MIDDLE]
+//        def celdaCabeceraDerecha2 = [bcb: Color.BLACK, bcl: Color.WHITE, bcr:Color.WHITE, bct: Color.WHITE, align: Element.ALIGN_RIGHT, valign: Element.ALIGN_MIDDLE]
+//        def celdaCabeceraIzquierda2 = [bcb: Color.BLACK, bcl: Color.WHITE, bcr:Color.WHITE, bct: Color.WHITE, align: Element.ALIGN_LEFT, valign: Element.ALIGN_MIDDLE]
+//
+//        def tituloRubro = [height: 20, border: Color.WHITE, colspan: 12, align : Element.ALIGN_LEFT, valign: Element.ALIGN_TOP]
+//        def tituloRubro13 = [height: 20, border: Color.WHITE, colspan: 13, align : Element.ALIGN_LEFT, valign: Element.ALIGN_TOP]
+//        def tituloRubro3 = [height: 20, border: Color.WHITE, colspan: 3, align : Element.ALIGN_LEFT, valign: Element.ALIGN_TOP]
 
-        def tituloRubro = [height: 20, border: Color.WHITE, colspan: 12, align : Element.ALIGN_LEFT, valign: Element.ALIGN_TOP]
-        def tituloRubro13 = [height: 20, border: Color.WHITE, colspan: 13, align : Element.ALIGN_LEFT, valign: Element.ALIGN_TOP]
-        def tituloRubro3 = [height: 20, border: Color.WHITE, colspan: 3, align : Element.ALIGN_LEFT, valign: Element.ALIGN_TOP]
-
-        def prms = [prmsHeaderHoja: prmsHeaderHoja, prmsHeader: prmsHeader, prmsHeader2: prmsHeader2,
-                    prmsCellHead: prmsCellHead, prmsCell: prmsCellCenter, prmsCellLeft: prmsCellLeft, prmsSubtotal: prmsSubtotal, prmsNum: prmsNum, prmsHeaderHoja2: prmsHeaderHoja2, prmsCellRight: prmsCellRight]
+//        def prms = [prmsHeaderHoja: prmsHeaderHoja, prmsHeader: prmsHeader, prmsHeader2: prmsHeader2,
+//                    prmsCellHead: prmsCellHead, prmsCell: prmsCellCenter, prmsCellLeft: prmsCellLeft, prmsSubtotal: prmsSubtotal, prmsNum: prmsNum, prmsHeaderHoja2: prmsHeaderHoja2, prmsCellRight: prmsCellRight]
 
         Font times12bold = new Font(Font.TIMES_ROMAN, 12, Font.BOLD)
         Font times14bold = new Font(Font.TIMES_ROMAN, 14, Font.BOLD)
@@ -1875,19 +1841,22 @@ class Reportes5Controller extends Shield{
                      times10boldWhite: times10boldWhite, times8boldWhite: times8boldWhite, times8normal: times8normal, times10normal: times10normal]
 
         def baos = new ByteArrayOutputStream()
-        def name = "reporteRubros_" + new Date().format("ddMMyyyy_hhmm") + ".pdf";
+        def name = "reporteRequisiciones_" + new Date().format("ddMMyyyy_hhmm") + ".pdf";
+        def logoPath = servletContext.getRealPath("/") + "images/logo_reportes.png"
+        Image logo = Image.getInstance(logoPath);
+        logo.scalePercent(50)
+        logo.setAlignment(Image.MIDDLE | Image.TEXTWRAP)
 
         Document document
 //        document = new Document(PageSize.A4.rotate());
         document = new Document(PageSize.A4);
-//        document.setMargins(marginLeft, marginRight, marginTop, marginBottom) 1/72 de pulgada, 1cm = 28.3
-//        document.setMargins(60, 50, 45, 45)
-        document.setMargins(70, 50, 45, 45);
+
+        document.setMargins(40, 40, 20, 25);
         def pdfw = PdfWriter.getInstance(document, baos);
         document.open();
         document.addTitle("Requisiciones " + new Date().format("dd_MM_yyyy"));
         document.addSubject("Generado por el sistema Obras");
-        document.addKeywords("documentosObra, obras, consumos");
+        document.addKeywords("documentosObra, obras, requisiciones");
         document.addAuthor("OBRAS");
         document.addCreator("Tedein SA");
 
@@ -1896,12 +1865,11 @@ class Reportes5Controller extends Shield{
         headers.setAlignment(Element.ALIGN_CENTER);
         headers.add(new Paragraph(empresa?.nombre?.toUpperCase(), times12bold));
         headers.add(new Paragraph(empresa?.direccion, times10bold));
-        headers.add(new Paragraph("Teléfono:" + empresa?.telefono ? empresa?.telefono  : '', times10bold));
-        headers.add(new Paragraph("Email:" + empresa?.email ? empresa?.email : '', times10bold));
-        headers.add(new Paragraph("Guayaquil -  Ecuador", times10bold));
+        headers.add(new Paragraph("Teléfono: " + (empresa?.telefono ? empresa?.telefono  : ''), times10bold));
+        headers.add(new Paragraph("Email: " + (empresa?.email ? empresa?.email : ''), times10bold));
+        headers.add(new Paragraph(empresa?.lugar + " -  Ecuador", times10bold));
         headers.add(new Paragraph("GUÍA DE REMISIÓN N° " + consumo?.id, times10bold));
         headers.add(new Paragraph(" ", times10bold));
-        document.add(headers)
 
         PdfPTable tablaCoeficiente = new PdfPTable(4);
         tablaCoeficiente.setWidthPercentage(100);
@@ -1912,10 +1880,14 @@ class Reportes5Controller extends Shield{
         reportesPdfService.addCellTb(tablaCoeficiente, new Paragraph("Punto de partida: ", times10bold), prmsHeaderHoja)
         reportesPdfService.addCellTb(tablaCoeficiente, new Paragraph((consumo?.bodega?.descripcion ?: ''), times10normal), prmsHeaderHoja)
 
+        reportesPdfService.addCellTb(tablaCoeficiente, new Paragraph("" , times10normal), [border: Color.WHITE, colspan: 4])
+
         reportesPdfService.addCellTb(tablaCoeficiente, new Paragraph("Recibe: ", times10bold), prmsHeaderHoja)
         reportesPdfService.addCellTb(tablaCoeficiente, new Paragraph((consumo?.recibe?.nombre + " " + consumo?.recibe?.apellido), times10normal), prmsHeaderHoja)
         reportesPdfService.addCellTb(tablaCoeficiente, new Paragraph("Transporta: ", times10bold), prmsHeaderHoja)
         reportesPdfService.addCellTb(tablaCoeficiente, new Paragraph((consumo?.transporta?.nombre + " " + consumo?.transporta?.apellido) , times10normal), prmsHeaderHoja)
+
+        reportesPdfService.addCellTb(tablaCoeficiente, new Paragraph("" , times10normal), [border: Color.WHITE, colspan: 4])
 
         reportesPdfService.addCellTb(tablaCoeficiente, new Paragraph("Destinatario (obra) :", times10bold), prmsHeaderHoja)
         reportesPdfService.addCellTb(tablaCoeficiente, new Paragraph((consumo?.obra?.nombre ?: '') , times10normal), [border: Color.WHITE, colspan: 3])
@@ -1944,45 +1916,10 @@ class Reportes5Controller extends Shield{
             reportesPdfService.addCellTb(tablaEquipos, new Paragraph(numero(r?.cantidad, 5)?.toString(), times8normal), prmsFila)
 //            reportesPdfService.addCellTb(tablaEquipos, new Paragraph(numero(r?.precioUnitario, 5)?.toString(), times8normal), prmsFilaDerecha)
 //            reportesPdfService.addCellTb(tablaEquipos, new Paragraph((numero((r?.cantidad * r?.precioUnitario), 5))?.toString(), times8normal), prmsFilaDerecha)
-
-//            totalHer += r["parcial"]
-//            totalHerRel += r["relativo"]
-//            totalHerVae += r["vae_vlor"]
         }
-//
-//        reportesPdfService.addCellTb(tablaEquipos, new Paragraph("", times8bold), [border: Color.WHITE, colspan: 5])
-//        reportesPdfService.addCellTb(tablaEquipos, new Paragraph("TOTAL", times8bold), prmsFila)
-//        reportesPdfService.addCellTb(tablaEquipos, new Paragraph(numero(totalHer, 5)?.toString(), times8bold), prmsFilaDerecha)
-//        reportesPdfService.addCellTb(tablaEquipos, new Paragraph(numero(totalHerRel, 2)?.toString(), times8bold), prmsFila)
-//        reportesPdfService.addCellTb(tablaEquipos, new Paragraph("", times8bold), [border: Color.WHITE, colspan: 3])
-//        reportesPdfService.addCellTb(tablaEquipos, new Paragraph(numero(totalHerVae, 2)?.toString(), times8bold), prmsFila)
 
-
-//        PdfPTable tablaTotales = new PdfPTable(4);
-//        tablaTotales.setWidthPercentage(70);
-//        tablaTotales.setWidths(arregloEnteros([30,25,25,20]))
-//        tablaTotales.horizontalAlignment = Element.ALIGN_RIGHT;
-//
-//        reportesPdfService.addCellTb(tablaTotales, new Paragraph("COSTO UNITARIO DIRECTO", times8bold), celdaCabeceraIzquierda)
-//        reportesPdfService.addCellTb(tablaTotales, new Paragraph(numero(totalRubro, 2)?.toString(), times8bold), celdaCabeceraDerecha)
-//        reportesPdfService.addCellTb(tablaTotales, new Paragraph(numero(totalRelativo, 2)?.toString(), times8bold), celdaCabeceraCentro)
-//        reportesPdfService.addCellTb(tablaTotales, new Paragraph(numero(totalVae, 2)?.toString(), times8bold), celdaCabeceraCentro)
-//
-//        reportesPdfService.addCellTb(tablaTotales, new Paragraph("COSTOS INDIRECTO", times8bold), prmsFilaIzquierda)
-//        reportesPdfService.addCellTb(tablaTotales, new Paragraph(numero(totalIndi, 2)?.toString(), times8bold), prmsFilaDerecha)
-//        reportesPdfService.addCellTb(tablaTotales, new Paragraph("TOTAL", times8bold), prmsFila)
-//        reportesPdfService.addCellTb(tablaTotales, new Paragraph("TOTAL", times8bold), prmsFila)
-//
-//        reportesPdfService.addCellTb(tablaTotales, new Paragraph("COSTO TOTAL DEL RUBRO", times8bold), prmsFilaIzquierda)
-//        reportesPdfService.addCellTb(tablaTotales, new Paragraph(numero((totalRubro + totalIndi), 2)?.toString(), times8bold), prmsFilaDerecha)
-//        reportesPdfService.addCellTb(tablaTotales, new Paragraph("PESO", times8bold), prmsFila)
-//        reportesPdfService.addCellTb(tablaTotales, new Paragraph("VAE", times8bold), prmsFila)
-//
-//        reportesPdfService.addCellTb(tablaTotales, new Paragraph("PRECIO UNITARIO \$USD", times8bold), celdaCabeceraIzquierda2)
-//        reportesPdfService.addCellTb(tablaTotales, new Paragraph(numero((totalRubro + totalIndi), 2)?.toString(), times8bold), celdaCabeceraDerecha2)
-//        reportesPdfService.addCellTb(tablaTotales, new Paragraph("RELATIVO", times8bold), celdaCabeceraCentro2)
-//        reportesPdfService.addCellTb(tablaTotales, new Paragraph("(%)", times8bold), celdaCabeceraCentro2)
-
+        document.add(logo)
+        document.add(headers)
         document.add(tablaCoeficiente)
         document.add(tablaEquipos)
 //        document.add(tablaTotales)
@@ -1995,6 +1932,5 @@ class Reportes5Controller extends Shield{
         response.setContentLength(b.length)
         response.getOutputStream().write(b)
     }
-
 
 }
