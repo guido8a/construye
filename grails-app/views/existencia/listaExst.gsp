@@ -17,8 +17,9 @@
 </table>
 --}%
 
-%{--<div class="" style="width: 99.7%;height: 420px; overflow-y: auto;float: right; margin-top: -20px">--}%
-    <table class="table-bordered table-condensed table-hover" style="width: 100%">
+<div class="" style="width: 99.7%;height: 420px; overflow-y: auto;float: right; margin-top: 0px">
+%{--    <table class="table-bordered table-condensed table-hover" style="width: 100%">--}%
+         <table class="table table-bordered table-striped table-condensed table-hover" style="width: 100%">
         <g:each in="${data}" var="dt" status="i">
             <tr>
                 <td style="width: 10%">${dt.itemcdgo}</td>
@@ -38,7 +39,7 @@
             </tr>
         </g:each>
     </table>
-%{--</div>--}%
+</div>
 
 
 <script type="text/javascript">

@@ -1904,7 +1904,7 @@ class Reportes5Controller extends Shield{
             reportesPdfService.addCellTb(tablaEquipos, new Paragraph(r?.composicion?.item?.codigo, times8normal), prmsFilaIzquierda)
             reportesPdfService.addCellTb(tablaEquipos, new Paragraph(r?.composicion?.item?.nombre, times8normal), prmsFilaIzquierda)
             reportesPdfService.addCellTb(tablaEquipos, new Paragraph(r?.composicion?.item?.unidad?.codigo, times8normal), prmsFilaIzquierda)
-            reportesPdfService.addCellTb(tablaEquipos, new Paragraph(numero(r?.cantidad, 5)?.toString(), times8normal), prmsFila)
+            reportesPdfService.addCellTb(tablaEquipos, new Paragraph(numero(r?.cantidad, 5)?.toString(), times8normal), prmsFilaDerecha)
 //            reportesPdfService.addCellTb(tablaEquipos, new Paragraph(numero(r?.precioUnitario, 5)?.toString(), times8normal), prmsFilaDerecha)
 //            reportesPdfService.addCellTb(tablaEquipos, new Paragraph((numero((r?.cantidad * r?.precioUnitario), 5))?.toString(), times8normal), prmsFilaDerecha)
         }
@@ -1923,7 +1923,140 @@ class Reportes5Controller extends Shield{
 //        document.add(headers)
         document.add(tablaCoeficiente)
         document.add(tablaEquipos)
-//        document.add(tablaTotales)
+
+        document.close();
+        pdfw.close()
+        byte[] b = baos.toByteArray();
+        response.setContentType("application/pdf")
+        response.setHeader("Content-disposition", "attachment; filename=" + name)
+        response.setContentLength(b.length)
+        response.getOutputStream().write(b)
+    }
+
+    def reporteExistencias() {
+        println("params " + params)
+
+        def usuario = Persona.get(session.usuario.id)
+        def empresa = usuario.empresa
+
+        def sql = "select * from rp_existencias(${params.grupo.toInteger()}, ${params.bodega.toInteger()})"
+        def cn = dbConnectionService.getConnection()
+        def datos = cn.rows(sql)
+
+        println("sql " + sql)
+
+        def prmsHeaderHoja = [border: Color.WHITE]
+        def prmsFila = [border: Color.WHITE, align : Element.ALIGN_CENTER, valign: Element.ALIGN_MIDDLE]
+        def prmsFilaIzquierda = [border: Color.WHITE, align : Element.ALIGN_LEFT, valign: Element.ALIGN_MIDDLE]
+        def prmsFilaDerecha = [border: Color.WHITE, align : Element.ALIGN_RIGHT, valign: Element.ALIGN_MIDDLE]
+        def prmsHeaderHoja2 = [border: Color.WHITE, colspan: 9]
+        def prmsHeader = [border: Color.WHITE, colspan: 7, bg: new Color(73, 175, 205),
+                          align : Element.ALIGN_CENTER, valign: Element.ALIGN_MIDDLE]
+        def prmsHeader2 = [border: Color.WHITE, colspan: 3, bg: new Color(73, 175, 205),
+                           align : Element.ALIGN_CENTER, valign: Element.ALIGN_MIDDLE]
+        def prmsCellHead = [border: Color.WHITE, bg: new Color(73, 175, 205),
+                            align : Element.ALIGN_CENTER, valign: Element.ALIGN_MIDDLE]
+        def prmsCellCenter = [border: Color.WHITE, align: Element.ALIGN_CENTER, valign: Element.ALIGN_MIDDLE]
+        def prmsCellRight = [border: Color.BLACK, align: Element.ALIGN_RIGHT, valign: Element.ALIGN_MIDDLE]
+        def prmsCellLeft = [border: Color.BLACK, valign: Element.ALIGN_MIDDLE]
+        def prmsSubtotal = [border: Color.BLACK, colspan: 6,
+                            align : Element.ALIGN_RIGHT, valign: Element.ALIGN_MIDDLE]
+        def prmsNum = [border: Color.BLACK, align: Element.ALIGN_RIGHT, valign: Element.ALIGN_MIDDLE]
+
+        def celdaCabecera = [border: Color.BLACK, bg: new Color(220, 220, 220), align: Element.ALIGN_CENTER, valign: Element.ALIGN_MIDDLE, bordeBot: "1"]
+
+        Font times12bold = new Font(Font.TIMES_ROMAN, 12, Font.BOLD)
+        Font times14bold = new Font(Font.TIMES_ROMAN, 14, Font.BOLD)
+        Font times10bold = new Font(Font.TIMES_ROMAN, 10, Font.BOLD)
+        Font times10normal = new Font(Font.TIMES_ROMAN, 10, Font.NORMAL)
+        Font times8bold = new Font(Font.TIMES_ROMAN, 8, Font.BOLD)
+        Font times8normal = new Font(Font.TIMES_ROMAN, 8, Font.NORMAL)
+        Font times7bold = new Font(Font.TIMES_ROMAN, 7, Font.BOLD)
+        Font times7normal = new Font(Font.TIMES_ROMAN, 7, Font.NORMAL)
+        Font times10boldWhite = new Font(Font.TIMES_ROMAN, 10, Font.BOLD);
+        Font times8boldWhite = new Font(Font.TIMES_ROMAN, 8, Font.BOLD)
+
+        times8boldWhite.setColor(Color.WHITE)
+        times10boldWhite.setColor(Color.WHITE)
+
+        def fonts = [times12bold: times12bold, times10bold: times10bold, times8bold: times8bold,
+                     times10boldWhite: times10boldWhite, times8boldWhite: times8boldWhite, times8normal: times8normal, times10normal: times10normal]
+
+        def baos = new ByteArrayOutputStream()
+        def name = "reporteRequisiciones_" + new Date().format("ddMMyyyy_hhmm") + ".pdf";
+        def logoPath = servletContext.getRealPath("/") + "images/logos/${empresa?.id}/logo_reportes.png"
+        Image logo = Image.getInstance(logoPath);
+        logo.scalePercent(70)
+        logo.setAlignment(Image.MIDDLE | Image.TEXTWRAP)
+
+        Document document
+//        document = new Document(PageSize.A4.rotate());
+        document = new Document(PageSize.A4);
+
+        document.setMargins(40, 40, 20, 25);
+        def pdfw = PdfWriter.getInstance(document, baos);
+        document.open();
+        document.addTitle("Requisiciones " + new Date().format("dd_MM_yyyy"));
+        document.addSubject("Generado por el sistema Obras");
+        document.addKeywords("documentosObra, obras, requisiciones");
+        document.addAuthor("OBRAS");
+        document.addCreator("Tedein SA");
+
+        Paragraph headers = new Paragraph();
+        headers.setAlignment(Element.ALIGN_CENTER);
+        headers.add(new Paragraph(empresa?.nombre?.toUpperCase(), times12bold));
+        headers.add(new Paragraph(" ", times10bold));
+        headers.add(new Paragraph(empresa?.direccion, times10bold));
+        headers.add(new Paragraph("Teléfono: " + (empresa?.telefono ? empresa?.telefono  : ''), times10bold));
+        headers.add(new Paragraph("Email: " + (empresa?.email ? empresa?.email : ''), times10bold));
+        headers.add(new Paragraph(" ", times10bold));
+        headers.add(new Paragraph(empresa?.lugar + " -  Ecuador", times10bold));
+        headers.add(new Paragraph(" ", times10bold));
+
+        Paragraph headersRemi = new Paragraph();
+        headersRemi.setAlignment(Element.ALIGN_CENTER);
+        headersRemi.add(new Paragraph("EXISTENCIAS: " + (params.grupo == '1' ? 'MATERIALES' : (params.grupo == '2' ? 'MANO DE OBRA' : 'EQUIPOS')), times10bold));
+        headersRemi.add(new Paragraph(" ", times10bold));
+
+        //EXISTENCIAS
+        PdfPTable tablaEquipos = new PdfPTable(7);
+        tablaEquipos.setWidthPercentage(100);
+        tablaEquipos.setWidths(arregloEnteros([15,37,8,10,10,10,10]))
+
+//        reportesPdfService.addCellTb(tablaEquipos, new Paragraph("EQUIPOS", times12bold), tituloRubro)
+
+        reportesPdfService.addCellTb(tablaEquipos, new Paragraph("CÓDIGO", times7bold), celdaCabecera)
+        reportesPdfService.addCellTb(tablaEquipos, new Paragraph("ITEM", times7bold), celdaCabecera)
+        reportesPdfService.addCellTb(tablaEquipos, new Paragraph("UNIDAD", times7bold), celdaCabecera)
+        reportesPdfService.addCellTb(tablaEquipos, new Paragraph("FECHA", times7bold), celdaCabecera)
+        reportesPdfService.addCellTb(tablaEquipos, new Paragraph("EXISTENCIAS", times7bold), celdaCabecera)
+        reportesPdfService.addCellTb(tablaEquipos, new Paragraph("P. UNITARIO", times7bold), celdaCabecera)
+        reportesPdfService.addCellTb(tablaEquipos, new Paragraph("VALOR", times7bold), celdaCabecera)
+
+        datos.eachWithIndex { r, i ->
+            reportesPdfService.addCellTb(tablaEquipos, new Paragraph(r?.itemcdgo, times8normal), prmsFilaIzquierda)
+            reportesPdfService.addCellTb(tablaEquipos, new Paragraph(r?.itemnmbr, times8normal), prmsFilaIzquierda)
+            reportesPdfService.addCellTb(tablaEquipos, new Paragraph(r?.unddcdgo, times8normal), prmsFila)
+            reportesPdfService.addCellTb(tablaEquipos, new Paragraph(r?.krdxfcha?.format("dd-MM-yyyy"), times8normal), prmsFila)
+            reportesPdfService.addCellTb(tablaEquipos, new Paragraph(numero(r?.exstcntd, 3)?.toString(), times8normal), prmsFilaDerecha)
+            reportesPdfService.addCellTb(tablaEquipos, new Paragraph(numero(r?.exstpcun, 4)?.toString(), times8normal), prmsFilaDerecha)
+            reportesPdfService.addCellTb(tablaEquipos, new Paragraph(numero(r?.exstvlor, 4)?.toString(), times8normal), prmsFilaDerecha)
+        }
+
+        PdfPTable tablaHeader = new PdfPTable(2);
+        tablaHeader.setWidthPercentage(100);
+        tablaHeader.setWidths(arregloEnteros([50, 50]))
+
+        addCellTabla(tablaHeader, logo, prmsCellCenter)
+        addCellTabla(tablaHeader, headers, prmsCellCenter)
+
+//        document.add(tablaHeader)
+//        document.add(logo)
+        document.add(tablaHeader)
+        document.add(headersRemi)
+//        document.add(headers)
+//        document.add(tablaCoeficiente)
+        document.add(tablaEquipos)
 
         document.close();
         pdfw.close()

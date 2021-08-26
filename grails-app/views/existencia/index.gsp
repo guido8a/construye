@@ -68,9 +68,14 @@
                           style="width: 100%" optionKey="key"
                           optionValue="value"/></div>
 
-            <div class="span2" style="margin-left: 20px"><button class="btn btn-info" id="btn-consultar"><i
+            <div class="span2" style="margin-left: 20px">
+                <button class="btn btn-info" id="btn-consultar"><i
                     class="icon-check"></i> Consultar
-            </button></div>
+            </button>
+                <a href="#" class="btn btn-ajax btn-primary" id="imprimir" title="Imprimir Existencias">
+                    <i class="icon-print"></i>
+                </a>
+            </div>
 
         </div>
     </fieldset>
@@ -176,6 +181,12 @@ como máximo 30
 
 
 <script type="text/javascript">
+
+    $("#imprimir").click(function () {
+        var grupo = $("#buscarGrupo option:selected").val()
+        var bodega = $("#bodega option:selected").val()
+        location.href = "${g.createLink(controller: 'reportes5',action: 'reporteExistencias')}?grupo=" + grupo + "&bodega=" + bodega;
+    });
 
     $(function () {
         $("#limpiaBuscar").click(function () {
