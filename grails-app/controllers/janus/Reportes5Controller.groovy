@@ -1800,7 +1800,7 @@ class Reportes5Controller extends Shield{
                            align : Element.ALIGN_CENTER, valign: Element.ALIGN_MIDDLE]
         def prmsCellHead = [border: Color.WHITE, bg: new Color(73, 175, 205),
                             align : Element.ALIGN_CENTER, valign: Element.ALIGN_MIDDLE]
-        def prmsCellCenter = [border: Color.BLACK, align: Element.ALIGN_CENTER, valign: Element.ALIGN_MIDDLE]
+        def prmsCellCenter = [border: Color.WHITE, align: Element.ALIGN_CENTER, valign: Element.ALIGN_MIDDLE]
         def prmsCellRight = [border: Color.BLACK, align: Element.ALIGN_RIGHT, valign: Element.ALIGN_MIDDLE]
         def prmsCellLeft = [border: Color.BLACK, valign: Element.ALIGN_MIDDLE]
         def prmsSubtotal = [border: Color.BLACK, colspan: 6,
@@ -1808,19 +1808,6 @@ class Reportes5Controller extends Shield{
         def prmsNum = [border: Color.BLACK, align: Element.ALIGN_RIGHT, valign: Element.ALIGN_MIDDLE]
 
         def celdaCabecera = [border: Color.BLACK, bg: new Color(220, 220, 220), align: Element.ALIGN_CENTER, valign: Element.ALIGN_MIDDLE, bordeBot: "1"]
-//        def celdaCabeceraIzquierda = [bct: Color.BLACK, bcl: Color.WHITE, bcr:Color.WHITE, bcb: Color.WHITE, align: Element.ALIGN_LEFT, valign: Element.ALIGN_MIDDLE]
-//        def celdaCabeceraDerecha = [bct: Color.BLACK, bcl: Color.WHITE, bcr:Color.WHITE, bcb: Color.WHITE, align: Element.ALIGN_RIGHT, valign: Element.ALIGN_MIDDLE]
-//        def celdaCabeceraCentro = [bct: Color.BLACK, bcl: Color.WHITE, bcr:Color.WHITE, bcb: Color.WHITE, align: Element.ALIGN_CENTER, valign: Element.ALIGN_MIDDLE]
-//        def celdaCabeceraCentro2 = [bcb: Color.BLACK, bcl: Color.WHITE, bcr:Color.WHITE, bct: Color.WHITE, align: Element.ALIGN_CENTER, valign: Element.ALIGN_MIDDLE]
-//        def celdaCabeceraDerecha2 = [bcb: Color.BLACK, bcl: Color.WHITE, bcr:Color.WHITE, bct: Color.WHITE, align: Element.ALIGN_RIGHT, valign: Element.ALIGN_MIDDLE]
-//        def celdaCabeceraIzquierda2 = [bcb: Color.BLACK, bcl: Color.WHITE, bcr:Color.WHITE, bct: Color.WHITE, align: Element.ALIGN_LEFT, valign: Element.ALIGN_MIDDLE]
-//
-//        def tituloRubro = [height: 20, border: Color.WHITE, colspan: 12, align : Element.ALIGN_LEFT, valign: Element.ALIGN_TOP]
-//        def tituloRubro13 = [height: 20, border: Color.WHITE, colspan: 13, align : Element.ALIGN_LEFT, valign: Element.ALIGN_TOP]
-//        def tituloRubro3 = [height: 20, border: Color.WHITE, colspan: 3, align : Element.ALIGN_LEFT, valign: Element.ALIGN_TOP]
-
-//        def prms = [prmsHeaderHoja: prmsHeaderHoja, prmsHeader: prmsHeader, prmsHeader2: prmsHeader2,
-//                    prmsCellHead: prmsCellHead, prmsCell: prmsCellCenter, prmsCellLeft: prmsCellLeft, prmsSubtotal: prmsSubtotal, prmsNum: prmsNum, prmsHeaderHoja2: prmsHeaderHoja2, prmsCellRight: prmsCellRight]
 
         Font times12bold = new Font(Font.TIMES_ROMAN, 12, Font.BOLD)
         Font times14bold = new Font(Font.TIMES_ROMAN, 14, Font.BOLD)
@@ -1833,7 +1820,6 @@ class Reportes5Controller extends Shield{
         Font times10boldWhite = new Font(Font.TIMES_ROMAN, 10, Font.BOLD);
         Font times8boldWhite = new Font(Font.TIMES_ROMAN, 8, Font.BOLD)
 
-
         times8boldWhite.setColor(Color.WHITE)
         times10boldWhite.setColor(Color.WHITE)
 
@@ -1842,9 +1828,9 @@ class Reportes5Controller extends Shield{
 
         def baos = new ByteArrayOutputStream()
         def name = "reporteRequisiciones_" + new Date().format("ddMMyyyy_hhmm") + ".pdf";
-        def logoPath = servletContext.getRealPath("/") + "images/logo_reportes.png"
+        def logoPath = servletContext.getRealPath("/") + "images/logos/${empresa?.id}/logo_reportes.png"
         Image logo = Image.getInstance(logoPath);
-        logo.scalePercent(50)
+        logo.scalePercent(70)
         logo.setAlignment(Image.MIDDLE | Image.TEXTWRAP)
 
         Document document
@@ -1861,15 +1847,20 @@ class Reportes5Controller extends Shield{
         document.addCreator("Tedein SA");
 
         Paragraph headers = new Paragraph();
-//        addEmptyLine(headers, 1);
         headers.setAlignment(Element.ALIGN_CENTER);
         headers.add(new Paragraph(empresa?.nombre?.toUpperCase(), times12bold));
+        headers.add(new Paragraph(" ", times10bold));
         headers.add(new Paragraph(empresa?.direccion, times10bold));
         headers.add(new Paragraph("Teléfono: " + (empresa?.telefono ? empresa?.telefono  : ''), times10bold));
         headers.add(new Paragraph("Email: " + (empresa?.email ? empresa?.email : ''), times10bold));
-        headers.add(new Paragraph(empresa?.lugar + " -  Ecuador", times10bold));
-        headers.add(new Paragraph("GUÍA DE REMISIÓN N° " + consumo?.id, times10bold));
         headers.add(new Paragraph(" ", times10bold));
+        headers.add(new Paragraph(empresa?.lugar + " -  Ecuador", times10bold));
+        headers.add(new Paragraph(" ", times10bold));
+
+        Paragraph headersRemi = new Paragraph();
+        headersRemi.setAlignment(Element.ALIGN_CENTER);
+        headersRemi.add(new Paragraph("GUÍA DE REMISIÓN N° " + consumo?.id, times10bold));
+        headersRemi.add(new Paragraph(" ", times10bold));
 
         PdfPTable tablaCoeficiente = new PdfPTable(4);
         tablaCoeficiente.setWidthPercentage(100);
@@ -1918,8 +1909,18 @@ class Reportes5Controller extends Shield{
 //            reportesPdfService.addCellTb(tablaEquipos, new Paragraph((numero((r?.cantidad * r?.precioUnitario), 5))?.toString(), times8normal), prmsFilaDerecha)
         }
 
-        document.add(logo)
-        document.add(headers)
+        PdfPTable tablaHeader = new PdfPTable(2);
+        tablaHeader.setWidthPercentage(100);
+        tablaHeader.setWidths(arregloEnteros([50, 50]))
+
+        addCellTabla(tablaHeader, logo, prmsCellCenter)
+        addCellTabla(tablaHeader, headers, prmsCellCenter)
+
+//        document.add(tablaHeader)
+//        document.add(logo)
+        document.add(tablaHeader)
+        document.add(headersRemi)
+//        document.add(headers)
         document.add(tablaCoeficiente)
         document.add(tablaEquipos)
 //        document.add(tablaTotales)
