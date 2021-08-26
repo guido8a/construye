@@ -1958,7 +1958,7 @@ class Reportes5Controller extends Shield{
                             align : Element.ALIGN_CENTER, valign: Element.ALIGN_MIDDLE]
         def prmsCellCenter = [border: Color.WHITE, align: Element.ALIGN_CENTER, valign: Element.ALIGN_MIDDLE]
         def prmsCellRight = [border: Color.BLACK, align: Element.ALIGN_RIGHT, valign: Element.ALIGN_MIDDLE]
-        def prmsCellLeft = [border: Color.BLACK, valign: Element.ALIGN_MIDDLE]
+        def prmsCellLeft = [border: Color.WHITE, valign: Element.ALIGN_LEFT, valign: Element.ALIGN_MIDDLE]
         def prmsSubtotal = [border: Color.BLACK, colspan: 6,
                             align : Element.ALIGN_RIGHT, valign: Element.ALIGN_MIDDLE]
         def prmsNum = [border: Color.BLACK, align: Element.ALIGN_RIGHT, valign: Element.ALIGN_MIDDLE]
@@ -2047,7 +2047,7 @@ class Reportes5Controller extends Shield{
         tablaHeader.setWidthPercentage(100);
         tablaHeader.setWidths(arregloEnteros([50, 50]))
 
-        addCellTabla(tablaHeader, logo, prmsCellCenter)
+        addCellTabla(tablaHeader, logo, prmsCellLeft)
         addCellTabla(tablaHeader, headers, prmsCellCenter)
 
 //        document.add(tablaHeader)
