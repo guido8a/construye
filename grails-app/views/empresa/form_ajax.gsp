@@ -85,7 +85,7 @@
                         </span>
                     </td>
                     <td width="250px">
-                        <g:textField name="telefono" class="allCaps form-control" value="${empresaInstance?.telefono}"/>
+                        <g:textField name="telefono" class="form-control" value="${empresaInstance?.telefono}"/>
                         <p class="help-block ui-helper-hidden"></p>
                     </td>
                     <td width="100px">

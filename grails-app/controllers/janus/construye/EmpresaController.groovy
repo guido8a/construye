@@ -49,9 +49,9 @@ class EmpresaController extends Shield {
             empresa = new Empresa()
         }
 
-        if(params.lugar){
-            params?.lugar = params?.lugar?.toUpperCase()
-        }
+//        if(params.lugar){
+//            params?.lugar = params?.lugar?.toUpperCase()
+//        }
 
         empresa.properties = params
 
