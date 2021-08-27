@@ -1,5 +1,6 @@
 package janus.pac
 
+import construye.Adquisicion
 import janus.EspecialidadProveedor
 import janus.Persona
 import org.springframework.dao.DataIntegrityViolationException
@@ -181,7 +182,8 @@ class ProveedorController extends janus.seguridad.Shield {
 
 
     def proveedor(){
-
+        println("params " + params)
+    return[adquisicion: params.id]
     }
 
     def tablaProveedores_ajax(){

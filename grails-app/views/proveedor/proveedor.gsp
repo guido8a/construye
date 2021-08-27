@@ -34,6 +34,18 @@
 
 <div class="row">
     <div class="span9 btn-group" role="navigation">
+        <g:if test="${adquisicion != 'null'}">
+            <a href="#" class="btn btn-ajax btnRegresar">
+                <i class="icon-arrow-left"></i>
+                Regresar
+            </a>
+        </g:if>
+        <g:else>
+            <a href="${createLink(controller: 'adquisicion', action: 'adquisicion')}" class="btn btn-ajax btn-new">
+                <i class="icon-arrow-left"></i>
+                Regresar
+            </a>
+        </g:else>
         <a href="#" class="btn btn-ajax btn-new">
             <i class="icon-file"></i>
             Crear  Proveedor
@@ -41,14 +53,10 @@
     </div>
 </div>
 
-
 <fieldset class="borde" style="border-radius: 4px; margin-top: 10px">
     <div class="row-fluid" style="margin-left: 20px">
         <div class="span2">Buscar Por</div>
-
         <div class="span5">Criterio</div>
-
-        %{--        <div class="span2">Ordenado por</div>--}%
     </div>
 
     <div class="row-fluid" style="margin-left: 20px">
@@ -59,11 +67,6 @@
 
         <div class="span5">
             <g:textField name="criterio" style="width: 100%"/></div>
-
-        %{--        <div class="span2">--}%
-        %{--            <g:select name="ordenar_name" class="ordenar" from="${[1: 'Nombre', 2: 'Apellido', 3: 'RUC']}" style="width: 100%" optionKey="key"--}%
-        %{--                      optionValue="value"/>--}%
-        %{--        </div>--}%
 
         <div class="span4" style="margin-left: 60px">
             <button class="btn btn-info" id="btnBuscar"><i class="icon-check"></i> Buscar</button>
@@ -114,6 +117,11 @@
     var url = "${resource(dir:'images', file:'spinner_24.gif')}";
     var spinner = $("<img style='margin-left:15px;' src='" + url + "' alt='Cargando...'/>");
 
+
+    $(".btnRegresar").click(function () {
+       location.href="${createLink(controller: 'adquisicion', action: 'adquisicion')}/" + '${adquisicion}'
+    });
+
     function cargarTablaProveedores(campo, busqueda){
         $("#dlgLoad").dialog("open");
         $.ajax({
@@ -141,13 +149,6 @@
         var buscar = $("#criterio").val("");
         cargarTablaProveedores($(".buscar").val(), $("#criterio").val());
     });
-
-    // function submitForm(btn) {
-    //     if ($("#frmSave-Proveedor").valid()) {
-    //         btn.replaceWith(spinner);
-    //     }
-    //     $("#frmSave-Proveedor").submit();
-    // }
 
     function guardarProveedor(){
         if($("#frmSave-Proveedor").valid()){
@@ -220,15 +221,6 @@
 
         cargarTablaProveedores($(".buscar").val(), $("#criterio").val());
 
-
-        // $('[rel=tooltip]').tooltip();
-        //
-        // $(".paginate").paginate({
-        //     maxRows        : 10,
-        //     searchPosition : $("#busqueda-Proveedor"),
-        //     float          : "right"
-        // });
-
         $(".btn-new").click(function () {
             $.ajax({
                 type    : "POST",
@@ -238,9 +230,7 @@
                     var btnSave = $('<a href="#"  class="btn btn-success"><i class="icon-save"></i> Guardar</a>');
 
                     btnSave.click(function () {
-                        // submitForm(btnSave);
                         guardarProveedor();
-                        // return false;
                     });
 
                     $("#modalHeader").removeClass("btn-edit btn-show btn-delete");
