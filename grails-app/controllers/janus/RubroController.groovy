@@ -163,6 +163,8 @@ class RubroController extends janus.seguridad.Shield {
 
     def buscaItem() {
         //println "busca item "+params
+        def persona = Persona.get(session.usuario.id)
+        def empresa = persona.empresa
         def listaTitulos = ["Código", "Descripción"]
         def listaCampos = ["codigo", "nombre"]
         def funciones = [null, null]
@@ -192,7 +194,7 @@ class RubroController extends janus.seguridad.Shield {
         def numRegistros = 20
 
         def tipo=params.tipo
-        def extras = " and tipoItem = 1 and departamento in ("
+        def extras = " and tipoItem = 1 and empr__id = ${empresa.id} and departamento in ("
 
         SubgrupoItems.findAllByGrupo(Grupo.get(tipo)).each {
             DepartamentoItem.findAllBySubgrupo(it).each{ dp->
@@ -217,7 +219,9 @@ class RubroController extends janus.seguridad.Shield {
     }
 
     def buscaRubro() {
-        println "buscar rubro"
+        def persona = Persona.get(session.usuario.id)
+        def empresa = persona.empresa
+        println "buscar rubro --> empresa: ${empresa.id}, $empresa"
         def listaTitulos = ["Código", "Descripción", "Unidad"]
         def listaCampos = ["codigo", "nombre", "unidad"]
         def funciones = [null, null]
@@ -227,7 +231,7 @@ class RubroController extends janus.seguridad.Shield {
         funcionJs += 'location.href="' + g.createLink(action: 'rubroPrincipal', controller: 'rubro') + '?idRubro="+$(this).attr("regId");'
         funcionJs += '}'
         def numRegistros = 20
-        def extras = " and tipoItem = 2"
+        def extras = " and tipoItem = 2 and empr__id = ${empresa.id}"
         if (!params.reporte) {
             if (params.excel) {
                 session.dominio = Item
