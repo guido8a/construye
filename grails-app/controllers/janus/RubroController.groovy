@@ -260,6 +260,8 @@ class RubroController extends janus.seguridad.Shield {
     }
 
     def buscaRubroComp() {
+        def persona = Persona.get(session.usuario.id)
+        def empresa = persona.empresa
         def listaTitulos = ["Código", "Descripción"]
         def listaCampos = ["codigo", "nombre"]
         def funciones = [null, null]
@@ -287,7 +289,7 @@ class RubroController extends janus.seguridad.Shield {
         funcionJs += '}'
         funcionJs += '}'
         def numRegistros = 20
-        def extras = " and tipoItem = 2"
+        def extras = " and tipoItem = 2 and empresa = ${empresa.id}"
         if (!params.reporte) {
             def lista = buscadorService.buscar(Item, "Item", "excluyente", params, true, extras) /* Dominio, nombre del dominio , excluyente o incluyente ,params tal cual llegan de la interfaz del buscador, ignore case */
             lista.pop()

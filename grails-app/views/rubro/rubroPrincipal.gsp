@@ -1187,7 +1187,8 @@
             data += "&criterios=" + $(this).attr("criterio");
         });
         if (data.length < 2) {
-            data = "tc=" + $("#tipoCampo").val() + "&campos=" + $("#campo :selected").val() + "&operadores=" + $("#operador :selected").val() + "&criterios=" + $("#criterio").val()
+            data = "tc=" + $("#tipoCampo").val() + "&campos=" + $("#campo :selected").val() + "&operadores=" +
+                $("#operador :selected").val() + "&criterios=" + $("#criterio").val()
         }
         data += "&ordenado=" + $("#campoOrdn :selected").val() + "&orden=" + $("#orden :selected").val();
         $.ajax({type : "POST", url : "${g.createLink(controller: 'rubro',action:'buscaRubroComp')}",
