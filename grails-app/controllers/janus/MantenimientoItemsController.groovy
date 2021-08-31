@@ -20,6 +20,8 @@ class MantenimientoItemsController extends Shield {
     } //index
 
     String makeBasicTree(params) {
+        def usuario = Persona.get(session.usuario.id)
+        def empresa = usuario.empresa
         println "PARAMS  "+params
         def id = params.id
         def tipo = params.tipo
@@ -41,7 +43,7 @@ class MantenimientoItemsController extends Shield {
                 break;
             case "subgrupo_manoObra":
             case "subgrupo_consultoria":
-                hijos = Item.findAllByDepartamento(DepartamentoItem.get(id), [sort: 'codigo'])
+                hijos = Item.findAllByDepartamentoAndEmpresa(DepartamentoItem.get(id), empresa, [sort: 'codigo'])
                 break;
             case "subgrupo_material":
             case "subgrupo_equipo":
@@ -51,7 +53,7 @@ class MantenimientoItemsController extends Shield {
             case "departamento_consultoria":
             case "departamento_material":
             case "departamento_equipo":
-                hijos = Item.findAllByDepartamento(DepartamentoItem.get(id), [sort: 'codigo'])
+                hijos = Item.findAllByDepartamentoAndEmpresa(DepartamentoItem.get(id), empresa,[sort: 'codigo'])
                 break;
             case "item_manoObra":
             case "item_consultoria":
@@ -83,7 +85,7 @@ class MantenimientoItemsController extends Shield {
             println "hijo ... "+tipo
             switch (tipo) {
                 case "grupo_manoObra":
-                    hijosH = Item.findAllByDepartamento(hijo, [sort: 'codigo'])
+                    hijosH = Item.findAllByDepartamentoAndEmpresa(hijo, empresa,[sort: 'codigo'])
                     desc = hijo.codigo.toString().padLeft(3, '0') + " " + hijo.descripcion
                     def parts = tipo.split("_")
                     rel = "departamento_" + parts[1]
@@ -101,7 +103,7 @@ class MantenimientoItemsController extends Shield {
                     break;
                 case "subgrupo_material":
                 case "subgrupo_equipo":
-                    hijosH = Item.findAllByDepartamento(hijo, [sort: 'codigo'])
+                    hijosH = Item.findAllByDepartamentoAndEmpresa(hijo, empresa,[sort: 'codigo'])
                     desc = hijo.subgrupo.codigo.toString().padLeft(3, '0') + '.' + hijo.codigo.toString().padLeft(3, '0') + " " + hijo.descripcion
                     def parts = tipo.split("_")
                     rel = "departamento_" + parts[1]

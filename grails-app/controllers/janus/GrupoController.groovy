@@ -327,12 +327,8 @@ class GrupoController extends janus.seguridad.Shield {
 
         def id = params.id.toLong()
         def tipo = params.tipo
-//        println(params)
-
-//        println "all:" + all + "     ignore:" + ignore
-
-//        println id
-//        println tipo
+        def usuario = Persona.get(session.usuario.id)
+        def empresa = usuario.empresa
 
         def hijos = []
 
@@ -351,7 +347,7 @@ class GrupoController extends janus.seguridad.Shield {
                 hijos = DepartamentoItem.findAllBySubgrupo(SubgrupoItems.get(id), [sort: 'codigo'])
                 break;
             case "departamento":
-                hijos = Item.findAllByDepartamento(DepartamentoItem.get(id), [sort: 'nombre'])
+                hijos = Item.findAllByDepartamentoAndEmpresa(DepartamentoItem.get(id), empresa, [sort: 'nombre'])
                 break;
         }
 
@@ -378,7 +374,7 @@ class GrupoController extends janus.seguridad.Shield {
                     break;
 
                 case "subgrupo":
-                    hijosH = Item.findAllByDepartamento(hijo)
+                    hijosH = Item.findAllByDepartamentoAndEmpresa(hijo, empresa)
                     desc = hijo.descripcion
                     rel = "departamento"
                     liId = "dp" + "_" + hijo.id

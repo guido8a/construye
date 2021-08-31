@@ -126,7 +126,7 @@
 
         <div class="controls">
             <g:select id="unidad" name="unidad.id" from="${janus.Unidad.list([sort: 'descripcion'])}" optionKey="id" optionValue="descripcion"
-                      class="many-to-one " value="${itemInstance?.unidad?.id}" noSelection="['': '']"/>
+                      class="many-to-one " value="${itemInstance?.unidad?.id}"/>
 
             <p class="help-block ui-helper-hidden"></p>
         </div>
