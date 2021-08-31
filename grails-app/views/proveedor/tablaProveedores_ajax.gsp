@@ -43,11 +43,11 @@
             },
             success : function (msg) {
                 var btnOk = $('<a href="#" data-dismiss="modal" class="btn btn-primary">Aceptar</a>');
-                $("#modalHeader").removeClass("btn-edit btn-show btn-delete").addClass("btn-show");
-                $("#modalTitle").html("Ver Proveedor");
-                $("#modalBody").html(msg);
-                $("#modalFooter").html("").append(btnOk);
-                $("#modal-Proveedor").modal("show");
+                $("#modalHeaderShow").removeClass("btn-edit btn-show btn-delete").addClass("btn-show");
+                $("#modalTitleShow").html("Ver Proveedor");
+                $("#modalBodyShow").html(msg);
+                $("#modalFooterShow").html("").append(btnOk);
+                $("#modal-showProveedor").modal("show");
             }
         });
         return false;

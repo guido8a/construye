@@ -547,7 +547,6 @@
     var spinner = $("<img style='margin-left:15px;' src='" + urlS + "' alt='Cargando...'/>");
 
     $("#btnRegistrar").click(function () {
-        $("#dlgLoad").dialog("open");
         var idAdquisicion = '${adquisicion?.id}';
         $.box({
             imageClass: "box_info",
@@ -560,6 +559,7 @@
                 height: 180,
                 buttons: {
                     "Aceptar": function () {
+                        $("#dlgLoad").dialog("open");
                         $.ajax({
                             type: 'POST',
                             url: '${createLink(controller: 'adquisicion', action: 'registrar_ajax')}',
@@ -610,7 +610,6 @@
 
 
     $("#btnDesRegistrar").click(function () {
-        $("#dlgLoad").dialog("open");
         var idAdquisicion = '${adquisicion?.id}';
         $.box({
             imageClass: "box_info",
@@ -623,6 +622,7 @@
                 height: 180,
                 buttons: {
                     "Aceptar": function () {
+                        $("#dlgLoad").dialog("open");
                         $.ajax({
                             type: 'POST',
                             url: '${createLink(controller: 'adquisicion', action: 'quitarRegistrar_ajax')}',

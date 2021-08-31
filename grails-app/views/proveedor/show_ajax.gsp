@@ -13,11 +13,8 @@
                 </span>
             </div>
             <div class="controls">
-        
                 <span aria-labelledby="especialidad-label">
-        %{--<g:link controller="especialidadProveedor" action="show" id="${proveedorInstance?.especialidad?.id}">--}%
                     ${proveedorInstance?.especialidad?.descripcion?.encodeAsHTML()}
-        %{--</g:link>--}%
                 </span>
         
             </div>
@@ -113,7 +110,7 @@
         <div class="control-group">
             <div>
                 <span id="garante-label" class="control-label label label-inverse">
-                    Garante
+                   Gerente
                 </span>
             </div>
             <div class="controls">
@@ -142,24 +139,7 @@
             </div>
         </div>
     </g:if>
-    
-    <g:if test="${proveedorInstance?.fax}">
-        <div class="control-group">
-            <div>
-                <span id="fax-label" class="control-label label label-inverse">
-                    Fax
-                </span>
-            </div>
-            <div class="controls">
-        
-                <span aria-labelledby="fax-label">
-                    <g:fieldValue bean="${proveedorInstance}" field="fax"/>
-                </span>
-        
-            </div>
-        </div>
-    </g:if>
-    
+
     <g:if test="${proveedorInstance?.telefonos}">
         <div class="control-group">
             <div>

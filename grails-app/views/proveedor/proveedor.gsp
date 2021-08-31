@@ -69,7 +69,7 @@
             <g:textField name="criterio" style="width: 100%"/></div>
 
         <div class="span4" style="margin-left: 60px">
-            <button class="btn btn-info" id="btnBuscar"><i class="icon-check"></i> Buscar</button>
+            <button class="btn btn-info" id="btnBuscar"><i class="icon-search"></i> Buscar</button>
             <button class="btn btn-primary" id="btnLimpiar"><i class="icon-eraser"></i> Limpiar</button>
         </div>
     </div>
@@ -110,6 +110,22 @@
     </div>
 
     <div class="modal-footer" id="modalFooter">
+    </div>
+</div>
+
+<div class="modal hide fade" id="modal-showProveedor" style="width: 600px;">
+    <div class="modal-header" id="modalHeaderShow">
+        <button type="button" class="close darker" data-dismiss="modal">
+            <i class="icon-remove-circle"></i>
+        </button>
+
+        <h3 id="modalTitleShow"></h3>
+    </div>
+
+    <div class="modal-body" id="modalBodyShow">
+    </div>
+
+    <div class="modal-footer" id="modalFooterShow">
     </div>
 </div>
 

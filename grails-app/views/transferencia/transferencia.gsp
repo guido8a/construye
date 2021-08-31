@@ -440,7 +440,6 @@
     });
 
     $(".borrarItem").click(function () {
-        $("#dlgLoad").dialog("open")
         var id = $(this).data("id");
         $.box({
             imageClass: "box_info",
@@ -453,6 +452,7 @@
                 height: 180,
                 buttons: {
                     "Aceptar": function () {
+                        $("#dlgLoad").dialog("open")
                         $.ajax({
                             type: 'POST',
                             url: '${createLink(controller: 'transferencia', action: 'eliminarItem_ajax')}',
@@ -1062,7 +1062,6 @@
                 }
             }
         });
-
     });
 </script>
 </body>
