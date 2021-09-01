@@ -688,13 +688,13 @@
             </div>
         </div>
 
-        <div class="span12">
-            <div class="span1">Coordenadas de la vía</div>
+%{--        <div class="span12">--}%
+%{--            <div class="span1">Coordenadas de la vía</div>--}%
 
-            <div class="span6"><g:textArea name="coordenadasVia" rows="5" cols="5" class="required"
-                                           style="width: 1007px; height: 40px; resize: none" maxlength="511"
-                                           value="${obra?.coordenadasVia}" title="Coordenadas de la Vía"/></div>
-        </div>
+%{--            <div class="span6"><g:textArea name="coordenadasVia" rows="5" cols="5" class="required"--}%
+%{--                                           style="width: 1007px; height: 40px; resize: none" maxlength="511"--}%
+%{--                                           value="${obra?.coordenadasVia}" title="Coordenadas de la Vía"/></div>--}%
+%{--        </div>--}%
 
     </fieldset>
 

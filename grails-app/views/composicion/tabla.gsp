@@ -8,226 +8,261 @@
     <script src="${resource(dir: 'js/jquery/plugins/box/js', file: 'jquery.luz.box.js')}"></script>
     <link href="${resource(dir: 'js/jquery/plugins/box/css', file: 'jquery.luz.box.css')}" rel="stylesheet">
     <title>Composición de la obra</title>
+
+    <style>
+        /*.bordes{*/
+        /*    border-bottom: 1px solid black;*/
+        /*    border-left: 1px solid black;*/
+        /*    border-top: 1px solid black;*/
+        /*    border-right: 1px solid black;*/
+        /*}*/
+
+        .bordes2{
+            border: 1px solid black;
+            border-top: 1px solid black;
+        }
+
+    </style>
+
+
 </head>
 
 <body>
 <div class="hoja">
-<div class="tituloChevere">Valores reales para la obra: ${obra?.descripcion}</div>
+    <div class="tituloChevere">Valores reales para la obra: ${obra?.descripcion}</div>
 
-<g:if test="${flash.message}">
-    <div class="span12">
-        <div class="alert ${flash.clase ?: 'alert-info'}" role="status">
-            <a class="close" data-dismiss="alert" href="#">×</a>
-            ${flash.message}
+    <g:if test="${flash.message}">
+        <div class="span12">
+            <div class="alert ${flash.clase ?: 'alert-info'}" role="status">
+                <a class="close" data-dismiss="alert" href="#">×</a>
+                ${flash.message}
+            </div>
         </div>
-    </div>
-</g:if>
+    </g:if>
 
-<div class="btn-toolbar" style="margin-top: 15px;">
-    <div class="btn-group">
-        <a href="${g.createLink(controller: 'obra', action: 'registroObra', params: [obra: obra?.id])}" class="btn " title="Regresar a la obra">
-            <i class="icon-arrow-left"></i>
-            Regresar Obra
-        </a>
-        <g:if test="${tieneMatriz}">
-            <button class="btn" id="btn-comp" title="Regresar a composición"><i class="icon-arrow-left"></i>
-                Regresar Composición
-            </button>
-        </g:if>
-    </div>
-
-    <div class="btn-group">
-<g:if test="${(obra?.responsableObra?.departamento?.direccion?.id == persona?.departamento?.direccion?.id && duenoObra == 1 && obra?.estado != 'R')}">
-
-        <a href="#" class="btn btn-primary " title="Guardar" id="guardar">
-            <i class="icon-save"></i>
-            Guardar
-        </a>
-        <g:link action="formArchivo" class="btn" id="${obra.id}">
-            <i class="icon-cloud-upload"></i> Cargar Excel
-        </g:link>
-        <a href="#" class="btn recargarComp" title="Reargar Composición" id="${obra.id}">
-            <i class="icon-refresh"></i>
-            Recargar Composición
-        </a>
-%{--
-    <g:link action="recargar" class="btn recargarComp" id="${obra.id}">
-        <i class="icon-refresh"></i> Recargar Composición
-    </g:link>
---}%
-</g:if>
-    </div>
-
-    <div class="btn-group" data-toggle="buttons-radio">
-        <g:link action="tabla" id="${obra?.id}" params="[tipo: -1]" class="btn btn-info toggle pdf ${tipo.contains(',') ? 'active' : ''} -1">
-            <i class="icon-cogs"></i>
-            Todos
-        </g:link>
-        <g:link action="tabla" id="${obra?.id}" params="[tipo: 1]" class="btn btn-info toggle pdf ${tipo == '1' ? 'active' : ''} 1">
-            <i class="icon-briefcase"></i>
-            Materiales
-        </g:link>
-        <g:link action="tabla" id="${obra?.id}" params="[tipo: 2]" class="btn btn-info toggle pdf ${tipo == '2' ? 'active' : ''} 2">
-            <i class="icon-group"></i>
-            Mano de obra
-        </g:link>
-        <g:link action="tabla" id="${obra?.id}" params="[tipo: 3]" class="btn btn-info toggle pdf ${tipo == '3' ? 'active' : ''} 3">
-            <i class="icon-truck"></i>
-            Equipos
-        </g:link>
-    </div>
-
-</div>
-
-<div class="borde_abajo" style="padding-left: 45px;position: relative;">
-    <div class="row-fluid">
-        <div class="span1" style="margin-left: -17px; width: 100px;">
-            <b>Código</b>
-            <input type="text" style="width: 100px;;font-size: 10px" id="item_codigo">
-            <input type="hidden" style="width: 60px" id="item_id">
-        </div>
-
-        <div class="span4" style="margin-left: 15px;">
-            <b>Rubro</b>
-            <input type="text" style="width: 340px;font-size: 10px" id="item_nombre" disabled="true">
-
-        </div>
-
-        <div class="span2" style="margin-left: 0px; width: 100px;">
-            <b>Cantidad</b>
-            <input type="text" style="width: 95px;text-align: right" id="item_cantidad" value="">
-        </div>
-
-        <div class="span2" style="width: 100px;">
-            <b>Precio</b>
-            <input type="text" style="width: 95px;text-align: right" id="item_precio" value="" disabled="true">
-        </div>
-        %{--<div class="span2" style=" width: 100px;">--}%
-        %{--<b>Tranporte</b>--}%
-        %{--<input type="text" style="width: 95px;text-align: right" id="item_transporte" value="" disabled="true">--}%
-        %{--</div>--}%
-
-        <div class="span1" style="padding-top:30px">
-            <input type="hidden" value="" id="vol_id">
-            <g:if test="${(obra?.responsableObra?.departamento?.direccion?.id == persona?.departamento?.direccion?.id && duenoObra == 1 && obra?.estado != 'R')}">
-            <a href="#" class="btn btn-primary" title="agregar" style="margin-top: -10px" id="item_agregar">
-                <i class="icon-plus"></i>
+    <div class="btn-toolbar" style="margin-top: 15px;">
+        <div class="btn-group">
+            <a href="${g.createLink(controller: 'obra', action: 'registroObra', params: [obra: obra?.id])}" class="btn " title="Regresar a la obra">
+                <i class="icon-arrow-left"></i>
+                Regresar Obra
             </a>
+            <g:if test="${tieneMatriz}">
+                <button class="btn" id="btn-comp" title="Regresar a composición"><i class="icon-arrow-left"></i>
+                    Regresar Composición
+                </button>
             </g:if>
         </div>
-    </div>
-</div>
 
+        <div class="btn-group">
+            <g:if test="${(obra?.responsableObra?.departamento?.direccion?.id == persona?.departamento?.direccion?.id && duenoObra == 1 && obra?.estado != 'R')}">
 
-<div class="body">
-    <table class="table table-bordered table-condensed table-hover table-striped" id="tbl">
-        <thead>
-        <tr>
-            <g:if test="${tipo.contains(",") || tipo == '1'}">
-                <th>Código</th>
-                <th>Item</th>
-                <th>U</th>
-                <th>Cantidad</th>
-                <th>P. Unitario</th>
-                <th>Transporte</th>
-                <th>Costo</th>
-                <th>Total</th>
-                <g:if test="${tipo.contains(",")}">
-                    <th>Tipo</th>
-                </g:if>
+                <a href="#" class="btn btn-primary " title="Guardar" id="guardar">
+                    <i class="icon-save"></i>
+                    Guardar
+                </a>
+                <g:link action="formArchivo" class="btn" id="${obra.id}">
+                    <i class="icon-cloud-upload"></i> Cargar Excel
+                </g:link>
+                <a href="#" class="btn recargarComp" title="Reargar Composición" id="${obra.id}">
+                    <i class="icon-refresh"></i>
+                    Recargar Composición
+                </a>
+            %{--
+                <g:link action="recargar" class="btn recargarComp" id="${obra.id}">
+                    <i class="icon-refresh"></i> Recargar Composición
+                </g:link>
+            --}%
             </g:if>
-            <g:elseif test="${tipo == '2'}">
-                <th>Código</th>
-                <th>Mano de obra</th>
-                <th>U</th>
-                <th>Horas hombre</th>
-                <th>Sal. / hora</th>
-            %{--<th>Costo</th>--}%
-                <th>Total</th>
-            </g:elseif>
-            <g:elseif test="${tipo == '3'}">
-                <th>Código</th>
-                <th>Equipo</th>
-                <th>U</th>
-                <th>Cantidad</th>
-                <th>Tarifa</th>
-                <th>Costo</th>
-                <th>Total</th>
-            </g:elseif>
+        </div>
 
-        </tr>
-        </thead>
-        <tbody>
-        <g:set var="totalEquipo" value="${0}"/>
-        <g:set var="totalMano" value="${0}"/>
-        <g:set var="totalMaterial" value="${0}"/>
-        <g:each in="${res}" var="r">
-            <tr>
-                <td class="">${r.item.codigo}</td>
-                <td class="">${r.item.nombre}</td>
-                <td>${r.item.unidad.codigo}</td>
-                <td class="numero cantidad texto " iden="${r.id}">
-                    <g:formatNumber number="${r.cantidad}" minFractionDigits="2" maxFractionDigits="7" format="##,##0" locale="ec"/>
-                </td>
-                <g:if test="${tipo != '2'}">
-                    <td class="numero ${r.id} ">
-                        <g:formatNumber number="${r.precio}" minFractionDigits="3" maxFractionDigits="3" format="##,##0" locale="ec"/>
-                    </td>
-                </g:if>
-                <g:if test="${tipo.contains(",") || tipo == '1'}">
-                    <td class="numero ${r.id} transporte">
-                        <g:formatNumber number="${r.transporte}" minFractionDigits="4" maxFractionDigits="4" format="##,##0" locale="ec"/>
-                    </td>
-                </g:if>
-                <td class="numero ${r.id} precio ${(tipo=='2')?'textoPrecio':''}" iden="${r.id}">
-                    <g:formatNumber number="${r.transporte + r.precio}" minFractionDigits="4" maxFractionDigits="4" format="##,##0" locale="ec"/>
-                </td>
-                <td class="numero ${r.id} total">
-                    <g:formatNumber number="${(r.transporte + r.precio) * r.cantidad}" minFractionDigits="2" maxFractionDigits="2" format="##,##0" locale="ec"/>
+        <div class="btn-group" data-toggle="buttons-radio">
+            <g:link action="tabla" id="${obra?.id}" params="[tipo: -1]" class="btn btn-info toggle pdf ${tipo.contains(',') ? 'active' : ''} -1">
+                <i class="icon-cogs"></i>
+                Todos
+            </g:link>
+            <g:link action="tabla" id="${obra?.id}" params="[tipo: 1]" class="btn btn-info toggle pdf ${tipo == '1' ? 'active' : ''} 1">
+                <i class="icon-briefcase"></i>
+                Materiales
+            </g:link>
+            <g:link action="tabla" id="${obra?.id}" params="[tipo: 2]" class="btn btn-info toggle pdf ${tipo == '2' ? 'active' : ''} 2">
+                <i class="icon-group"></i>
+                Mano de obra
+            </g:link>
+            <g:link action="tabla" id="${obra?.id}" params="[tipo: 3]" class="btn btn-info toggle pdf ${tipo == '3' ? 'active' : ''} 3">
+                <i class="icon-truck"></i>
+                Equipos
+            </g:link>
+        </div>
 
-                    <g:if test="${r?.grupo.id == 1}">
-                        <g:set var="totalMaterial" value="${totalMaterial + ((r.transporte + r.precio) * r.cantidad)}"/>
-
-                    </g:if>
-                    <g:elseif test="${r.grupo.id == 2}">
-                        <g:set var="totalMano" value="${totalMano + ((r.transporte + r.precio) * r.cantidad)}"/>
-
-                    </g:elseif>
-                    <g:elseif test="${r.grupo.id == 3}">
-                        <g:set var="totalEquipo" value="${totalEquipo + ((r.transporte + r.precio) * r.cantidad)}"/>
-                    </g:elseif>
-
-                </td>
-                <g:if test="${tipo.contains(",")}">
-                    <td>${r?.grupo}</td>
-                </g:if>
-            </tr>
-        </g:each>
-        </tbody>
-    </table>
-
-    <div id="totales" style="width:100%;">
-        <input type='text' id='txt' style='height:20px;width:110px;margin: 0px;padding: 0px;padding-right:2px;text-align: right !important;display: none;margin-left: 0px;margin-right: 0px;'>
-        <table class="table table-bordered ta195ble-condensed pull-right" style="width: 20%;">
-            <tr>
-                <th>Equipos</th>
-                <td class="numero"><g:formatNumber number="${totalEquipo}" minFractionDigits="2" maxFractionDigits="2" format="##,##0" locale="ec"/></td>
-            </tr>
-            <tr>
-                <th>Mano de obra</th>
-                <td class="numero"><g:formatNumber number="${totalMano}" minFractionDigits="2" maxFractionDigits="2" format="##,##0" locale="ec"/></td>
-            </tr>
-            <tr>
-                <th>Materiales</th>
-                <td class="numero"><g:formatNumber number="${totalMaterial}" minFractionDigits="2" maxFractionDigits="2" format="##,##0" locale="ec"/></td>
-            </tr>
-            <tr>
-                <th>TOTAL DIRECTO</th>
-                <td class="numero"><g:formatNumber number="${totalEquipo + totalMano + totalMaterial}" minFractionDigits="2" maxFractionDigits="2" format="##,##0" locale="ec"/></td>
-            </tr>
-        </table>
     </div>
-</div>
+
+    <div class="borde_abajo" style="padding-left: 45px;position: relative;">
+        <div class="row-fluid">
+            <div class="span1" style="margin-left: -17px; width: 100px;">
+                <b>Código</b>
+                <input type="text" style="width: 100px;;font-size: 10px" id="item_codigo">
+                <input type="hidden" style="width: 60px" id="item_id">
+            </div>
+
+            <div class="span4" style="margin-left: 15px;">
+                <b>Rubro</b>
+                <input type="text" style="width: 340px;font-size: 10px" id="item_nombre" disabled="true">
+
+            </div>
+
+            <div class="span2" style="margin-left: 0px; width: 100px;">
+                <b>Cantidad</b>
+                <input type="text" style="width: 95px;text-align: right" id="item_cantidad" value="">
+            </div>
+
+            <div class="span2" style="width: 100px;">
+                <b>Precio</b>
+                <input type="text" style="width: 95px;text-align: right" id="item_precio" value="" disabled="true">
+            </div>
+            %{--<div class="span2" style=" width: 100px;">--}%
+            %{--<b>Tranporte</b>--}%
+            %{--<input type="text" style="width: 95px;text-align: right" id="item_transporte" value="" disabled="true">--}%
+            %{--</div>--}%
+
+            <div class="span1" style="padding-top:30px">
+                <input type="hidden" value="" id="vol_id">
+                <g:if test="${(obra?.responsableObra?.departamento?.direccion?.id == persona?.departamento?.direccion?.id && duenoObra == 1 && obra?.estado != 'R')}">
+                    <a href="#" class="btn btn-primary" title="agregar" style="margin-top: -10px" id="item_agregar">
+                        <i class="icon-plus"></i>
+                    </a>
+                </g:if>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="body">
+        <table class="table table-bordered table-condensed table-hover table-striped" id="tbl">
+            <thead>
+            <tr>
+                <g:if test="${tipo.contains(",") || tipo == '1'}">
+                    <th>Código</th>
+                    <th>Item</th>
+                    <th>U</th>
+                    <th>Cantidad</th>
+                    <th>P. Unitario</th>
+                    <th>Transporte</th>
+                    <th>Costo</th>
+                    <th>Total</th>
+                    <g:if test="${tipo.contains(",")}">
+                        <th>Tipo</th>
+                    </g:if>
+                </g:if>
+                <g:elseif test="${tipo == '2'}">
+                    <th>Código</th>
+                    <th>Mano de obra</th>
+                    <th>U</th>
+                    <th>Horas hombre</th>
+                    <th>Sal. / hora</th>
+                %{--<th>Costo</th>--}%
+                    <th>Total</th>
+                </g:elseif>
+                <g:elseif test="${tipo == '3'}">
+                    <th>Código</th>
+                    <th>Equipo</th>
+                    <th>U</th>
+                    <th>Cantidad</th>
+                    <th>Tarifa</th>
+                    <th>Costo</th>
+                    <th>Total</th>
+                </g:elseif>
+
+            </tr>
+            </thead>
+            <tbody>
+            <g:set var="totalEquipo" value="${0}"/>
+            <g:set var="totalMano" value="${0}"/>
+            <g:set var="totalMaterial" value="${0}"/>
+            <g:each in="${res}" var="r">
+                <tr>
+                    <td class="">${r.item.codigo}</td>
+                    <td class="">${r.item.nombre}</td>
+                    <td>${r.item.unidad.codigo}</td>
+                    <td class="numero cantidad texto " iden="${r.id}">
+                        <g:formatNumber number="${r.cantidad}" minFractionDigits="2" maxFractionDigits="7" format="##,##0" locale="ec"/>
+                    </td>
+                    <g:if test="${tipo != '2'}">
+                        <td class="numero ${r.id} ">
+                            <g:formatNumber number="${r.precio}" minFractionDigits="3" maxFractionDigits="3" format="##,##0" locale="ec"/>
+                        </td>
+                    </g:if>
+                    <g:if test="${tipo.contains(",") || tipo == '1'}">
+                        <td class="numero ${r.id} transporte">
+                            <g:formatNumber number="${r.transporte}" minFractionDigits="4" maxFractionDigits="4" format="##,##0" locale="ec"/>
+                        </td>
+                    </g:if>
+                    <td class="numero ${r.id} precio ${(tipo=='2')?'textoPrecio':''}" iden="${r.id}">
+                        <g:formatNumber number="${r.transporte + r.precio}" minFractionDigits="4" maxFractionDigits="4" format="##,##0" locale="ec"/>
+                    </td>
+                    <td class="numero ${r.id} total">
+                        <g:formatNumber number="${(r.transporte + r.precio) * r.cantidad}" minFractionDigits="2" maxFractionDigits="2" format="##,##0" locale="ec"/>
+
+                        <g:if test="${r?.grupo.id == 1}">
+                            <g:set var="totalMaterial" value="${totalMaterial + ((r.transporte + r.precio) * r.cantidad)}"/>
+
+                        </g:if>
+                        <g:elseif test="${r.grupo.id == 2}">
+                            <g:set var="totalMano" value="${totalMano + ((r.transporte + r.precio) * r.cantidad)}"/>
+
+                        </g:elseif>
+                        <g:elseif test="${r.grupo.id == 3}">
+                            <g:set var="totalEquipo" value="${totalEquipo + ((r.transporte + r.precio) * r.cantidad)}"/>
+                        </g:elseif>
+
+                    </td>
+                    <g:if test="${tipo.contains(",")}">
+                        <td>${r?.grupo}</td>
+                    </g:if>
+                </tr>
+            </g:each>
+            </tbody>
+        </table>
+
+        <div id="totales" style="width:100%;">
+            <input type='text' id='txt' style='height:20px;width:110px;margin: 0px;padding: 0px;padding-right:2px;text-align: right !important;display: none;margin-left: 0px;margin-right: 0px;'>
+%{--            <table class="table table-bordered ta195ble-condensed pull-right" style="width: 20%;">--}%
+%{--                <tr>--}%
+%{--                    <th>Equipos</th>--}%
+%{--                    <td class="numero"><g:formatNumber number="${totalEquipo}" minFractionDigits="2" maxFractionDigits="2" format="##,##0" locale="ec"/></td>--}%
+%{--                </tr>--}%
+%{--                <tr>--}%
+%{--                    <th>Mano de obra</th>--}%
+%{--                    <td class="numero"><g:formatNumber number="${totalMano}" minFractionDigits="2" maxFractionDigits="2" format="##,##0" locale="ec"/></td>--}%
+%{--                </tr>--}%
+%{--                <tr>--}%
+%{--                    <th>Materiales</th>--}%
+%{--                    <td class="numero"><g:formatNumber number="${totalMaterial}" minFractionDigits="2" maxFractionDigits="2" format="##,##0" locale="ec"/></td>--}%
+%{--                </tr>--}%
+%{--                <tr>--}%
+%{--                    <th>TOTAL DIRECTO</th>--}%
+%{--                    <td class="numero"><g:formatNumber number="${totalEquipo + totalMano + totalMaterial}" minFractionDigits="2" maxFractionDigits="2" format="##,##0" locale="ec"/></td>--}%
+%{--                </tr>--}%
+%{--            </table>--}%
+            <table class="table table-bordered ta195ble-condensed pull-right" style="width: 40%;">
+                <thead>
+                <tr>
+                    <th>Equipos</th>
+                    <th>Mano de obra</th>
+                    <th>Materiales</th>
+                    <th>TOTAL DIRECTO</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td  style=" border: 1px solid black"class="numero"><g:formatNumber number="${totalEquipo}" minFractionDigits="2" maxFractionDigits="2" format="##,##0" locale="ec"/></td>
+                    <td style="border-top: 1px solid black;" class="numero bordes2"><g:formatNumber number="${totalMano}" minFractionDigits="2" maxFractionDigits="2" format="##,##0" locale="ec"/></td>
+                    <td style="border-top: 1px solid black;" class="numero bordes2"><g:formatNumber number="${totalMaterial}" minFractionDigits="2" maxFractionDigits="2" format="##,##0" locale="ec"/></td>
+                    <td style="border-top: 1px solid black;" class="numero bordes2"><g:formatNumber number="${totalEquipo + totalMano + totalMaterial}" minFractionDigits="2" maxFractionDigits="2" format="##,##0" locale="ec"/></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
 </div>
 
 <div class="modal grande hide fade" id="modal-rubro" style="overflow: hidden;">
@@ -267,17 +302,17 @@
 
     function precios(item) {
         var obra = ${obra.id}
-                $.ajax({
-                    type    : "POST",
-                    url     : "${g.createLink(controller: 'composicion',action:'precios')}",
-                    data    : "obra=" + obra + "&item=" + item,
-                    success : function (msg) {
+            $.ajax({
+                type    : "POST",
+                url     : "${g.createLink(controller: 'composicion',action:'precios')}",
+                data    : "obra=" + obra + "&item=" + item,
+                success : function (msg) {
 //                        console.log(msg)
-                        var parts = msg.split(";")
-                        $("#item_precio").val(parts[0])
-                        $("#item_transporte").val(parts[1])
-                    }
-                });
+                    var parts = msg.split(";")
+                    $("#item_precio").val(parts[0])
+                    $("#item_transporte").val(parts[1])
+                }
+            });
     }
 
     function updateTotal(celda) {
@@ -608,16 +643,16 @@
 
                     $("#dlgLoad").dialog("open");
 //
-                        $.ajax({
-                            type    : "POST",
-                            url     : "${g.createLink(action: 'recargar')}",
-                            data    : "id=${obra?.id}",
-                            success : function (msg) {
+                    $.ajax({
+                        type    : "POST",
+                        url     : "${g.createLink(action: 'recargar')}",
+                        data    : "id=${obra?.id}",
+                        success : function (msg) {
 //                                ////console.log(msg)
-                                    $("#dlgLoad").dialog("close");
-                                    location.reload(true)
-                            }
-                        });
+                            $("#dlgLoad").dialog("close");
+                            location.reload(true)
+                        }
+                    });
 //
 
                     $("#recargarDialog").dialog("close");
@@ -630,7 +665,7 @@
 
         $(".recargarComp").click(function () {
 //            console.log("recargar")
-               $("#recargarDialog").dialog("open")
+            $("#recargarDialog").dialog("open")
 
         });
 
