@@ -29,9 +29,11 @@
             <i class="icon-arrow-left"></i>
             Regresar Obra
         </a>
-        <button class="btn" id="btn-comp" title="Regresar a composición"><i class="icon-arrow-left"></i>
-            Regresar Composición
-        </button>
+        <g:if test="${tieneMatriz}">
+            <button class="btn" id="btn-comp" title="Regresar a composición"><i class="icon-arrow-left"></i>
+                Regresar Composición
+            </button>
+        </g:if>
     </div>
 
     <div class="btn-group">

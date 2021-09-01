@@ -230,6 +230,7 @@ class ComposicionController extends janus.seguridad.Shield {
 
         def persona = Persona.get(session.usuario.id)
         def duenoObra = 0
+        def cn = dbConnectionService.getConnection()
 
         if (!params.tipo) {
             params.tipo = "-1"
@@ -249,7 +250,12 @@ class ComposicionController extends janus.seguridad.Shield {
 
         duenoObra = esDuenoObra(obra) ? 1 : 0
 
-        return [res: res, obra: obra, tipo: params.tipo, rend: params.rend, campos: campos, duenoObra: duenoObra, persona: persona]
+        def tieneMatriz = false
+        cn.eachRow("select count(*) cuenta from mfrb where obra__id = ${obra.id}".toString()) { d ->
+            tieneMatriz = d.cuenta > 0
+        }
+
+        return [res: res, obra: obra, tipo: params.tipo, rend: params.rend, campos: campos, duenoObra: duenoObra, persona: persona, tieneMatriz: tieneMatriz]
 
     }
 

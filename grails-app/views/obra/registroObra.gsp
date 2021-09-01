@@ -915,6 +915,11 @@
                         </g:link>
                     </li>
                     <li>
+                        <g:link controller="composicion" action="tabla" id="${obra?.id}"><i
+                                class="icon-folder-open"></i>Ad. Direc.
+                        </g:link>
+                    </li>
+                    <li>
                         <g:link controller="documentoObra" action="list" id="${obra.id}">
                             <i class="icon-book"></i>Biblioteca
                         </g:link>
@@ -923,7 +928,7 @@
                         <a href="#" id="btnMapa"><i class="icon-flag"></i>Mapa</a>
                     </li>
                     <li>
-                        <a href="#" id="btnVeri"><i class="icon-ok"></i>Precios no Act.</a>
+                        <a href="#" id="btnVeri"><i class="icon-dollar"></i>Precios no Act.</a>
                     </li>
                     <g:if test="${obra?.tipo != 'D'}">
                         <li>
