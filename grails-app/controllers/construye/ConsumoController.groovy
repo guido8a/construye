@@ -462,4 +462,17 @@ class ConsumoController extends janus.seguridad.Shield {
             render "no"
         }
     } //anular
+
+    def aprobar_ajax(){
+        def consumo = Consumo.get(params.id)
+        def detalles = DetalleConsumo.findAllByConsumo(consumo)
+
+        if(detalles?.size() > 0) {
+            consumo.estado = 'P'
+            consumo.save(flush: true)
+            render "ok"
+        }else{
+            render "no"
+        }
+    }
 }

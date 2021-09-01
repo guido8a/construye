@@ -33,44 +33,54 @@
         <i class="icon-file-alt"></i>
         Nuevo
     </a>
-    <g:if test="${consumo?.estado == 'N' || consumo?.estado == null}">
-        <g:if test="${items?.size() == 0}">
-            <a href="#" class="btn btn-ajax btn-new" id="guardar">
-                <i class="icon-save"></i>
-                Guardar
-            </a>
+    <g:if test="${consumo?.estado == 'N' || consumo?.estado == null || consumo?.estado == 'P'}">
+    %{--        <g:if test="${items?.size() == 0}">--}%
+        <a href="#" class="btn btn-ajax btn-new" id="guardar">
+            <i class="icon-save"></i>
+            Guardar
+        </a>
+    %{--        </g:if>--}%
+    </g:if>
+    <g:if test="${consumo?.id}">
+        <g:if test="${consumo?.estado == 'N'}">
+            <g:if test="${items?.size() > 0}">
+                <a href="#" class="btn btn-ajax btn-new" id="aprobar">
+                    <i class="icon-bell"></i>
+                    Aprobar
+                </a>
+            </g:if>
         </g:if>
     </g:if>
     <g:if test="${consumo?.id}">
         <g:if test="${consumo?.estado != 'A'}">
-            <a href="#" class="btn btn-ajax btn-new" id="borrar">
-                <i class="icon-trash"></i>
-                Anular
-            </a>
+            <g:if test="${items?.size() == 0}">
+                <a href="#" class="btn btn-ajax btn-new" id="borrar">
+                    <i class="icon-trash"></i>
+                    Anular
+                </a>
+            </g:if>
         </g:if>
     </g:if>
     <a href="${g.createLink(controller: 'consumo', action: 'consumo')}" class="btn btn-ajax btn-new">
         <i class="icon-remove"></i>
         Cancelar
     </a>
-    <g:if test="${consumo?.estado == 'N'}">
-        <g:if test="${consumo?.id}">
+    <g:if test="${consumo?.id}">
+        <g:if test="${consumo?.estado == 'N' || consumo?.estado == 'P'}">
             <a href="#" class="btn btn-ajax btn-new" id="btnRegistrar">
                 <i class="icon-check"></i>
                 Registrar
             </a>
         </g:if>
     </g:if>
-    <g:else>
+    <g:if test="${consumo?.id}">
         <g:if test="${consumo?.estado == 'R'}">
-            <g:if test="${consumo?.id}">
-                <a href="#" class="btn btn-ajax btn-new" id="btnDesRegistrar">
-                    <i class="icon-check"></i>
-                    Desregistrar
-                </a>
-            </g:if>
+            <a href="#" class="btn btn-ajax btn-new" id="btnDesRegistrar">
+                <i class="icon-check"></i>
+                Desregistrar
+            </a>
         </g:if>
-    </g:else>
+    </g:if>
 
     <g:if test="${consumo?.id}">
         <a href="#" class="btn btn-ajax btn-new" id="imprimir" title="Imprimir">
@@ -133,7 +143,7 @@
                     Bodega
                     <g:select name="bodega" id="bodega" from="${bodegas}" class="span12" optionKey="id"
                               optionValue="descripcion"
-                              value="${consumo?.bodega?.id}" noSelection="[null: '--Seleccione--']"/>
+                              value="${consumo?.bodega?.id}" noSelection="[null: '--Seleccione--']" disabled="${items?.size() == 0 ? false : true}"/>
                 </div>
 
                 <div class="span3" style="color: #01a; margin-left: 10px">
@@ -436,13 +446,77 @@
 
 <script type="text/javascript">
 
+    $("#aprobar").click(function () {
+        $.box({
+            imageClass: "box_info",
+            text: "Está seguro de cambiar el estado de este" + '<p style="margin-left: 42px">' + "consumo a " + '<strong style="color: #1a7031">' + "APROBADO" + "?" + '</strong>' + '</p>',
+            title: "Registrar consumo",
+            dialog: {
+                resizable: false,
+                draggable: false,
+                width: 340,
+                height: 180,
+                buttons: {
+                    "Aceptar": function () {
+                        $("#dlgLoad").dialog("open")
+                        $.ajax({
+                            type: 'POST',
+                            url: "${createLink(controller: 'consumo', action: 'aprobar_ajax')}",
+                            data:{
+                                id: '${consumo?.id}'
+                            },
+                            success: function (msg) {
+                                $("#dlgLoad").dialog("close")
+                                if(msg == 'ok'){
+                                    $.box({
+                                        imageClass: "box_info",
+                                        text: "Requisición aprobada correctamente",
+                                        title: "Alerta",
+                                        iconClose: false,
+                                        dialog: {
+                                            resizable: false,
+                                            draggable: false,
+                                            buttons: {
+                                                "Aceptar": function () {
+                                                    location.reload(true)
+                                                }
+                                            }
+                                        }
+                                    });
+                                }else{
+                                    $.box({
+                                        imageClass: "box_info",
+                                        text: "Error al aprobar la requisición",
+                                        title: "Error",
+                                        iconClose: false,
+                                        dialog: {
+                                            resizable: false,
+                                            draggable: false,
+                                            buttons: {
+                                                "Aceptar": function () {
+                                                }
+                                            }
+                                        }
+                                    });
+                                }
+
+                            }
+                        });
+
+                    },
+                    "Cancelar": function () {
+
+                    }
+                }
+            }
+        });
+    });
 
     $("#imprimir").click(function () {
         location.href = "${g.createLink(controller: 'reportes5',action: 'reporteRequisiciones')}?id=" + '${consumo?.id}';
     });
 
     $("#btnDesRegistrar").click(function () {
-        $("#dlgLoad").dialog("open");
         var idAdquisicion = '${consumo?.id}';
         $.box({
             imageClass: "box_info",
@@ -455,6 +529,7 @@
                 height: 180,
                 buttons: {
                     "Aceptar": function () {
+                        $("#dlgLoad").dialog("open");
                         $.ajax({
                             type: 'POST',
                             url: '${createLink(controller: 'consumo', action: 'quitarRegistrar_ajax')}',
@@ -620,7 +695,7 @@
         var idRubro = '${consumo?.id}';
         $.box({
             imageClass: "box_info",
-            text: "Está seguro de cambiar el estado de este" + '<p style="margin-left: 42px">' + "consumo a " + '<strong style="color: #1a7031">' + "APROBADO" + "?" + '</strong>' + '</p>',
+            text: "Está seguro de cambiar el estado de este" + '<p style="margin-left: 42px">' + "consumo a " + '<strong style="color: #1a7031">' + "REGISTRADO" + "?" + '</strong>' + '</p>',
             title: "Registrar consumo",
             dialog: {
                 resizable: false,
@@ -629,7 +704,7 @@
                 height: 180,
                 buttons: {
                     "Aceptar": function () {
-                        // $("#btnRegistrar").replaceWith(spinner);
+                        $("#dlgLoad").dialog("open")
                         $.ajax({
                             type: 'POST',
                             url: '${createLink(controller: 'consumo', action: 'registrar_ajax')}',
@@ -637,6 +712,7 @@
                                 id: idRubro
                             },
                             success: function (msg) {
+                                $("#dlgLoad").dialog("close")
                                 if (msg == 'ok') {
                                     $("#spanOk").html("Rubro registrado correctamente");
                                     $("#divOk").show();
