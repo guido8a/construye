@@ -42,16 +42,6 @@
     %{--        </g:if>--}%
     </g:if>
     <g:if test="${consumo?.id}">
-        <g:if test="${consumo?.estado == 'N'}">
-            <g:if test="${items?.size() > 0}">
-                <a href="#" class="btn btn-ajax btn-new" id="aprobar">
-                    <i class="icon-bell"></i>
-                    Aprobar
-                </a>
-            </g:if>
-        </g:if>
-    </g:if>
-    <g:if test="${consumo?.id}">
         <g:if test="${consumo?.estado != 'A'}">
             <g:if test="${items?.size() == 0}">
                 <a href="#" class="btn btn-ajax btn-new" id="borrar">
@@ -66,11 +56,13 @@
         Cancelar
     </a>
     <g:if test="${consumo?.id}">
-        <g:if test="${consumo?.estado == 'N' || consumo?.estado == 'P'}">
-            <a href="#" class="btn btn-ajax btn-new" id="btnRegistrar">
-                <i class="icon-check"></i>
-                Registrar
-            </a>
+        <g:if test="${consumo?.estado == 'P'}">
+            <g:if test="${items?.size() > 0 }">
+                <a href="#" class="btn btn-ajax btn-new" id="btnRegistrar">
+                    <i class="icon-check"></i>
+                    Registrar
+                </a>
+            </g:if>
         </g:if>
     </g:if>
     <g:if test="${consumo?.id}">
@@ -91,6 +83,19 @@
             <i class="icon-print"></i>
             Excel
         </a>
+    </g:if>
+
+    <g:if test="${consumo?.id}">
+        <g:if test="${consumo?.estado == 'N'}">
+            <g:if test="${items?.size() > 0}">
+                <g:if test="${session.perfil.codigo == 'APRB'}">
+                    <a href="#" class="btn btn-ajax btn-new btn-primary" id="aprobar">
+                        <i class="icon-bell"></i>
+                        Aprobar
+                    </a>
+                </g:if>
+            </g:if>
+        </g:if>
     </g:if>
 </div>
 
