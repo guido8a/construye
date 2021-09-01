@@ -100,14 +100,24 @@
         <div class="row-fluid">
             <div class="span1" style="margin-left: -17px; width: 100px;">
                 <b>Código</b>
-                <input type="text" style="width: 100px;;font-size: 10px" id="item_codigo">
+                <input type="text" style="width: 100px;;font-size: 10px" id="item_codigo" readonly="true">
                 <input type="hidden" style="width: 60px" id="item_id">
             </div>
 
-            <div class="span4" style="margin-left: 15px;">
-                <b>Rubro</b>
-                <input type="text" style="width: 340px;font-size: 10px" id="item_nombre" disabled="true">
+                <div class="span1" style="margin-top: 20px; width: 80px">
+                    <a class="btn btn-small btn-primary btn-ajax" href="#" rel="tooltip" title="Agregar Item" id="btnBuscarItem">
+                        <i class="icon-search"></i> Buscar
+                    </a>
+                </div>
 
+            <div class="span6" style="margin-left: 15px;">
+                <b>Descripción</b>
+                <input type="text" style="width: 546px;font-size: 10px" id="item_nombre" disabled="true">
+            </div>
+
+            <div class="span2" style="margin-left: 0px; width: 60px;">
+                <b>Unidad</b>
+                <input type="text" style="width: 45px;text-align: right" id="item_unidad" value="" disabled="true">
             </div>
 
             <div class="span2" style="margin-left: 0px; width: 100px;">
@@ -115,14 +125,10 @@
                 <input type="text" style="width: 95px;text-align: right" id="item_cantidad" value="">
             </div>
 
-            <div class="span2" style="width: 100px;">
+            <div class="span2" style="margin-left: 10px;width: 100px;">
                 <b>Precio</b>
                 <input type="text" style="width: 95px;text-align: right" id="item_precio" value="" disabled="true">
             </div>
-            %{--<div class="span2" style=" width: 100px;">--}%
-            %{--<b>Tranporte</b>--}%
-            %{--<input type="text" style="width: 95px;text-align: right" id="item_transporte" value="" disabled="true">--}%
-            %{--</div>--}%
 
             <div class="span1" style="padding-top:30px">
                 <input type="hidden" value="" id="vol_id">
@@ -296,8 +302,93 @@
     </fieldset>
 </div>
 
+<div id="busqueda" style="overflow: hidden">
+    <fieldset class="borde" style="border-radius: 4px">
+        <div class="row-fluid" style="margin-left: 20px">
+            <div class="span2">Grupo</div>
+
+            <div class="span2">Buscar Por</div>
+
+            <div class="span2">Criterio</div>
+
+            <div class="span2">Ordenado por</div>
+        </div>
+
+        <div class="row-fluid" style="margin-left: 20px">
+            <div class="span2">
+                <g:select name="buscarGrupo_name"  id="buscarGrupo" from="['1': 'Materiales', '2': 'Mano de Obra', '3': 'Equipos']"
+                          style="width: 100%" optionKey="key" optionValue="value"/></div>
+
+            <div class="span2"><g:select name="buscarPor" class="buscarPor" from="${[1: 'Nombre', 2: 'Código']}"
+                                         style="width: 100%" optionKey="key"
+                                         optionValue="value"/></div>
+
+            <div class="span2">
+                <g:textField name="criterio" class="criterio" style="width: 80%"/>
+            </div>
+
+            <div class="span2">
+                <g:select name="ordenar" class="ordenar" from="${[1: 'Nombre', 2: 'Código']}"
+                          style="width: 100%" optionKey="key"
+                          optionValue="value"/></div>
+
+            <div class="span2" style="margin-left: 60px"><button class="btn btn-info" id="btn-consultar"><i
+                    class="icon-check"></i> Consultar
+            </button></div>
+
+        </div>
+    </fieldset>
+
+    <fieldset class="borde">
+        <div id="divTabla" style="height: 460px; overflow-y:auto; overflow-x: auto;">
+        </div>
+    </fieldset>
+</div>
+
 
 <script type="text/javascript">
+
+
+    $("#btnBuscarItem").click(function () {
+        $("#busqueda").dialog("open");
+        $(".ui-dialog-titlebar-close").html("x");
+        return false;
+    });
+
+    $("#busqueda").dialog({
+        autoOpen: false,
+        resizable: false,
+        modal: true,
+        draggable: false,
+        width: 1000,
+        height: 600,
+        position: 'center',
+        title: 'Lista de items'
+    });
+
+    function busqueda() {
+        var buscarPor = $("#buscarPor").val();
+        var criterio = $(".criterio").val();
+        var ordenar = $("#ordenar").val();
+        var grupo = $("#buscarGrupo").val();
+        $.ajax({
+            type: "POST",
+            url: "${createLink(controller: 'composicion', action:'listaItem')}",
+            data: {
+                buscarPor: buscarPor,
+                criterio: criterio,
+                ordenar: ordenar,
+                grupo: grupo
+            },
+            success: function (msg) {
+                $("#divTabla").html(msg);
+            }
+        });
+    }
+
+    $("#btn-consultar").click(function () {
+        busqueda();
+    });
 
 
     function precios(item) {
