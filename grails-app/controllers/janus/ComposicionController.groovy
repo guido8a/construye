@@ -473,11 +473,13 @@ class ComposicionController extends janus.seguridad.Shield {
     def listaItem() {
         println "listaItem" + params
         def listaItems = ['itemnmbr', 'itemcdgo']
-        def datos;
-        def select = "select item.item__id, itemcdgo, itemnmbr, unddcdgo " +
-                "from item, undd, dprt, sbgr "
-        def txwh = "where tpit__id = 1 and undd.undd__id = item.undd__id and dprt.dprt__id = item.dprt__id and " +
-                "sbgr.sbgr__id = dprt.sbgr__id "
+        def datos
+        def persona = Persona.get(session.usuario.id)
+        def empresa = persona.empresa
+
+        def select = "select item__id, itemcdgo, itemnmbr, unddcdgo, rbpcpcun, grpo__id " +
+                "from kardex_inicial(${empresa.id}) "
+        def txwh = "where rbpcpcun >= 0 "
         def sqlTx = ""
         def bsca = listaItems[params.buscarPor.toInteger()-1]
         def ordn = listaItems[params.ordenar.toInteger()-1]
