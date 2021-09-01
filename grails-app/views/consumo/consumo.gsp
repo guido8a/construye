@@ -58,7 +58,7 @@
     <g:if test="${consumo?.id}">
         <g:if test="${consumo?.estado == 'P'}">
             <g:if test="${items?.size() > 0 }">
-                <a href="#" class="btn btn-ajax btn-new" id="btnRegistrar">
+                <a href="#" class="btn btn-ajax btn-new btn-primary" id="btnRegistrar">
                     <i class="icon-check"></i>
                     Registrar
                 </a>
