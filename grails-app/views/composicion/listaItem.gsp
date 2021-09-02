@@ -32,7 +32,7 @@
                 </td>
                 <td style="width: 8%"><div style="text-align: center" class="selecciona" id="reg_${i}"
                                            regNmbr="${dt?.itemnmbr}" regCdgo="${dt?.itemcdgo}"
-                                           regUn="${dt?.unddcdgo}" data-id="${dt?.item__id}">
+                                           regUn="${dt?.unddcdgo}" data-id="${dt?.item__id}" data-prc="${dt?.rbpcpcun}">
                     <button class="btn btn-small btn-success"><i class="icon-check"></i></button>
                 </div></td>
             </tr>
@@ -48,7 +48,7 @@
         $("#item_codigo").val($(this).attr("regCdgo"));
         $("#item_nombre").val($(this).attr("regNmbr"));
         $("#item_unidad").val($(this).attr("regUn"));
-        $("#item_precio").val($(this).attr("regPc"));
+        $("#item_precio").val($(this).data("prc"));
         $("#busqueda").dialog("close");
     });
 </script>
