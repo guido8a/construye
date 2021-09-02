@@ -471,7 +471,7 @@ class ComposicionController extends janus.seguridad.Shield {
     }
 
     def listaItem() {
-        println "listaItem" + params
+//        println "listaItem" + params
         def listaItems = ['itemnmbr', 'itemcdgo']
         def datos
         def persona = Persona.get(session.usuario.id)
@@ -486,11 +486,59 @@ class ComposicionController extends janus.seguridad.Shield {
         txwh += " and $bsca ilike '%${params.criterio}%' and grpo__id = ${params.grupo}"
 
         sqlTx = "${select} ${txwh} order by ${ordn} limit 100 ".toString()
-        println "sql: $sqlTx"
+//        println "sql: $sqlTx"
 
         def cn = dbConnectionService.getConnection()
         datos = cn.rows(sqlTx)
-        println "data: ${datos[0]}"
+//        println "data: ${datos[0]}"
         [data: datos]
+    }
+
+    def borrarItem_ajax(){
+//        println("params bi " + params)
+        def item = Composicion.get(params.id)
+
+        try{
+            item.delete(flush:true)
+            render "ok"
+        }catch(e){
+            println("error al borrar el item de la composicion " + item.errors)
+            render "no"
+        }
+    }
+
+    def guardarEditado_ajax(){
+        def obra = Obra.get(params.obra)
+        def item = Item.get(params.item)
+        def composicion = Composicion.get(params.id)
+        def band = false
+
+        def existente = Composicion.findByObraAndItem(obra, item)
+
+        if(existente){
+            if(existente.id == composicion.id){
+                band = true
+            }else{
+               band = false
+            }
+        }else{
+            band = true
+        }
+
+        if(band){
+            composicion.item = item
+            composicion.cantidad = params.cantidad.toDouble()
+
+            if(!composicion.save(flush:true)){
+                println("error al guardar el item en la composicion " + composicion.errors)
+                render "no"
+            }else{
+                render "ok"
+            }
+        }else{
+            println("error ya existe este item en la composicion")
+            render "er"
+            return
+        }
     }
 }

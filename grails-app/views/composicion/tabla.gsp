@@ -10,17 +10,17 @@
     <title>Composición de la obra</title>
 
     <style>
-        /*.bordes{*/
-        /*    border-bottom: 1px solid black;*/
-        /*    border-left: 1px solid black;*/
-        /*    border-top: 1px solid black;*/
-        /*    border-right: 1px solid black;*/
-        /*}*/
+    /*.bordes{*/
+    /*    border-bottom: 1px solid black;*/
+    /*    border-left: 1px solid black;*/
+    /*    border-top: 1px solid black;*/
+    /*    border-right: 1px solid black;*/
+    /*}*/
 
-        .bordes2{
-            border: 1px solid black;
-            border-top: 1px solid black;
-        }
+    .bordes2{
+        border: 1px solid black;
+        border-top: 1px solid black;
+    }
 
     </style>
 
@@ -56,10 +56,10 @@
         <div class="btn-group">
             <g:if test="${(obra?.responsableObra?.departamento?.direccion?.id == persona?.departamento?.direccion?.id && duenoObra == 1 && obra?.estado != 'R')}">
 
-                <a href="#" class="btn btn-primary " title="Guardar" id="guardar">
-                    <i class="icon-save"></i>
-                    Guardar
-                </a>
+            %{--                <a href="#" class="btn btn-primary " title="Guardar" id="guardar">--}%
+            %{--                    <i class="icon-save"></i>--}%
+            %{--                    Guardar--}%
+            %{--                </a>--}%
                 <g:link action="formArchivo" class="btn" id="${obra.id}">
                     <i class="icon-cloud-upload"></i> Cargar Excel
                 </g:link>
@@ -102,13 +102,14 @@
                 <b>Código</b>
                 <input type="text" style="width: 100px;;font-size: 10px" id="item_codigo" readonly="true">
                 <input type="hidden" style="width: 60px" id="item_id">
+                <g:hiddenField name="id_existente"/>
             </div>
 
-                <div class="span1" style="margin-top: 20px; width: 80px">
-                    <a class="btn btn-small btn-primary btn-ajax" href="#" rel="tooltip" title="Agregar Item" id="btnBuscarItem">
-                        <i class="icon-search"></i> Buscar
-                    </a>
-                </div>
+            <div class="span1" style="margin-top: 20px; width: 80px">
+                <a class="btn btn-small btn-primary btn-ajax" href="#" rel="tooltip" title="Agregar Item" id="btnBuscarItem">
+                    <i class="icon-search"></i> Buscar
+                </a>
+            </div>
 
             <div class="span6" style="margin-left: 15px;">
                 <b>Descripción</b>
@@ -135,6 +136,12 @@
                 <g:if test="${(obra?.responsableObra?.departamento?.direccion?.id == persona?.departamento?.direccion?.id && duenoObra == 1 && obra?.estado != 'R')}">
                     <a href="#" class="btn btn-primary" title="agregar" style="margin-top: -10px" id="item_agregar">
                         <i class="icon-plus"></i>
+                    </a>
+                    <a href="#" class="btn btn-small btn-primary hidden" title="Guardar" style="margin-top: -10px" id="guardarEdicion">
+                        <i class="icon-save"></i>
+                    </a>
+                    <a href="#" class="btn btn-small btn-primary hidden" title="Cancelar" style="margin-top: -10px" id="cancelar">
+                        <i class="icon-remove"></i>
                     </a>
                 </g:if>
             </div>
@@ -165,7 +172,6 @@
                     <th>U</th>
                     <th>Horas hombre</th>
                     <th>Sal. / hora</th>
-                %{--<th>Costo</th>--}%
                     <th>Total</th>
                 </g:elseif>
                 <g:elseif test="${tipo == '3'}">
@@ -177,6 +183,7 @@
                     <th>Costo</th>
                     <th>Total</th>
                 </g:elseif>
+                <th>Acciones</th>
 
             </tr>
             </thead>
@@ -224,6 +231,17 @@
                     <g:if test="${tipo.contains(",")}">
                         <td>${r?.grupo}</td>
                     </g:if>
+                    <td style="text-align: center" class="col_delete">
+                        <a class="btn btn-small btn-primary editarItem" href="#" rel="tooltip" title="Editar"
+                           data-id="${r.id}" data-precio="${r.precio}" data-cant="${r.cantidad}"
+                           data-uni="${r.item.unidad.codigo}" data-cod="${r.item.codigo}" data-nom="${r.item.nombre}" data-item="${r.item.id}">
+                            <i class="icon-edit"></i>
+                        </a>
+                        <a class="btn btn-small btn-danger borrarItem" href="#" rel="tooltip" title="Eliminar"
+                           data-id="${r.id}">
+                            <i class="icon-trash"></i>
+                        </a>
+                    </td>
                 </tr>
             </g:each>
             </tbody>
@@ -231,24 +249,24 @@
 
         <div id="totales" style="width:100%;">
             <input type='text' id='txt' style='height:20px;width:110px;margin: 0px;padding: 0px;padding-right:2px;text-align: right !important;display: none;margin-left: 0px;margin-right: 0px;'>
-%{--            <table class="table table-bordered ta195ble-condensed pull-right" style="width: 20%;">--}%
-%{--                <tr>--}%
-%{--                    <th>Equipos</th>--}%
-%{--                    <td class="numero"><g:formatNumber number="${totalEquipo}" minFractionDigits="2" maxFractionDigits="2" format="##,##0" locale="ec"/></td>--}%
-%{--                </tr>--}%
-%{--                <tr>--}%
-%{--                    <th>Mano de obra</th>--}%
-%{--                    <td class="numero"><g:formatNumber number="${totalMano}" minFractionDigits="2" maxFractionDigits="2" format="##,##0" locale="ec"/></td>--}%
-%{--                </tr>--}%
-%{--                <tr>--}%
-%{--                    <th>Materiales</th>--}%
-%{--                    <td class="numero"><g:formatNumber number="${totalMaterial}" minFractionDigits="2" maxFractionDigits="2" format="##,##0" locale="ec"/></td>--}%
-%{--                </tr>--}%
-%{--                <tr>--}%
-%{--                    <th>TOTAL DIRECTO</th>--}%
-%{--                    <td class="numero"><g:formatNumber number="${totalEquipo + totalMano + totalMaterial}" minFractionDigits="2" maxFractionDigits="2" format="##,##0" locale="ec"/></td>--}%
-%{--                </tr>--}%
-%{--            </table>--}%
+            %{--            <table class="table table-bordered ta195ble-condensed pull-right" style="width: 20%;">--}%
+            %{--                <tr>--}%
+            %{--                    <th>Equipos</th>--}%
+            %{--                    <td class="numero"><g:formatNumber number="${totalEquipo}" minFractionDigits="2" maxFractionDigits="2" format="##,##0" locale="ec"/></td>--}%
+            %{--                </tr>--}%
+            %{--                <tr>--}%
+            %{--                    <th>Mano de obra</th>--}%
+            %{--                    <td class="numero"><g:formatNumber number="${totalMano}" minFractionDigits="2" maxFractionDigits="2" format="##,##0" locale="ec"/></td>--}%
+            %{--                </tr>--}%
+            %{--                <tr>--}%
+            %{--                    <th>Materiales</th>--}%
+            %{--                    <td class="numero"><g:formatNumber number="${totalMaterial}" minFractionDigits="2" maxFractionDigits="2" format="##,##0" locale="ec"/></td>--}%
+            %{--                </tr>--}%
+            %{--                <tr>--}%
+            %{--                    <th>TOTAL DIRECTO</th>--}%
+            %{--                    <td class="numero"><g:formatNumber number="${totalEquipo + totalMano + totalMaterial}" minFractionDigits="2" maxFractionDigits="2" format="##,##0" locale="ec"/></td>--}%
+            %{--                </tr>--}%
+            %{--            </table>--}%
             <table class="table table-bordered ta195ble-condensed pull-right" style="width: 40%;">
                 <thead>
                 <tr>
@@ -347,6 +365,185 @@
 
 
 <script type="text/javascript">
+
+    $("#guardarEdicion").click(function (){
+        $("#dlgLoad").dialog("open");
+
+        var id =  $("#id_existente").val();
+        var item = $("#item_id").val();
+        var cantidad = $("#item_cantidad").val();
+        var obra = '${obra?.id}';
+
+        $.ajax({
+            type: 'POST',
+            url: '${createLink(controller: 'composicion', action: 'guardarEditado_ajax')}',
+            data:{
+                id: id,
+                item: item,
+                cantidad: cantidad,
+                obra: obra
+            },
+            success: function (msg) {
+                $("#dlgLoad").dialog("close");
+                if(msg == 'ok'){
+                    $.box({
+                        imageClass: "box_info",
+                        text: "Item actualizado correctamente",
+                        title: "Alerta",
+                        iconClose: false,
+                        dialog: {
+                            resizable: false,
+                            draggable: false,
+                            buttons: {
+                                "Aceptar": function () {
+                                    location.reload(true)
+                                }
+                            }
+                        }
+                    });
+                }else{
+                    if(msg == "er"){
+                        caja("El item ya se encuentra agregado a la composición" ,"Error")
+                    }else{
+                        caja("Error al actualizar el item", "Error")
+                        cancelar();
+                    }
+                }
+            }
+        })
+    });
+
+    function validarNumDec(ev) {
+        /*
+         48-57      -> numeros
+         96-105     -> teclado numerico
+         188        -> , (coma)
+         190        -> . (punto) teclado
+         110        -> . (punto) teclado numerico
+         8          -> backspace
+         46         -> delete
+         9          -> tab
+         37         -> flecha izq
+         39         -> flecha der
+         */
+        return ((ev.keyCode >= 48 && ev.keyCode <= 57) ||
+            (ev.keyCode >= 96 && ev.keyCode <= 105) ||
+            ev.keyCode == 8 || ev.keyCode == 46 || ev.keyCode == 9 ||
+            ev.keyCode == 37 || ev.keyCode == 39 || ev.keyCode == 190 || ev.keyCode == 110);
+    }
+
+    $("#item_cantidad").keydown(function (ev) {
+        return validarNumDec(ev)
+    });
+
+    $(".editarItem").click(function () {
+        var id = $(this).data("id");
+        var item = $(this).data("item");
+        var precio = $(this).data("precio");
+        var cantidad = $(this).data("cant");
+        var unidad = $(this).data("uni");
+        var codigo = $(this).data("cod");
+        var nombre = $(this).data("nom");
+
+
+        $("#id_existente").val(id);
+        $("#item_id").val(item);
+        $("#item_precio").val(precio);
+        $("#item_cantidad").val(cantidad);
+        $("#item_unidad").val(unidad);
+        $("#item_nombre").val(nombre);
+        $("#item_codigo").val(codigo);
+        $("#cancelar").removeClass("hidden");
+        $("#guardarEdicion").removeClass("hidden")
+        $("#item_agregar").addClass("hidden")
+    });
+
+    $("#cancelar").click(function () {
+        cancelar();
+    });
+
+    function cancelar(){
+        $("#id_existente").val('');
+        $("#item_id").val('');
+        $("#item_precio").val('');
+        $("#item_cantidad").val('');
+        $("#item_unidad").val('');
+        $("#item_nombre").val('');
+        $("#item_codigo").val('');
+        $("#cancelar").addClass("hidden");
+        $("#guardarEdicion").addClass("hidden")
+        $("#item_agregar").removeClass("hidden")
+    }
+
+    $(".borrarItem").click(function (){
+        var id = $(this).data("id");
+        $.box({
+            imageClass: "box_info",
+            text: "Está seguro de eliminar este item de la composición?",
+            title: "Eliminar Item",
+            dialog: {
+                resizable: false,
+                draggable: false,
+                width: 340,
+                height: 180,
+                buttons: {
+                    "Aceptar": function () {
+                        $("#dlgLoad").dialog("open");
+                        $.ajax({
+                            type: 'POST',
+                            url: '${createLink(controller: 'composicion', action: 'borrarItem_ajax')}',
+                            data:{
+                                id: id
+                            },
+                            success: function (msg) {
+                                $("#dlgLoad").dialog("close");
+                                if(msg == 'ok'){
+                                    $.box({
+                                        imageClass: "box_info",
+                                        text: "Item eliminado correctamente",
+                                        title: "Alerta",
+                                        iconClose: false,
+                                        dialog: {
+                                            resizable: false,
+                                            draggable: false,
+                                            buttons: {
+                                                "Aceptar": function () {
+                                                    location.reload(true)
+                                                }
+                                            }
+                                        }
+                                    });
+                                }else{
+                                    caja("Error al eliminar el item","Error")
+                                }
+                            }
+                        })
+                    },
+                    "Cancelar": function () {
+
+                    }
+                }
+            }
+        });
+    });
+
+
+    function caja(texto, titulo){
+        return $.box({
+            imageClass: "box_info",
+            text: texto,
+            title: titulo,
+            iconClose: false,
+            dialog: {
+                resizable: false,
+                draggable: false,
+                buttons: {
+                    "Aceptar": function () {
+                    }
+                }
+            }
+        });
+    }
 
 
     $("#btnBuscarItem").click(function () {
@@ -509,7 +706,7 @@
                 msn = "La cantidad debe ser un número positivo mayor a 0"
             }
             if (rubro * 1 < 1)
-                msn = "seleccione un rubro"
+                msn = "seleccione un item"
 
             if (msn.length == 0) {
                 var datos = "rubro=" + rubro + "&cantidad=" + cantidad + "&obra=${obra.id}"
