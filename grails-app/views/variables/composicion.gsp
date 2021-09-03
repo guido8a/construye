@@ -146,7 +146,11 @@
                     <i class="icon-arrow-left"></i>
                     Regresar
                 </a>
-                <g:link action="validacion" id="${obra?.id}" controller="composicion" class="btn" title="Cantidades reales de Materiales, M.O. y Equipos">
+%{--                <g:link action="validacion" id="${obra?.id}" controller="composicion" class="btn" title="Cantidades reales de Materiales, M.O. y Equipos">--}%
+%{--                    <i class="icon-list"></i>--}%
+%{--                    Adm. Directa--}%
+%{--                </g:link>--}%
+                <g:link controller="composicion" action="tabla" id="${obra?.id}" class="btn" title="Administración Directa">
                     <i class="icon-list"></i>
                     Adm. Directa
                 </g:link>

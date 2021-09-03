@@ -63,7 +63,7 @@
                 <g:link action="formArchivo" class="btn" id="${obra.id}">
                     <i class="icon-cloud-upload"></i> Cargar Excel
                 </g:link>
-                <a href="#" class="btn recargarComp" title="Reargar Composición" id="${obra.id}">
+                <a href="#" class="btn recargarComp" title="Recargar Composición" id="${obra.id}">
                     <i class="icon-refresh"></i>
                     Recargar Composición
                 </a>
@@ -305,9 +305,8 @@
 </div>
 
 <div id="recargarDialog">
-
     <fieldset>
-        <div class="span3" style="width:280px;">
+        <div class="span3" style="width:380px;">
             Está seguro de querer volver a cargar la composición de la obra:<div style="font-weight: bold;">${obra?.nombre} ?
 
         </div>
@@ -922,21 +921,18 @@
             resizable : false,
             modal     : true,
             draggable : false,
-            width     : 350,
+            width     : 500,
             height    : 260,
             position  : 'center',
             title     : 'Volver a cargar Composición',
             buttons   : {
-                "Aceptar"  : function () {
-
+                "Aceptar" : function () {
                     $("#dlgLoad").dialog("open");
-//
                     $.ajax({
                         type    : "POST",
                         url     : "${g.createLink(action: 'recargar')}",
                         data    : "id=${obra?.id}",
                         success : function (msg) {
-//                                ////console.log(msg)
                             $("#dlgLoad").dialog("close");
                             location.reload(true)
                         }
