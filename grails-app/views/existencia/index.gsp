@@ -8,6 +8,9 @@
 <head>
     <meta name="layout" content="main">
     <title>Existencias</title>
+    <script src="${resource(dir: 'js/jquery/plugins/', file: 'jquery.livequery.js')}"></script>
+    <script src="${resource(dir: 'js/jquery/plugins/box/js', file: 'jquery.luz.box.js')}"></script>
+    <link href="${resource(dir: 'js/jquery/plugins/box/css', file: 'jquery.luz.box.css')}" rel="stylesheet">
 
     <style type="text/css">
 
@@ -183,9 +186,32 @@ como máximo 30
 <script type="text/javascript">
 
     $("#imprimir").click(function () {
-        var grupo = $("#buscarGrupo option:selected").val()
-        var bodega = $("#bodega option:selected").val()
-        location.href = "${g.createLink(controller: 'reportes5',action: 'reporteExistencias')}?grupo=" + grupo + "&bodega=" + bodega;
+        var grupo = $("#buscarGrupo option:selected").val();
+        var bodega = $("#bodega option:selected").val();
+
+        $.box({
+            imageClass: "box_info",
+            text: "Seleccione el tipo de formato que desea imprimir",
+            title: "Imprimir existencias",
+            dialog: {
+                resizable: false,
+                draggable: false,
+                width: 360,
+                height: 180,
+                buttons: {
+                    "PDF": function () {
+                        location.href = "${g.createLink(controller: 'reportes5',action: 'reporteExistencias')}?grupo=" + grupo + "&bodega=" + bodega;
+                    },
+                    "EXCEL": function () {
+                        location.href = "${g.createLink(controller: 'reportes5',action: 'reporteExistenciasExcel')}?grupo=" + grupo + "&bodega=" + bodega;
+                    },
+                    "Cancelar" : function () {
+
+                    }
+                }
+            }
+        });
+
     });
 
     $(function () {
@@ -324,17 +350,17 @@ como máximo 30
 //        items.alicuota = alicuota;
 //        items.propiedad = propiedades;
 
-        var administrar = {
-            label: "Administrar",
-            icon: "fa fa-pencil",
-            separator_before : true,
-            submenu: {
-                editar,
-                perfil,
-                alicuota,
-                propiedades
-            }
-        };
+        // var administrar = {
+        //     label: "Administrar",
+        //     icon: "fa fa-pencil",
+        //     separator_before : true,
+        //     submenu: {
+        //         editar,
+        //         perfil,
+        //         alicuota,
+        //         propiedades
+        //     }
+        // };
 
 //        items.solicitudes = {
 //            label: "Solicitudes",
@@ -346,20 +372,20 @@ como máximo 30
 //            }
 //        };
 
-        console.log('perfil', '${session.perfil.codigo}');
+        %{--console.log('perfil', '${session.perfil.codigo}');--}%
 
-        if('${session.perfil.codigo}' == 'ADC'){
-            if(ingr>0){
-                items.pagar = ingresos;
-            }
-            items.administrar = administrar;
-            items.detalle = detalle;
-            if(deuda <= 0 && codigo == 'P'){
-                items.certificado = certificado;
-            }
-        } else {
-            items.detalle = detalle;
-        }
+        %{--if('${session.perfil.codigo}' == 'ADC'){--}%
+        %{--    if(ingr>0){--}%
+        %{--        items.pagar = ingresos;--}%
+        %{--    }--}%
+        %{--    items.administrar = administrar;--}%
+        %{--    items.detalle = detalle;--}%
+        %{--    if(deuda <= 0 && codigo == 'P'){--}%
+        %{--        items.certificado = certificado;--}%
+        %{--    }--}%
+        %{--} else {--}%
+        %{--    items.detalle = detalle;--}%
+        %{--}--}%
 
         return items
     }

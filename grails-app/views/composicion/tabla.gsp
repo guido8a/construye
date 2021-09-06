@@ -29,7 +29,7 @@
 
 <body>
 <div class="hoja">
-    <div class="tituloChevere">Valores reales para la obra: ${obra?.descripcion}</div>
+    <div class="tituloChevere">Valores para la obra: ${obra?.descripcion}</div>
 
     <g:if test="${flash.message}">
         <div class="span12">
@@ -312,7 +312,7 @@
         </div>
             <br>
             <span style="color: red">
-                Este proceso elimina todos los datos de "valores reales" de la composición actual.
+                Este proceso elimina todos los datos de la composición actual.
             </span>
 
         </div>

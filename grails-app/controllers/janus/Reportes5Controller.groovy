@@ -2054,8 +2054,6 @@ class Reportes5Controller extends Shield{
 //        document.add(logo)
         document.add(tablaHeader)
         document.add(headersRemi)
-//        document.add(headers)
-//        document.add(tablaCoeficiente)
         document.add(tablaEquipos)
 
         document.close();
@@ -2065,6 +2063,95 @@ class Reportes5Controller extends Shield{
         response.setHeader("Content-disposition", "attachment; filename=" + name)
         response.setContentLength(b.length)
         response.getOutputStream().write(b)
+    }
+
+    def reporteExistenciasExcel() {
+
+        def usuario = Persona.get(session.usuario.id)
+        def empresa = usuario.empresa
+
+        def sql = "select * from rp_existencias(${params.grupo.toInteger()}, ${params.bodega.toInteger()})"
+        def cn = dbConnectionService.getConnection()
+        def res = cn.rows(sql)
+
+        //excel
+
+        WorkbookSettings workbookSettings = new WorkbookSettings()
+        workbookSettings.locale = Locale.default
+
+        def file = File.createTempFile('myExcelDocument', '.xls')
+        file.deleteOnExit()
+        WritableWorkbook workbook = Workbook.createWorkbook(file, workbookSettings)
+
+        WritableFont font = new WritableFont(WritableFont.ARIAL, 12)
+        WritableCellFormat formatXls = new WritableCellFormat(font)
+
+        def row = 0
+        WritableSheet sheet = workbook.createSheet('MySheet', 0)
+
+
+        WritableFont times16font = new WritableFont(WritableFont.TIMES, 11, WritableFont.BOLD, false);
+        WritableCellFormat times16format = new WritableCellFormat(times16font);
+        sheet.setColumnView(0, 20)
+        sheet.setColumnView(1, 20)
+        sheet.setColumnView(2, 20)
+        sheet.setColumnView(3, 20)
+        sheet.setColumnView(4, 15)
+        sheet.setColumnView(5, 20)
+        sheet.setColumnView(6, 45)
+        sheet.setColumnView(7, 20)
+        sheet.setColumnView(8, 20)
+        sheet.setColumnView(9, 15)
+        sheet.setColumnView(10, 15)
+        sheet.setColumnView(11, 15)
+        sheet.setColumnView(12, 15)
+        sheet.setColumnView(13, 15)
+        sheet.setColumnView(14, 15)
+        sheet.setColumnView(15, 15)
+
+        def label
+        def number
+        def fila = 12;
+
+
+        //cabecera
+        label = new Label(2, 2, (empresa?.nombre?.toUpperCase() ?: ''), times16format); sheet.addCell(label);
+        label = new Label(2, 3, (empresa?.direccion ?: ''), times16format); sheet.addCell(label);
+        label = new Label(2, 4, ("Teléfono: " + ( empresa?.telefono ?: '')), times16format); sheet.addCell(label);
+        label = new Label(2, 5, ("Email: " + ( empresa?.email ?: '')), times16format); sheet.addCell(label);
+        label = new Label(2, 6, (( empresa?.lugar ?: '') + " - Ecuador"), times16format); sheet.addCell(label);
+        label = new Label(2, 7, (''), times16format); sheet.addCell(label);
+        label = new Label(2, 8, "EXISTENCIAS: " + (params.grupo == '1' ? 'MATERIALES' : (params.grupo == '2' ? 'MANO DE OBRA' : 'EQUIPOS')), times16format); sheet.addCell(label);
+        label = new Label(2, 9, "", times16format); sheet.addCell(label);
+
+        //columnas
+        label = new Label(0, 10, "CÓDIGO ", times16format); sheet.addCell(label);
+        label = new Label(1, 10, "ITEM", times16format); sheet.addCell(label);
+        label = new Label(2, 10, "UNIDAD", times16format); sheet.addCell(label);
+        label = new Label(3, 10, "FECHA", times16format); sheet.addCell(label);
+        label = new Label(4, 10, "EXISTENCIAS", times16format); sheet.addCell(label);
+        label = new Label(5, 10, "P. UNITARIO", times16format); sheet.addCell(label);
+        label = new Label(6, 10, "VALOR", times16format); sheet.addCell(label);
+
+        res.each{ r->
+            label = new Label(0, fila, r?.itemcdgo?.toString() ?: ''); sheet.addCell(label);
+            label = new Label(1, fila, r?.itemnmbr?.toString() ?: ''); sheet.addCell(label);
+            label = new Label(2, fila, r?.unddcdgo?.toString() ?: ''); sheet.addCell(label);
+            label = new Label(3, fila, r?.krdxfcha?.format("dd-MM-yyyy")?.toString() ?: ''); sheet.addCell(label);
+            number = new Number(4, fila, r?.exstcntd ?: 0); sheet.addCell(number);
+            number = new Number(5, fila, r?.exstpcun ?: 0); sheet.addCell(number);
+            number = new Number(6, fila,  r?.exstvlor?: 0); sheet.addCell(number);
+
+            fila++
+        }
+
+        workbook.write();
+        workbook.close();
+        def output = response.getOutputStream()
+        def header = "attachment; filename=" + "existencias.xls";
+        response.setContentType("application/octet-stream")
+        response.setHeader("Content-Disposition", header);
+        output.write(file.getBytes());
     }
 
 }
