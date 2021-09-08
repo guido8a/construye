@@ -9,7 +9,7 @@
 
     <body>
         <div class="hoja">
-            <div class="tituloGrande" style="width: 100%">Verificación de precios en obra: ${obra?.descripcion}</div>
+            <div class="tituloGrande" style="width: 100%">Verificación de precios en obra: ${obra?.descripcion}: Precios no actualizados o sin valor</div>
 
             <g:if test="${flash.message}">
                 <div class="span12">
@@ -41,7 +41,7 @@
                     </thead>
                     <tbody>
                         <g:each in="${res}" var="r">
-                            <g:if test="${r?.fecha != null}">
+                            %{--<g:if test="${r?.fecha != null}">--}%
                             <tr>
                                 <td>${r?.codigo}</td>
                                 <td>${r?.item}</td>
@@ -49,7 +49,7 @@
                                 <td style="text-align: right"><g:formatNumber number="${r?.punitario}" minFractionDigits="5" maxFractionDigits="5" format="##,##0" locale="ec"/></td>
                                 <td style="text-align: center"><g:formatDate date="${r?.fecha}" format="dd-MM-yyyy"/></td>
                             </tr>
-                            </g:if>
+                            %{--</g:if>--}%
                         </g:each>
                     </tbody>
                 </table>

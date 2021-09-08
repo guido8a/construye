@@ -277,7 +277,9 @@ class ConsumoController extends janus.seguridad.Shield {
                     render "no"
                 }else{
                     if(band){
-                        render "ms_El item se agregó correctamente a la requisición" + '<br>' + '<p style="color: #1a7031">' + "NOTA:" + '<p>' + "La composición consta de: "  + datos2[0].compcntd + '<br>' + "y se agregaron " + exceso + " adicionales"
+                        render "ms_El item se agregó correctamente a la requisición" + '<br>' + '<p style="color: #9A2020">' +
+                                "AVISO:" + "La composición consta de: "  + datos2[0].compcntd + '<br>' +
+                                "y se agregaron " + exceso + " adicionales" + '</p>'
                     }else{
                         render "ok"
                     }

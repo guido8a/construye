@@ -75,18 +75,11 @@ class InicioController extends janus.seguridad.Shield {
      * */
     def leeCSV_lr() {
 //        println ">>leeCSV.."
-        def contador = 0
-        def cn = dbConnectionService.getConnection()
-        def estc
         def rgst = []
         def cont = 0
         def repetidos = 0
         def procesa = 5
-        def crea_log = false
         def inserta
-        def fcha
-        def magn
-        def sqlp
         def directorio
         def tipo = 'prueba'
 
@@ -98,10 +91,8 @@ class InicioController extends janus.seguridad.Shield {
 
         if (tipo == 'prueba') { //botón: Cargar datos Minutos
             procesa = 5
-            crea_log = false
         } else {
             procesa = 100000000000
-            crea_log = true
         }
 
         def nmbr = ""
@@ -150,7 +141,7 @@ class InicioController extends janus.seguridad.Shield {
 
     def cargaData(rgst) {
         def errores = ""
-        def cnta = 0
+//        def cnta = 0
         def insertados = 0
         def repetidos = 0
         def cn = dbConnectionService.getConnection()
@@ -188,35 +179,23 @@ class InicioController extends janus.seguridad.Shield {
         return [errores: errores, insertados: insertados, repetidos: repetidos]
     }
 
-    /** carga datos desde un CSV - utf-8: si ya existe lo actualiza
-     * */
+    /** carga datos desde un CSV - utf-8 * */
     def leeCSV() {
         println ">>leeItems.."
-        def contador = 0
-        def cn = dbConnectionService.getConnection()
-        def estc
         def rgst = []
         def cont = 0
         def repetidos = 0
         def procesa = 5
-        def crea_log = false
         def inserta
         def fcha
-        def magn
-        def sqlp
-        def directorio
-//        def tipo = 'prueba'
         def tipo = 'prod'
 
         if (tipo == 'prueba') { //botón: Cargar datos Minutos
             procesa = 5
-            crea_log = false
         } else {
             procesa = 100000000000
-            crea_log = true
         }
 
-        def nmbr = ""
         def arch = new File('/home/guido/proyectos/venta-servicios/data/items.csv')
         def cuenta = 0
         def line
@@ -321,6 +300,108 @@ class InicioController extends janus.seguridad.Shield {
     def completa(tx) {
         def ln = tx.size()
         return '0' * (3 - ln) + tx
+    }
+
+    /** carga datos de existencia CSV - utf-8 * */
+    def leeExstCSV() {
+        println ">>leeExst.."
+        def rgst = []
+        def cont = 0
+        def repetidos = 0
+        def procesa = 5
+        def inserta
+        def fcha
+        def tipo = 'prod'
+
+        if (tipo == 'prueba') { //botón: Cargar datos Minutos
+            procesa = 5
+        } else {
+            procesa = 100000000000
+        }
+
+        def arch = new File('/home/guido/proyectos/venta-servicios/data/existencias.csv')
+        def cuenta = 0
+        def line
+        arch.withReader { reader ->
+            while ((line = reader.readLine()) != null) {
+                if (cuenta > 0 && cuenta < procesa) {
+
+                    rgst = line.split('\t')
+                    rgst = rgst*.trim()
+
+                    inserta = cargaExst(rgst)
+                    cont += inserta.insertados
+                    repetidos += inserta.repetidos
+
+                    cuenta++
+                } else {
+                    cuenta++
+                }
+            }
+            println "---> archivo: ${arch.toString()} --> cont: $cont, repetidos: $repetidos"
+            render "Se han cargado ${cont} líneas de datos y han existido : <<${repetidos}>> repetidos"
+        }
+    }
+
+    def cargaExst(rgst) {
+        def errores = ""
+        def cnta = 0
+        def insertados = 0
+        def repetidos = 0
+        def cn = dbConnectionService.getConnection()
+        def item = 0, cdgo = ""
+
+        def sqlsbgr = ""
+        def sql = ""
+        def fcha = ""
+        def id = 0
+        def resp = 0
+
+        println "\n inicia cargado de exst para $rgst"
+        cnta = 0
+        if (rgst[6].toString().size() > 0) {
+            sql = "insert into krdx(item__id, undd__id, tpit__id, dprt__id, itemcdgo, itemnmbr," +
+                            "itempeso, itemtrps, itemtrvl, itemrndm, tpls__id) " +
+                            "values (default, ${undd}, 1, ${dprt}, '${cdgo}', '${rgst[4].toString().trim()}', " +
+                            "0,0,0,0, 1) returning item__id"
+                    println "--> $sqlsbgr"
+                    cn.eachRow(sqlsbgr.toString()) { d ->
+                        item = d.item__id
+                    }
+                    println "item --> $item"
+            }
+
+            rgst[6] = rgst[6] ?: ''
+            println "precio: ${rgst[6]}, ${rgst[6]?.size()}"
+            if (rgst[6]?.size() > 2) {
+                sql = "select count(*) nada from rbpc where item__id = ${item}"
+                cnta = cn.rows(sql.toString())[0]?.nada
+                println "sql ---> ${sql}"
+                def lgar = (grpo == '1' ? 2 : 4)
+                if (item && (cnta == 0)) {
+                    /* crea la precio */
+                    sql = "insert into rbpc (rbpc__id, item__id, lgar__id, rbpcfcha, rbpcpcun, rbpcfcin, " +
+                            "rbpcrgst) " +
+                            "values(default, ${item}, ${lgar}, '1-may-2021', ${rgst[6]}, '1-may-2021', 'N') " +
+                            "returning rbpc__id"
+                    println "sql ---> ${sql}"
+
+                    try {
+                        cn.eachRow(sql.toString()) { d ->
+                            id = d.rbpc__id
+                            insertados++
+                        }
+                    } catch (Exception ex) {
+                        repetidos++
+//                    println "Error taller $ex"
+                        println "Error rbpc ${rgst[6]}"
+//                    println "sql: $sql"
+                    }
+                }
+            }
+
+        cnta++
+        return [errores: errores, insertados: insertados, repetidos: repetidos]
     }
 
 
