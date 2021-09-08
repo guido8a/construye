@@ -27,7 +27,7 @@
                 <td style="width: 12%">${dt.exstpcun}</td>
                 <td style="width: 8%"><div style="text-align: center" class="seleccionaItem" id="reg_${i}"
                                            regId="${dt?.comp__id}" regNmbr="${dt?.itemnmbr}" regCdgo="${dt?.itemcdgo}"
-                                           regUn="${dt?.unddcdgo}" regPc="${dt?.exstpcun}" data-id="${dt?.item__id}">
+                                           regUn="${dt?.unddcdgo}" regPc="${dt?.exstpcun}" data-id="${dt?.item__id}" data-cant="${dt?.exstcntd}">
                     <button class="btn btn-small btn-success"><i class="icon-check"></i></button>
                 </div></td>
             </tr>
@@ -39,13 +39,14 @@
 <script type="text/javascript">
     $(".seleccionaItem").click(function () {
         var id = $(this).attr("regId");
-        %{--location.href = "${g.createLink(action: 'consumo', controller: 'consumo')}" + "?id=" + id--}%
+        var cantOriginal = $(this).data("cant");
         $("#item_id").val($(this).attr("regId"));
         $("#item_id_original").val($(this).data("id"));
         $("#cdgo_buscar").val($(this).attr("regCdgo"));
         $("#item_desc").val($(this).attr("regNmbr"));
         $("#item_unidad").val($(this).attr("regUn"));
         $("#item_precio").val($(this).attr("regPc"));
+        $("#item_cantidad_original").val(cantOriginal);
         $("#busqueda").dialog("close");
     });
 </script>

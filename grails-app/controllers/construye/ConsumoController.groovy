@@ -166,7 +166,7 @@ class ConsumoController extends janus.seguridad.Shield {
 
         def cn = dbConnectionService.getConnection()
         datos = cn.rows(sqlTx)
-        println "data: ${datos[0]}"
+        println "data li: ${datos[0]}"
         [data: datos]
     }
 
@@ -195,21 +195,9 @@ class ConsumoController extends janus.seguridad.Shield {
         [data: datos]
     }
 
-    def verificaItem(){
-        println "verifica rubro "+params
-        def comp = Composicion.get(params.id)
-        def item = comp.item
-        def respuesta = "<ul>"
-//        println "vol... obras:  ${obras}"
-        if(item?.codigo?.size()>0) {
-            render "ok"
-        } else {
-            render "0"
-        }
-    }
 
     def guardarDetalleConsumo_ajax(){
-//        println("params dt " + params)
+        println("params dt " + params)
         def detalle
         def composicion = Composicion.get(params.composicion)
         def consumo = Consumo.get(params.consumo)
@@ -252,24 +240,51 @@ class ConsumoController extends janus.seguridad.Shield {
                 }
             }
         }else{
-            detalle.composicion = composicion
-            detalle.consumo = consumo
-            detalle.precioUnitario = params.precioUnitario.toDouble()
-            detalle.cantidad = params.cantidad.toDouble()
 
-            if(!detalle.save(flush:true)){
-                println("error al guardar el detalle de consumo " + errors)
-                render "no"
+            def sql1="select * from rp_existencias('${composicion?.grupo?.codigo}', '${params.bodega}') rp, comp  where comp.item__id = rp.item__id and exstcntd > 0 and obra__id = ${consumo?.obra?.id} and rp.item__id = ${composicion?.item?.id}"
+            def cn1 = dbConnectionService.getConnection()
+            def datos1 = cn1.rows(sql1)
+
+            def cantidadExistencias = datos1[0].exstcntd
+
+            if(params.cantidad.toDouble() > cantidadExistencias?.toDouble()){
+                render "er_La cantidad ingresada es mayor a la cantidad disponible en existencias: ${cantidadExistencias}"
             }else{
-                render "ok"
+
+                def sql2 = "select * from rp_consumo(${consumo?.obra?.id?.toInteger()}) where item__id = ${composicion?.item?.id}"
+                def cn2 = dbConnectionService.getConnection()
+                def datos2 = cn2.rows(sql2)
+
+                println("sql2 " + sql2)
+
+                def band = false
+                def exceso = 0
+
+                if(params.cantidad.toDouble() > datos2[0].compcntd){
+                    exceso = params.cantidad.toDouble() - datos2[0].compcntd.toDouble()
+                    band = true
+                }else{
+                    band= false
+                }
+
+                detalle.composicion = composicion
+                detalle.consumo = consumo
+                detalle.precioUnitario = params.precioUnitario.toDouble()
+                detalle.cantidad = params.cantidad.toDouble()
+
+                if(!detalle.save(flush:true)){
+                    println("error al guardar el detalle de consumo " + errors)
+                    render "no"
+                }else{
+                    if(band){
+                        render "ms_El item se agregó correctamente a la requisición" + '<br>' + "NOTA: " + "La composición consta de: "  + datos2[0].compcntd + '<br>' + "y se agregaron " + exceso + " adicionales"
+                    }else{
+                        render "ok"
+                    }
+
+                }
             }
         }
-
-
-
-
-
-
     }
 
     def eliminarItem_ajax(){

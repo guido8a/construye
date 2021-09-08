@@ -65,14 +65,14 @@
             </g:if>
         </g:if>
     </g:if>
-    <g:if test="${consumo?.id}">
-        <g:if test="${consumo?.estado == 'R'}">
-            <a href="#" class="btn btn-ajax btn-new" id="btnDesRegistrar">
-                <i class="icon-check"></i>
-                Desregistrar
-            </a>
-        </g:if>
-    </g:if>
+%{--    <g:if test="${consumo?.id}">--}%
+%{--        <g:if test="${consumo?.estado == 'R'}">--}%
+%{--            <a href="#" class="btn btn-ajax btn-new" id="btnDesRegistrar">--}%
+%{--                <i class="icon-check"></i>--}%
+%{--                Desregistrar--}%
+%{--            </a>--}%
+%{--        </g:if>--}%
+%{--    </g:if>--}%
 
     <g:if test="${consumo?.id}">
         <a href="#" class="btn btn-ajax btn-new" id="imprimir" title="Imprimir">
@@ -194,6 +194,8 @@
                         <input type="text" name="item.codigo" id="cdgo_buscar" class="span12" readonly="true">
                         <input type="hidden" id="item_id">
                         <input type="hidden" id="idItems">
+                        <input type="hidden" id="item_cantidad_original">
+
                     </div>
 
                     <g:if test="${consumo?.estado == 'N'}">
@@ -856,7 +858,7 @@
             var ordenar = $("#ordenar").val();
             var grupo = $("#buscarGrupo").val();
             var bdga = $("#bodega").val();
-            var obra = $("#obra__id").val()
+            var obra = $("#obra__id").val();
             $.ajax({
                 type: "POST",
                 url: "${createLink(controller: 'consumo', action:'listaItem')}",
@@ -1089,6 +1091,7 @@
         });
 
         function guardarDetalleConsumo(id) {
+            $("#dlgLoad").dialog("open");
             $.ajax({
                 type: 'POST',
                 url: '${createLink(controller: 'consumo', action: 'guardarDetalleConsumo_ajax')}',
@@ -1097,14 +1100,16 @@
                     composicion: id,
                     cantidad: $("#item_cantidad").val(),
                     precioUnitario: $("#item_precio").val(),
-                    consumo: '${consumo?.id}'
+                    consumo: '${consumo?.id}',
+                    bodega: $("#bodega option:selected").val()
                 },
                 success: function (msg) {
-                    var parts = msg.split("_")
+                    $("#dlgLoad").dialog("close");
+                    var parts = msg.split("_");
                     if (parts[0] == 'ok') {
                         location.href = "${createLink(controller: 'consumo', action: 'consumo')}/" + '${consumo?.id}'
                     } else {
-                        if(parts[0] == 'er'){
+                        if(parts[0] == 'ms'){
                             $.box({
                                 imageClass: "box_info",
                                 text: parts[1],
@@ -1115,25 +1120,43 @@
                                     draggable: false,
                                     buttons: {
                                         "Aceptar": function () {
+                                            location.reload(true)
                                         }
                                     }
                                 }
                             });
                         }else{
-                            $.box({
-                                imageClass: "box_info",
-                                text: "Error al guardar el detalle de la requisición",
-                                title: "Error",
-                                iconClose: false,
-                                dialog: {
-                                    resizable: false,
-                                    draggable: false,
-                                    buttons: {
-                                        "Aceptar": function () {
+                            if(parts[0] == 'er'){
+                                $.box({
+                                    imageClass: "box_info",
+                                    text: parts[1],
+                                    title: "Alerta",
+                                    iconClose: false,
+                                    dialog: {
+                                        resizable: false,
+                                        draggable: false,
+                                        buttons: {
+                                            "Aceptar": function () {
+                                            }
                                         }
                                     }
-                                }
-                            });
+                                });
+                            }else{
+                                $.box({
+                                    imageClass: "box_info",
+                                    text: "Error al guardar el detalle de la requisición",
+                                    title: "Error",
+                                    iconClose: false,
+                                    dialog: {
+                                        resizable: false,
+                                        draggable: false,
+                                        buttons: {
+                                            "Aceptar": function () {
+                                            }
+                                        }
+                                    }
+                                });
+                            }
                         }
                     }
                 }
@@ -1194,21 +1217,10 @@
                             }
                         });
                     }else{
-                        $("#dlgLoad").dialog("open")
-                        $.ajax({
-                            type: "POST", url: "${g.createLink(controller: 'consumo', action:'verificaItem')}",
-                            data: "id=" + id,
-                            success: function (msg) {
-                                $("#dlgLoad").dialog("close");
-                                if (msg == "ok") {
-                                    guardarDetalleConsumo(id);
-                                }
-                            }
-                        });
+                        guardarDetalleConsumo(id);
                     }
                 }
             }
-
         });
         </g:if>
         <g:else>
