@@ -876,14 +876,11 @@
             });
         }
 
-        %{--        <g:if test="${!consumo?.id}">--}%
-//         $("#input_codigo").dblclick(function () {
         $("#buscar_codigo").click(function () {
             $("#buscarObra").dialog("open");
             $(".ui-dialog-titlebar-close").html("x")
             return false;
         });
-        %{--        </g:if>--}%
 
         $("#buscarObra").dialog({
             autoOpen: false,
