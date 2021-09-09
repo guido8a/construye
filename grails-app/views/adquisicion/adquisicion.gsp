@@ -857,6 +857,7 @@
             var bdga = $("#bodega").val()
             var iva = $("#iva").val();
             var subtotal = $("#subtotal").val();
+            var observaciones = $("#observaciones").val();
 
             if (proveedor == '' || proveedor == null) {
                 $.box({
@@ -922,7 +923,24 @@
                                 }
                             });
                         } else {
-                            guardarAdquisicion();
+                            if (observaciones == '' || observaciones == 'null') {
+                                $.box({
+                                    imageClass: "box_info",
+                                    text: "Ingrese el concepto",
+                                    title: "Alerta",
+                                    iconClose: false,
+                                    dialog: {
+                                        resizable: false,
+                                        draggable: false,
+                                        buttons: {
+                                            "Aceptar": function () {
+                                            }
+                                        }
+                                    }
+                                });
+                            } else {
+                                guardarAdquisicion();
+                            }
                         }
                     }
                 }

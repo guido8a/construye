@@ -1,6 +1,13 @@
 <%--
   Created by IntelliJ IDEA.
   User: fabricio
+  Date: 09/09/21
+  Time: 12:52
+--%>
+
+<%--
+  Created by IntelliJ IDEA.
+  User: fabricio
   Date: 08/09/21
   Time: 13:33
 --%>
@@ -34,8 +41,8 @@
 <script type="text/javascript">
     $(".seleccionaObra").click(function () {
         var obra = $(this).attr("regId");
-        location.href="${createLink(controller: 'reportesInventario', action: 'reporteCostoActual')}?obra=" + obra;
-        $("#buscarObra").dialog("close");
+        location.href="${createLink(controller: 'reportesInventario', action: 'reporteDiferencia')}?obra=" + obra;
+        $("#buscarObraDiferencia").dialog("close");
     });
 </script>
 

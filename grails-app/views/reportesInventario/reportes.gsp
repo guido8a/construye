@@ -10,10 +10,9 @@
     <meta name="layout" content="main">
     <title>Reportes</title>
 
- </head>
+</head>
 
 <body>
-
 
 
 <div class="row">
@@ -46,36 +45,7 @@
         </p>
     </div>
 </div>
-%{--<div class="row">--}%
-%{--    <div class="col-md-12 col-xs-5">--}%
-%{--        <p>--}%
-%{--            <a href="#" class="link btn btn-info btn-ajax" data-toggle="modal" id="buscar_obra">--}%
-%{--                <i class="fa fa-building-o fa-5x"></i><br/>--}%
-%{--                Costo actual de la obra--}%
-%{--            </a>--}%
-%{--            <a href="#" class="link btn btn-info btn-ajax" data-toggle="modal" data-target="#detalleIngresos" title="Detalle de ingresos">--}%
-%{--                <i class="fa fa-sign-in fa-5x"></i><br/>--}%
-%{--                Requisiciones--}%
-%{--            </a>--}%
-%{--            <a href="#" class="link btn btn-warning btn-ajax" data-toggle="modal" data-target="#detalleEgresos">--}%
-%{--                <i class="fa fa-sign-out fa-5x"></i><br/>--}%
-%{--                Devoluciones--}%
-%{--            </a>--}%
-%{--            <a href="#" class="link btn btn-info btn-ajax" data-toggle="modal" data-target="#listaObras">--}%
-%{--                <i class="fa fa-home fa-5x"></i><br/>--}%
-%{--                Existencias--}%
-%{--            </a>--}%
-%{--            <a href="#" class="link btn btn-primary btn-ajax" data-toggle="modal" data-target="#balance">--}%
-%{--                <i class="fa fa-book fa-5x"></i><br/>--}%
-%{--                -----}%
-%{--            </a>--}%
-%{--            <a href="#" class="link btn btn-warning btn-ajax" id="btnAceptarGestor">--}%
-%{--                <i class="fa fa-line-chart fa-5x"></i><br/>--}%
-%{--                -----}%
-%{--            </a>--}%
-%{--        </p>--}%
-%{--    </div>--}%
-%{--</div>--}%
+
 
 
 
@@ -104,7 +74,6 @@
             </div>
 
             <div class="span2" style="margin-left: 60px">
-                <g:hiddenField name="tipo"/>
                 <button class="btn btn-info" id="btn-obras" ><i class="icon-check"></i> Consultar</button>
             </div>
 
@@ -113,6 +82,80 @@
 
     <fieldset class="borde" style="border-radius: 4px">
         <div id="divTablaObra" style="height: 460px; overflow: auto">
+        </div>
+    </fieldset>
+</div>
+
+<div id="buscarObraCompo" style="overflow: hidden">
+    <fieldset class="borde" style="border-radius: 4px">
+        <div class="row-fluid" style="margin-left: 20px">
+            <div class="span2">Buscar Por</div>
+
+            <div class="span2">Criterio</div>
+
+            <div class="span2">Ordenado por</div>
+        </div>
+
+        <div class="row-fluid" style="margin-left: 20px">
+            <div class="span2">
+                <g:select name="buscarPorObra" class="buscarPor" from="${['1': 'Obra', '2': 'Código']}" style="width: 100%"
+                          optionKey="key" optionValue="value"/>
+            </div>
+
+            <div class="span2">
+                <g:textField name="criterioObra" id="criterio" style="width: 80%"/></div>
+
+            <div class="span2">
+                <g:select name="ordenarObra" class="ordenar" from="${['1': 'Obra', '2': 'Código']}" style="width: 100%" optionKey="key"
+                          optionValue="value"/>
+            </div>
+
+            <div class="span2" style="margin-left: 60px">
+                <button class="btn btn-info" id="btn-obrasCompo" ><i class="icon-check"></i> Consultar</button>
+            </div>
+
+        </div>
+    </fieldset>
+
+    <fieldset class="borde" style="border-radius: 4px">
+        <div id="divTablaObraCompo" style="height: 460px; overflow: auto">
+        </div>
+    </fieldset>
+</div>
+
+<div id="buscarObraDiferencia" style="overflow: hidden">
+    <fieldset class="borde" style="border-radius: 4px">
+        <div class="row-fluid" style="margin-left: 20px">
+            <div class="span2">Buscar Por</div>
+
+            <div class="span2">Criterio</div>
+
+            <div class="span2">Ordenado por</div>
+        </div>
+
+        <div class="row-fluid" style="margin-left: 20px">
+            <div class="span2">
+                <g:select name="buscarPorObra" class="buscarPor" from="${['1': 'Obra', '2': 'Código']}" style="width: 100%"
+                          optionKey="key" optionValue="value"/>
+            </div>
+
+            <div class="span2">
+                <g:textField name="criterioObra" id="criterio" style="width: 80%"/></div>
+
+            <div class="span2">
+                <g:select name="ordenarObra" class="ordenar" from="${['1': 'Obra', '2': 'Código']}" style="width: 100%" optionKey="key"
+                          optionValue="value"/>
+            </div>
+
+            <div class="span2" style="margin-left: 60px">
+                <button class="btn btn-info" id="btn-obrasDiferencia" ><i class="icon-check"></i> Consultar</button>
+            </div>
+
+        </div>
+    </fieldset>
+
+    <fieldset class="borde" style="border-radius: 4px">
+        <div id="divTablaObraDiferencia" style="height: 460px; overflow: auto">
         </div>
     </fieldset>
 </div>
@@ -130,14 +173,14 @@
     });
 
     $("#buscar_obra_comp").click(function () {
-        $("#buscarObra").dialog("open");
+        $("#buscarObraCompo").dialog("open");
         $("#tipo").val(2);
         $(".ui-dialog-titlebar-close").html("x");
         return false;
     });
 
     $("#buscar_obra_adicionales").click(function () {
-        $("#buscarObra").dialog("open");
+        $("#buscarObraDiferencia").dialog("open");
         $("#tipo").val(3);
         $(".ui-dialog-titlebar-close").html("x");
         return false;
@@ -154,23 +197,44 @@
         title: 'Obras'
     });
 
-    $("#btn-obras").click(function () {
-        var tipo = $("#tipo").val();
-        buscarObras(tipo);
+    $("#buscarObraCompo").dialog({
+        autoOpen: false,
+        resizable: false,
+        modal: true,
+        draggable: false,
+        width: 1000,
+        height: 600,
+        position: 'center',
+        title: 'Obras'
     });
 
-    function buscarObras(tipo) {
+    $("#buscarObraDiferencia").dialog({
+        autoOpen: false,
+        resizable: false,
+        modal: true,
+        draggable: false,
+        width: 1000,
+        height: 600,
+        position: 'center',
+        title: 'Obras'
+    });
+
+    $("#btn-obras").click(function () {
+        buscarObras();
+    });
+
+    function buscarObras() {
         var buscarPor = $("#buscarPorObra").val();
         var criterio = $("#criterio").val();
         var ordenar = $("#ordenarObra").val();
+
         $.ajax({
             type: "POST",
             url: "${createLink(controller: 'reportesInventario', action:'listaObra')}",
             data: {
                 buscarPor: buscarPor,
                 criterio: criterio,
-                ordenar: ordenar,
-                tipo: tipo
+                ordenar: ordenar
             },
             success: function (msg) {
                 $("#divTablaObra").html(msg);
@@ -178,183 +242,52 @@
         });
     }
 
-
-    $(document).ready(function () {
-        $('.item').hover(function () {
-            //$('.item').click(function(){
-            //entrar
-            $('#tool').html($("#" + $(this).attr('texto')).html());
-            $('#tool').show();
-        }, function () {
-            //sale
-            $('#tool').hide();
-        });
-
-        $('#info').tabs({
-            //event: 'mouseover', fx: {
-            cookie: { expires: 30 },
-            event: 'click', fx: {
-                opacity: 'toggle',
-                duration: 'fast'
-            },
-            spinner: 'Cargando...',
-            cache: true
-        });
+    $("#btn-obrasCompo").click(function () {
+        buscarObrasCompo();
     });
 
-    var actionUrl = "";
-
-    function updatePeriodo() {
-        var cont = $("#contP").val();
+    function buscarObrasCompo() {
+        var buscarPor = $("#buscarPorObra").val();
+        var criterio = $("#criterio").val();
+        var ordenar = $("#ordenarObra").val();
 
         $.ajax({
             type: "POST",
-            url: "${createLink(action:'updatePeriodo')}",
+            url: "${createLink(controller: 'reportesInventario', action:'listaComposicion')}",
             data: {
-                cont: cont
+                buscarPor: buscarPor,
+                criterio: criterio,
+                ordenar: ordenar
             },
             success: function (msg) {
-                $("#divPeriodo").html(msg);
+                $("#divTablaObraCompo").html(msg);
             }
         });
-
-//                console.log(cont);
     }
 
-    $(function () {
-
-        $(".link").hover(
-            function () {
-                /*
-                                    $(this).addClass("linkHover");
-                                    $(".notice").hide();
-                                    var id = $(this).parent().attr("text");
-                                    $("#" + id).show();
-                */
-            },
-            function () {
-                /*
-                                    $(this).removeClass("linkHover");
-                                    $(".notice").hide();
-                */
-            }).click(function () {
-            %{--var url = $(this).attr("href");--}%
-            %{--var file = $(this).attr("file");--}%
-
-            %{--var dialog = trim($(this).attr("dialog"));--}%
-            %{--var cont = trim($(this).text());--}%
-
-
-            %{--$("#" + dialog).dialog("option", "title", cont);--}%
-            %{--$("#" + dialog).dialog("open");--}%
-
-            %{--actionUrl = "${createLink(controller:'pdf',action:'pdfLink')}?filename=" + file + "&url=" + url;--}%
-
-            %{--//                            console.log(actionUrl);--}%
-
-            %{--<g:link action="pdfLink" controller="pdf" params="[url: g.createLink(controller: 'reportes', action: 'planDeCuentas'), filename: 'Plan_de_Cuentas.pdf']">--}%
-            %{--plan de cuentas--}%
-            %{--</g:link>--}%
-
-            %{--//                            console.log(url, file);--}%
-
-            %{--return false;--}%
-        });
-
-        $("#contP").change(function () {
-            updatePeriodo();
-        });
-
-        $("#dlgContabilidad").dialog({
-            modal: true,
-            resizable: false,
-            autoOpen: false,
-            buttons: {
-                "Aceptar": function () {
-                    var cont = $("#cont").val();
-                    var url = actionUrl + "?cont=" + cont + "Wemp=${session.empresa?.id}";
-//                            console.group("URL");
-//                            console.log(actionUrl);
-//                            console.log(url);
-//                            console.groupEnd();
-
-                    location.href = url;
-                },
-                "Cancelar": function () {
-                    $("#dlgContabilidad").dialog("close");
-                }
-            }
-        });
-        $("#dlgVentas").dialog({
-            modal: true,
-            width: 400,
-            height: 300,
-            title: "Reporte de ventas",
-            autoOpen: false,
-            buttons: {
-                "Ver": function () {
-                    var desde = $("#desde").val()
-                    var hasta = $("#hasta").val()
-                    location.href = "${g.createLink(action: 'ventas')}?desde=" + desde + "&hasta=" + hasta;
-                }
-            }
-        });
-
-        $("#dlgContabilidadPeriodo").dialog({
-            modal: true,
-            resizable: false,
-            autoOpen: false,
-            width: 400,
-            open: function () {
-                updatePeriodo();
-            },
-            buttons: {
-                "Aceptar": function () {
-                    var cont = $("#contP").val();
-                    var per = $("#periodo").val();
-                    var url = actionUrl + "?cont=" + cont + "Wper=" + per + "Wemp=${session.empresa?.id}";
-//                            console.group("URL");
-//                            console.log(actionUrl);
-//                            console.log(url);
-//                            console.groupEnd();
-                    location.href = url;
-                },
-                "Cancelar": function () {
-                    $("#dlgContabilidadPeriodo").dialog("close");
-                }
-            }
-        });
-
-
-        $("#btnComprobantes").button({
-            icons: {
-                primary: "ui-icon-search"
-            }
-        });
-
-        $("#dlgComprobante").dialog({
-            resizable: false,
-            autoOpen: false,
-            modal: true,
-            width: 400,
-            buttons: {
-                "Aceptar": function () {
-                    var cont = $("#cont").val();
-                    var per = $("#periodo").val();
-                    var url = actionUrl + "?cont=" + cont + "Wper=" + per + "Wemp=${session.empresa?.id}";
-//                            console.group("URL");
-//                            console.log(actionUrl);
-//                            console.log(url);
-//                            console.groupEnd();
-                    location.href = url;
-                },
-                "Cancelar": function () {
-                    $("#dlgComprobante").dialog("close");
-                }
-            }
-        });
-
+    $("#btn-obrasDiferencia").click(function () {
+        buscarObrasDiferencia();
     });
+
+    function buscarObrasDiferencia() {
+        var buscarPor = $("#buscarPorObra").val();
+        var criterio = $("#criterio").val();
+        var ordenar = $("#ordenarObra").val();
+
+        $.ajax({
+            type: "POST",
+            url: "${createLink(controller: 'reportesInventario', action:'listaDiferencia')}",
+            data: {
+                buscarPor: buscarPor,
+                criterio: criterio,
+                ordenar: ordenar
+            },
+            success: function (msg) {
+                $("#divTablaObraDiferencia").html(msg);
+            }
+        });
+    }
+
 </script>
 
 </body>
