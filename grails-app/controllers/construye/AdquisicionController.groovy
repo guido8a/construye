@@ -18,7 +18,7 @@ class AdquisicionController {
 
         def adquisicion
         def bodegas = Bodega.findAllByTipoNotEqual('T',[sort: 'nombre'])
-        def listaProveedor = [1: 'Nombre', 2: 'RUC']
+        def listaAdqc = [1: 'Proveedor', 2: 'fecha', 3: 'Estado']
         def listaItems = [1: 'Nombre', 2: 'Código']
 
         if(params.id){
@@ -27,12 +27,16 @@ class AdquisicionController {
             adquisicion = new Adquisicion()
         }
 
+        println "adqc: ${adquisicion?.id}"
         def detalles = []
-        if(adquisicion?.id){
+        if(adquisicion?.id >= 0){
+            println "...1"
             detalles = DetalleAdquisicion.findAllByAdquisicion(adquisicion).sort{it.item.nombre}
         }
 
-        return[adquisicion: adquisicion, bodegas: bodegas, detalles:detalles, listaProveedor: listaProveedor, listaItems: listaItems]
+        println "detalle: ${detalles.size()}"
+
+        return[adquisicion: adquisicion, bodegas: bodegas, detalles:detalles, listaAdqc: listaAdqc, listaItems: listaItems]
     }
 
     def listaProveedor() {
@@ -88,21 +92,44 @@ class AdquisicionController {
     }
 
     def listaAdquisiciones(){
-        println("params " + params)
-        def crit = params.buscarPor == '1' ? 'nombre' : 'ruc'
-        def orden = params.ordernar == '1' ? 'nombre' : 'ruc'
-        def usuario = Persona.get(session.usuario.id)
-        def empresa = usuario.empresa
-        def adquisiciones = Adquisicion.withCriteria {
-            eq("empresa", empresa)
-            and{
-                proveedor{
-                    ilike(crit, "%" + params.criterio + "%")
-                    order(orden)
-                }
-            }
-        }
-        return[adquisiciones: adquisiciones]
+//        println("params " + params)
+//        def crit = params.buscarPor == '1' ? 'nombre' : 'ruc'
+//        def orden = params.ordernar == '1' ? 'nombre' : 'ruc'
+//        def usuario = Persona.get(session.usuario.id)
+//        def empresa = usuario.empresa
+//        def adquisiciones = Adquisicion.withCriteria {
+//            eq("empresa", empresa)
+//            and{
+//                proveedor{
+//                    ilike(crit, "%" + params.criterio + "%")
+//                    order(orden)
+//                }
+//            }
+//        }
+//        return[adquisiciones: adquisiciones]
+
+
+        println "listaAdquisiciones" + params
+        def datos;
+        def listaAdqc = ['prvenmbr', 'adqcfcha', 'adqcetdo']
+
+        def select = "select adqc__id, prvenmbr, adqcfcha, adqcfcpg, adqcetdo, bdganmbr, adqcobsr " +
+                "from adqc, prve, bdga "
+        def txwh = "where prve.prve__id = adqc.prve__id and bdga.bdga__id = adqc.bdga__id and " +
+                "adqc__id >= 0 "
+        def sqlTx = ""
+        def bsca = listaAdqc[params.buscarPor.toInteger()-1]
+        def ordn = listaAdqc[params.ordenar.toInteger()-1]
+
+        txwh += " and $bsca ilike '%${params.criterio}%'"
+        sqlTx = "${select} ${txwh} order by adqcfcha, ${ordn} limit 100 ".toString()
+        println "sql: $sqlTx"
+
+        def cn = dbConnectionService.getConnection()
+        datos = cn.rows(sqlTx)
+//        println "data: ${datos[0]}"
+        [data: datos]
+
     }
 
     def guardarDetalleAdquisicion_ajax(){
@@ -191,12 +218,12 @@ class AdquisicionController {
         def adquisicion = Adquisicion.get(params.id)
         def ivaParametros =  Parametros.get(1)?.iva?.toInteger() / 100
         def detalles = DetalleAdquisicion.findAllByAdquisicion(adquisicion)
-        def totalDetalles = Math.round(detalles.subtotal.sum() * 100000) / 100000
+        def totalDetalles = Math.round(detalles.subtotal.sum() * 100) / 100
         println("total detalles " + totalDetalles)
         println("iva parametros " + ivaParametros)
         def ivaDetalles = Math.round(totalDetalles/(1+ ivaParametros) * (ivaParametros) *100)/100
         def ivas = adquisicion.iva.toDouble()
-        println "Total: ${adquisicion.total}, subtotal: ${adquisicion.subtotal}, iva: ${adquisicion.iva}, ivaDt: $ivaDetalles"
+        println "Total: ${adquisicion.total}, subtotal: ${adquisicion.subtotal}, iva: ${adquisicion.iva}, ivaDt: $ivaDetalles, totalDetalles: $totalDetalles"
 
         if(adquisicion.total != totalDetalles){
             render "er_El total de la adquisición es diferente del total de los items"

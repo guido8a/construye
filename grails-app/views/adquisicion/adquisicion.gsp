@@ -59,7 +59,7 @@
         Cancelar
     </a>
     <g:if test="${adquisicion?.estado == 'N'}">
-        <g:if test="${adquisicion?.id}">
+        <g:if test="${adquisicion?.id >= 0}">
             <a href="#" class="btn btn-ajax btn-new" id="btnRegistrar">
                 <i class="icon-check"></i>
                 Registrar
@@ -76,7 +76,7 @@
             </g:if>
         </g:if>
     </g:else>
-    <a href="${createLink(controller: 'proveedor', action: 'proveedor', params: [id: adquisicion?.id ?: null])}" class="btn">
+    <a href="${createLink(controller: 'proveedor', action: 'proveedor', params: [id: adquisicion?.id >= 0 ?: null])}" class="btn">
         <i class="icon-user"></i>
         Proveedor
     </a>
@@ -99,7 +99,7 @@
                     Proveedor
 
                     <input type="text" name="proveedor_name" class="span20 allCaps required input-small"
-                           value="${adquisicion?.id ? (adquisicion?.proveedor?.ruc + " - " + adquisicion?.proveedor?.nombre) : ''}"
+                           value="${adquisicion?.id >= 0 ? (adquisicion?.proveedor?.ruc + " - " + adquisicion?.proveedor?.nombre) : ''}"
                            id="proveedor_nombre" maxlength="30"  readonly="" minlength="2">
 
                     <p class="help-block ui-helper-hidden"></p>
@@ -245,7 +245,7 @@
         </g:if>
     </g:if>
 
-    <g:if test="${adquisicion?.id}">
+    <g:if test="${adquisicion?.id >= 0}">
         <div style="border-bottom: 1px solid black;padding-left: 50px;position: relative;float: left;width: 95%; min-height: 200px"
              id="tablas">
             <p class="css-vertical-text">Detalle</p>
@@ -335,7 +335,7 @@
 
         <div class="row-fluid" style="margin-left: 20px">
             <div class="span2">
-                <g:select name="buscarPorCnsm" class="buscarPor" from="${listaProveedor}" style="width: 100%"
+                <g:select name="buscarPorCnsm" class="buscarPor" from="${listaAdqc}" style="width: 100%"
                           optionKey="key" optionValue="value"/>
             </div>
 
@@ -343,7 +343,7 @@
                 <g:textField name="criterio" id="criterioCnsm" style="width: 80%"/></div>
 
             <div class="span2">
-                <g:select name="ordenarCnsm" class="ordenar" from="${listaProveedor}" style="width: 100%" optionKey="key"
+                <g:select name="ordenarCnsm" class="ordenar" from="${listaAdqc}" style="width: 100%" optionKey="key"
                           optionValue="value"/>
             </div>
 
@@ -355,7 +355,7 @@
     </fieldset>
 
     <fieldset class="borde" style="border-radius: 4px">
-        <div id="divTablaCnsm" style="height: 460px; overflow: auto">
+        <div id="divTablaAdqc" style="height: 460px; overflow: auto">
         </div>
     </fieldset>
 </div>
@@ -372,7 +372,7 @@
 
         <div class="row-fluid" style="margin-left: 20px">
             <div class="span2">
-                <g:select name="buscarPorObra" class="buscarPor" from="${listaProveedor}" style="width: 100%"
+                <g:select name="buscarPorObra" class="buscarPor" from="${listaAdqc}" style="width: 100%"
                           optionKey="key" optionValue="value"/>
             </div>
 
@@ -380,7 +380,7 @@
                 <g:textField name="criterioObra" style="width: 80%"/></div>
 
             <div class="span2">
-                <g:select name="ordenarObra" class="ordenar" from="${listaProveedor}" style="width: 100%" optionKey="key"
+                <g:select name="ordenarObra" class="ordenar" from="${listaAdqc}" style="width: 100%" optionKey="key"
                           optionValue="value"/>
             </div>
 
@@ -690,7 +690,7 @@
 
                 },
                 success: function (msg) {
-                    $("#divTablaCnsm").html(msg);
+                    $("#divTablaAdqc").html(msg);
                 }
             });
         }

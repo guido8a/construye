@@ -345,62 +345,28 @@ class InicioController extends janus.seguridad.Shield {
 
     def cargaExst(rgst) {
         def errores = ""
-        def cnta = 0
         def insertados = 0
         def repetidos = 0
         def cn = dbConnectionService.getConnection()
-        def item = 0, cdgo = ""
-
-        def sqlsbgr = ""
+        def item = 0, sbtt = 0
         def sql = ""
-        def fcha = ""
         def id = 0
-        def resp = 0
 
         println "\n inicia cargado de exst para $rgst"
-        cnta = 0
         if (rgst[6].toString().size() > 0) {
-            sql = "insert into krdx(item__id, undd__id, tpit__id, dprt__id, itemcdgo, itemnmbr," +
-                            "itempeso, itemtrps, itemtrvl, itemrndm, tpls__id) " +
-                            "values (default, ${undd}, 1, ${dprt}, '${cdgo}', '${rgst[4].toString().trim()}', " +
-                            "0,0,0,0, 1) returning item__id"
-                    println "--> $sqlsbgr"
-                    cn.eachRow(sqlsbgr.toString()) { d ->
-                        item = d.item__id
-                    }
-                    println "item --> $item"
-            }
-
-            rgst[6] = rgst[6] ?: ''
-            println "precio: ${rgst[6]}, ${rgst[6]?.size()}"
-            if (rgst[6]?.size() > 2) {
-                sql = "select count(*) nada from rbpc where item__id = ${item}"
-                cnta = cn.rows(sql.toString())[0]?.nada
-                println "sql ---> ${sql}"
-                def lgar = (grpo == '1' ? 2 : 4)
-                if (item && (cnta == 0)) {
-                    /* crea la precio */
-                    sql = "insert into rbpc (rbpc__id, item__id, lgar__id, rbpcfcha, rbpcpcun, rbpcfcin, " +
-                            "rbpcrgst) " +
-                            "values(default, ${item}, ${lgar}, '1-may-2021', ${rgst[6]}, '1-may-2021', 'N') " +
-                            "returning rbpc__id"
-                    println "sql ---> ${sql}"
-
-                    try {
-                        cn.eachRow(sql.toString()) { d ->
-                            id = d.rbpc__id
-                            insertados++
-                        }
-                    } catch (Exception ex) {
-                        repetidos++
-//                    println "Error taller $ex"
-                        println "Error rbpc ${rgst[6]}"
-//                    println "sql: $sql"
-                    }
+            sbtt = rgst[4].toDouble() * rgst[6].toDouble()
+            sql = "insert into dtad(dtad__id, adqc__id, item__id, dtadcntd, dtadpcun, dtadsbtt) " +
+                    "values (default, 0, ${rgst[0]}, ${rgst[6]}, ${rgst[4]}, ${sbtt}) returning dtad__id"
+            println "--> $sql"
+            try {
+                cn.eachRow(sql.toString()) { d ->
+                    if(d.dtad__id >0) insertados++
                 }
+            } catch (Exception ex) {
+                repetidos++
+                println "Error dtad ${rgst[0]}"      
             }
-
-        cnta++
+        }
         return [errores: errores, insertados: insertados, repetidos: repetidos]
     }
 

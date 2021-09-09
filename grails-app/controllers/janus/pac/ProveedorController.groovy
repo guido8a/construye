@@ -183,7 +183,7 @@ class ProveedorController extends janus.seguridad.Shield {
 
     def proveedor(){
         println("params " + params)
-    return[adquisicion: params.id]
+        return[adquisicion: params.id]
     }
 
     def tablaProveedores_ajax(){
