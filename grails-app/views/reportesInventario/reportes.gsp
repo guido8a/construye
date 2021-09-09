@@ -20,8 +20,16 @@
     <div class="col-md-12 col-xs-5">
         <p>
             <a href="#" class="link btn btn-info btn-ajax" data-toggle="modal" id="buscar_obra">
-                <i class="fa fa-building-o fa-5x"></i><br/>
+                <i class="fa fa-list-ul fa-5x"></i><br/>
+                Costo actual de la obra
+            </a>
+            <a href="#" class="link btn btn-info btn-ajax" data-toggle="modal" id="buscar_obra_comp">
+                <i class="fa fa-database fa-5x"></i><br/>
                 Composición
+            </a>
+            <a href="#" class="link btn btn-info btn-ajax" data-toggle="modal" id="buscar_obra_adicionales">
+                <i class="fa fa-clone fa-5x"></i><br/>
+                Items adicionales
             </a>
             <a href="#" class="link btn btn-info btn-ajax" data-toggle="modal" data-target="#detalleIngresos" title="Detalle de ingresos">
                 <i class="fa fa-sign-in fa-5x"></i><br/>
@@ -32,20 +40,43 @@
                 Devoluciones
             </a>
             <a href="#" class="link btn btn-info btn-ajax" data-toggle="modal" data-target="#listaObras">
-                <i class="fa fa-home fa-5x"></i><br/>
+                <i class="fa fa-archive fa-5x"></i><br/>
                 Existencias
-            </a>
-            <a href="#" class="link btn btn-primary btn-ajax" data-toggle="modal" data-target="#balance">
-                <i class="fa fa-book fa-5x"></i><br/>
-                ---
-            </a>
-            <a href="#" class="link btn btn-warning btn-ajax" id="btnAceptarGestor">
-                <i class="fa fa-line-chart fa-5x"></i><br/>
-                ---
             </a>
         </p>
     </div>
 </div>
+%{--<div class="row">--}%
+%{--    <div class="col-md-12 col-xs-5">--}%
+%{--        <p>--}%
+%{--            <a href="#" class="link btn btn-info btn-ajax" data-toggle="modal" id="buscar_obra">--}%
+%{--                <i class="fa fa-building-o fa-5x"></i><br/>--}%
+%{--                Costo actual de la obra--}%
+%{--            </a>--}%
+%{--            <a href="#" class="link btn btn-info btn-ajax" data-toggle="modal" data-target="#detalleIngresos" title="Detalle de ingresos">--}%
+%{--                <i class="fa fa-sign-in fa-5x"></i><br/>--}%
+%{--                Requisiciones--}%
+%{--            </a>--}%
+%{--            <a href="#" class="link btn btn-warning btn-ajax" data-toggle="modal" data-target="#detalleEgresos">--}%
+%{--                <i class="fa fa-sign-out fa-5x"></i><br/>--}%
+%{--                Devoluciones--}%
+%{--            </a>--}%
+%{--            <a href="#" class="link btn btn-info btn-ajax" data-toggle="modal" data-target="#listaObras">--}%
+%{--                <i class="fa fa-home fa-5x"></i><br/>--}%
+%{--                Existencias--}%
+%{--            </a>--}%
+%{--            <a href="#" class="link btn btn-primary btn-ajax" data-toggle="modal" data-target="#balance">--}%
+%{--                <i class="fa fa-book fa-5x"></i><br/>--}%
+%{--                -----}%
+%{--            </a>--}%
+%{--            <a href="#" class="link btn btn-warning btn-ajax" id="btnAceptarGestor">--}%
+%{--                <i class="fa fa-line-chart fa-5x"></i><br/>--}%
+%{--                -----}%
+%{--            </a>--}%
+%{--        </p>--}%
+%{--    </div>--}%
+%{--</div>--}%
+
 
 
 <div id="buscarObra" style="overflow: hidden">
@@ -73,7 +104,8 @@
             </div>
 
             <div class="span2" style="margin-left: 60px">
-                <button class="btn btn-info" id="btn-obras"><i class="icon-check"></i> Consultar</button>
+                <g:hiddenField name="tipo"/>
+                <button class="btn btn-info" id="btn-obras" ><i class="icon-check"></i> Consultar</button>
             </div>
 
         </div>
@@ -92,7 +124,22 @@
 
     $("#buscar_obra").click(function () {
         $("#buscarObra").dialog("open");
-        $(".ui-dialog-titlebar-close").html("x")
+        $("#tipo").val(1);
+        $(".ui-dialog-titlebar-close").html("x");
+        return false;
+    });
+
+    $("#buscar_obra_comp").click(function () {
+        $("#buscarObra").dialog("open");
+        $("#tipo").val(2);
+        $(".ui-dialog-titlebar-close").html("x");
+        return false;
+    });
+
+    $("#buscar_obra_adicionales").click(function () {
+        $("#buscarObra").dialog("open");
+        $("#tipo").val(3);
+        $(".ui-dialog-titlebar-close").html("x");
         return false;
     });
 
@@ -108,10 +155,11 @@
     });
 
     $("#btn-obras").click(function () {
-        buscarObras();
+        var tipo = $("#tipo").val();
+        buscarObras(tipo);
     });
 
-    function buscarObras() {
+    function buscarObras(tipo) {
         var buscarPor = $("#buscarPorObra").val();
         var criterio = $("#criterio").val();
         var ordenar = $("#ordenarObra").val();
@@ -122,7 +170,7 @@
                 buscarPor: buscarPor,
                 criterio: criterio,
                 ordenar: ordenar,
-                tipo: 1
+                tipo: tipo
             },
             success: function (msg) {
                 $("#divTablaObra").html(msg);

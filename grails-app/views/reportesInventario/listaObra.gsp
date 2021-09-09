@@ -33,8 +33,19 @@
 
 <script type="text/javascript">
     $(".seleccionaObra").click(function () {
-        var obra = $(this).attr("regId")
-        location.href="${createLink(controller: 'reportesInventario', action: 'reporteComposicion')}?obra=" + obra
+        var obra = $(this).attr("regId");
+
+        switch ('${tipo}') {
+            case '1':
+                location.href="${createLink(controller: 'reportesInventario', action: 'reporteCostoActual')}?obra=" + obra;
+            break;
+            case "2":
+                break;
+            case "3":
+                location.href="${createLink(controller: 'reportesInventario', action: 'reporteDiferencia')}?obra=" + obra;
+                break;
+        }
+
         $("#buscarObra").dialog("close");
     });
 </script>

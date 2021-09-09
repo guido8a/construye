@@ -135,7 +135,7 @@
             <div class="row-fluid">
 
                 <div class="span6">
-                    Observaciones
+                    Concepto
                     <g:textField name="observaciones" value="${adquisicion?.observaciones}" maxlength="127"
                                  title="${adquisicion?.observaciones}" class="span12"/>
                 </div>
