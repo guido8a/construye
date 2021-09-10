@@ -222,12 +222,84 @@
     </fieldset>
 </div>
 
+<div id="listaDev" style="overflow: hidden">
+    <fieldset class="borde" style="border-radius: 4px">
+        <div class="row-fluid" style="margin-left: 20px">
+            <div class="span2">Buscar Por</div>
+
+            <div class="span2">Criterio</div>
+
+            <div class="span2">Ordenado por</div>
+        </div>
+
+        <div class="row-fluid" style="margin-left: 20px">
+            <div class="span2">
+                <g:select name="buscarDev" class="buscarPorDev" from="${['1': 'Obra', '2': 'Bodega', '3': 'Recibe (Apellido)', '4': 'Fecha']}" style="width: 100%"
+                          optionKey="key" optionValue="value"/>
+            </div>
+
+            <div class="span2">
+                <g:textField name="criterioDev_name" id="criterioDev" style="width: 80%"/></div>
+
+            <div class="span2">
+                <g:select name="ordenarDev" class="ordenar" from="${['1': 'Obra', '2': 'Bodega', '3': 'Recibe (Apellido)', '4': 'Fecha']}" style="width: 100%" optionKey="key"
+                          optionValue="value"/>
+            </div>
+
+            <div class="span2" style="margin-left: 60px">
+                <button class="btn btn-info" id="btn-consumosDev"><i class="icon-check"></i> Consultar</button>
+            </div>
+
+        </div>
+    </fieldset>
+
+    <fieldset class="borde" style="border-radius: 4px">
+        <div id="divTablaDev" style="height: 460px; overflow: auto">
+        </div>
+    </fieldset>
+</div>
+
 
 <script type="text/javascript">
 
-    $("#btnDevoluciones").click(function () {
 
+    $("#btnDevoluciones").click(function () {
+        $("#listaDev").dialog("open");
+        $(".ui-dialog-titlebar-close").html("x")
     });
+
+    $("#listaDev").dialog({
+        autoOpen: false,
+        resizable: false,
+        modal: true,
+        draggable: false,
+        width: 1000,
+        height: 600,
+        position: 'center',
+        title: 'Devoluciones'
+    });
+
+    $("#btn-consumosDev").click(function () {
+        buscaConsumosDev();
+    });
+
+    function buscaConsumosDev() {
+        var buscarPor = $("#buscarDev").val();
+        var criterio = $("#criterioDev").val();
+        var ordenar = $("#ordenarDev").val();
+        $.ajax({
+            type: "POST",
+            url: "${createLink(controller: 'reportesInventario', action:'listaDevoluciones')}",
+            data: {
+                buscarPor: buscarPor,
+                criterio: criterio,
+                ordenar: ordenar
+            },
+            success: function (msg) {
+                $("#divTablaDev").html(msg);
+            }
+        });
+    }
 
     $("#btnExistenciasPdf").click(function () {
         var grupo = $("#buscarGrupoExistencias option:selected").val();

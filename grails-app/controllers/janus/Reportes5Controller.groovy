@@ -1945,6 +1945,8 @@ class Reportes5Controller extends Shield{
 
         println("sql " + sql)
 
+        def totales = 0
+
         def prmsHeaderHoja = [border: Color.WHITE]
         def prmsFila = [border: Color.WHITE, align : Element.ALIGN_CENTER, valign: Element.ALIGN_MIDDLE]
         def prmsFilaIzquierda = [border: Color.WHITE, align : Element.ALIGN_LEFT, valign: Element.ALIGN_MIDDLE]
@@ -2041,7 +2043,16 @@ class Reportes5Controller extends Shield{
             reportesPdfService.addCellTb(tablaEquipos, new Paragraph(numero(r?.exstcntd, 3)?.toString(), times8normal), prmsFilaDerecha)
             reportesPdfService.addCellTb(tablaEquipos, new Paragraph(numero(r?.exstpcun, 4)?.toString(), times8normal), prmsFilaDerecha)
             reportesPdfService.addCellTb(tablaEquipos, new Paragraph(numero(r?.exstvlor, 4)?.toString(), times8normal), prmsFilaDerecha)
+
+            totales += (r?.exstvlor ?: 0)
         }
+
+        PdfPTable tablaTotal = new PdfPTable(2);
+        tablaTotal.setWidthPercentage(100);
+        tablaTotal.setWidths(arregloEnteros([90, 10]))
+
+        reportesPdfService.addCellTb(tablaTotal, new Paragraph("TOTAL", times10bold), prmsFilaDerecha)
+        reportesPdfService.addCellTb(tablaTotal, new Paragraph(numero(totales, 4)?.toString(), times10bold), prmsFilaDerecha)
 
         PdfPTable tablaHeader = new PdfPTable(2);
         tablaHeader.setWidthPercentage(100);
@@ -2050,11 +2061,10 @@ class Reportes5Controller extends Shield{
         addCellTabla(tablaHeader, logo, prmsCellLeft)
         addCellTabla(tablaHeader, headers, prmsCellCenter)
 
-//        document.add(tablaHeader)
-//        document.add(logo)
         document.add(tablaHeader)
         document.add(headersRemi)
         document.add(tablaEquipos)
+        document.add(tablaTotal)
 
         document.close();
         pdfw.close()
@@ -2073,6 +2083,8 @@ class Reportes5Controller extends Shield{
         def sql = "select * from rp_existencias(${params.grupo.toInteger()}, ${params.bodega.toInteger()})"
         def cn = dbConnectionService.getConnection()
         def res = cn.rows(sql)
+
+        def totales = 0
 
         //excel
 
@@ -2142,8 +2154,12 @@ class Reportes5Controller extends Shield{
             number = new Number(5, fila, r?.exstpcun ?: 0); sheet.addCell(number);
             number = new Number(6, fila,  r?.exstvlor?: 0); sheet.addCell(number);
 
+            totales += (r?.exstvlor ?: 0)
             fila++
         }
+
+        label = new Label(5, fila, "TOTALES", times16format); sheet.addCell(label);
+        number = new Number(6, fila, totales ?: 0); sheet.addCell(number);
 
         workbook.write();
         workbook.close();
