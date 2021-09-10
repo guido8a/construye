@@ -24,7 +24,7 @@
         <script src="${resource(dir: 'js/jquery/plugins/paginate/js', file: 'jquery.luz.paginate.js')}"></script>
 
         <script src="${resource(dir: 'js/jquery/i18n', file: 'jquery.ui.datepicker-es.js')}"></script>
-        <script src="${resource(dir: 'font-awesome-4.7.0/', file: 'jquery.ui.datepicker-es.js')}"></script>
+%{--        <script src="${resource(dir: 'font-awesome-4.7.0/', file: 'jquery.ui.datepicker-es.js')}"></script>--}%
 
         %{--Fuentes--}%
         <link href='${resource(dir: "font/open", file: "stylesheet.css")}' rel='stylesheet' type='text/css'>

@@ -1,3 +1,4 @@
+<%@ page import="janus.construye.Bodega" %>
 <%--
   Created by IntelliJ IDEA.
   User: fabricio
@@ -9,7 +10,6 @@
 <head>
     <meta name="layout" content="main">
     <title>Reportes</title>
-
 </head>
 
 <body>
@@ -34,7 +34,7 @@
                 <i class="fa fa-sign-in fa-5x"></i><br/>
                 Requisiciones
             </a>
-            <a href="#" class="link btn btn-warning btn-ajax" data-toggle="modal" >
+            <a href="#" class="link btn btn-warning btn-ajax" data-toggle="modal" id="btnDevoluciones" >
                 <i class="fa fa-sign-out fa-5x"></i><br/>
                 Devoluciones
             </a>
@@ -198,12 +198,67 @@
 </div>
 
 
+<div id="listaExistencias" style="overflow: hidden">
+    <fieldset class="borde" style="border-radius: 4px">
+
+        <div class="row-fluid" style="margin-left: 10px">
+            <div class="span4">
+                Bodega
+                <g:select name="buscarBodega" class="buscarPor" from="${janus.construye.Bodega.findAllByTipoNotEqual('T',[sort: 'nombre'])}" style="width: 100%"
+                          optionKey="id" optionValue="descripcion"/>
+            </div>
+
+            <div class="span4">
+                Grupo
+                <g:select name="buscarGrupoExistencias" class="ordenar" from="${['1': 'Materiales', '2': 'Mano de Obra', '3': 'Equipos']}" style="width: 100%" optionKey="key"
+                          optionValue="value"/>
+            </div>
+
+            <div class="span4" style="margin-top: 20px">
+                <button class="btn btn-info" id="btnExistenciasPdf"><i class="fa fa-print"></i> PDF</button>
+                <button class="btn btn-info" id="btnExistenciasExcel"><i class="fa fa-file-excel-o"></i> EXCEL</button>
+            </div>
+        </div>
+    </fieldset>
+</div>
+
 
 <script type="text/javascript">
 
-    $("#btnExistencias").click(function () {
+    $("#btnDevoluciones").click(function () {
 
     });
+
+    $("#btnExistenciasPdf").click(function () {
+        var grupo = $("#buscarGrupoExistencias option:selected").val();
+        var bodega = $("#buscarBodega option:selected").val();
+        location.href = "${g.createLink(controller: 'reportes5',action: 'reporteExistencias')}?grupo=" + grupo + "&bodega=" + bodega;
+        $("#listaExistencias").dialog("close")
+    });
+
+    $("#btnExistenciasExcel").click(function () {
+        var grupo = $("#buscarGrupoExistencias option:selected").val();
+        var bodega = $("#buscarBodega option:selected").val();
+        location.href = "${g.createLink(controller: 'reportes5',action: 'reporteExistenciasExcel')}?grupo=" + grupo + "&bodega=" + bodega;
+        $("#listaExistencias").dialog("close")
+    });
+
+    $("#btnExistencias").click(function () {
+        $("#listaExistencias").dialog("open");
+        $(".ui-dialog-titlebar-close").html("x")
+    });
+
+    $("#listaExistencias").dialog({
+        autoOpen: false,
+        resizable: false,
+        modal: true,
+        draggable: false,
+        width: 600,
+        height: 150,
+        position: 'center',
+        title: 'Existencias'
+    });
+
 
     $("#btnRequisiciones").click(function () {
         $("#listaConsumo").dialog("open");
@@ -236,14 +291,12 @@
                 buscarPor: buscarPor,
                 criterio: criterio,
                 ordenar: ordenar
-
             },
             success: function (msg) {
                 $("#divTablaCnsm").html(msg);
             }
         });
     }
-
 
     $("#buscar_obra").click(function () {
         $("#buscarObra").dialog("open");

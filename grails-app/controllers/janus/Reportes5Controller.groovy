@@ -1983,7 +1983,7 @@ class Reportes5Controller extends Shield{
                      times10boldWhite: times10boldWhite, times8boldWhite: times8boldWhite, times8normal: times8normal, times10normal: times10normal]
 
         def baos = new ByteArrayOutputStream()
-        def name = "reporteRequisiciones_" + new Date().format("ddMMyyyy_hhmm") + ".pdf";
+        def name = "reporteExistencias_" + new Date().format("ddMMyyyy_hhmm") + ".pdf";
         def logoPath = servletContext.getRealPath("/") + "images/logos/${empresa?.id}/logo_reportes.png"
         Image logo = Image.getInstance(logoPath);
         logo.scalePercent(70)
@@ -1996,9 +1996,9 @@ class Reportes5Controller extends Shield{
         document.setMargins(40, 40, 20, 25);
         def pdfw = PdfWriter.getInstance(document, baos);
         document.open();
-        document.addTitle("Requisiciones " + new Date().format("dd_MM_yyyy"));
+        document.addTitle("Existencias " + new Date().format("dd_MM_yyyy"));
         document.addSubject("Generado por el sistema Obras");
-        document.addKeywords("documentosObra, obras, requisiciones");
+        document.addKeywords("documentosObra, obras, existencias");
         document.addAuthor("OBRAS");
         document.addCreator("Tedein SA");
 

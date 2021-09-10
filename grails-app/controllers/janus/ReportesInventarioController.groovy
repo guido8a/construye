@@ -120,6 +120,8 @@ class ReportesInventarioController {
         def cn = dbConnectionService.getConnection()
         def datos = cn.rows(sql)
 
+        def totales = 0
+
 //        println("sql " + sql)
 
         def prmsHeaderHoja = [border: Color.WHITE]
@@ -197,37 +199,36 @@ class ReportesInventarioController {
         headersRemi.add(new Paragraph(" ", times10bold));
 
         //COMPOSICION
-//        PdfPTable tablaEquipos = new PdfPTable(8);
         PdfPTable tablaEquipos = new PdfPTable(6);
         tablaEquipos.setWidthPercentage(100);
-//        tablaEquipos.setWidths(arregloEnteros([12, 32, 8, 10, 10, 10, 10, 8]))
         tablaEquipos.setWidths(arregloEnteros([12, 50, 8, 10, 10, 10]))
 
         reportesPdfService.addCellTb(tablaEquipos, new Paragraph("CÓDIGO", times7bold), celdaCabecera)
         reportesPdfService.addCellTb(tablaEquipos, new Paragraph("ITEM", times7bold), celdaCabecera)
         reportesPdfService.addCellTb(tablaEquipos, new Paragraph("UNIDAD", times7bold), celdaCabecera)
-//        reportesPdfService.addCellTb(tablaEquipos, new Paragraph("COMP. CANT.", times7bold), celdaCabecera)
         reportesPdfService.addCellTb(tablaEquipos, new Paragraph("REQUI. CANT", times7bold), celdaCabecera)
         reportesPdfService.addCellTb(tablaEquipos, new Paragraph("REQUI. PRECIO", times7bold), celdaCabecera)
         reportesPdfService.addCellTb(tablaEquipos, new Paragraph("VALOR", times7bold), celdaCabecera)
-//        reportesPdfService.addCellTb(tablaEquipos, new Paragraph("DIF.", times7bold), celdaCabecera)
 
         datos.eachWithIndex { r, i ->
             if(r?.cnsmcntd){
                 reportesPdfService.addCellTb(tablaEquipos, new Paragraph(r?.itemcdgo, times8normal), prmsFilaIzquierda)
                 reportesPdfService.addCellTb(tablaEquipos, new Paragraph(r?.itemnmbr, times8normal), prmsFilaIzquierda)
                 reportesPdfService.addCellTb(tablaEquipos, new Paragraph(r?.unddcdgo, times8normal), prmsFila)
-//            reportesPdfService.addCellTb(tablaEquipos, new Paragraph(numero(r?.compcntd, 3)?.toString(), times8normal), prmsFilaDerecha)
                 reportesPdfService.addCellTb(tablaEquipos, new Paragraph(numero(r?.cnsmcntd, 3)?.toString(), times8normal), prmsFilaDerecha)
                 reportesPdfService.addCellTb(tablaEquipos, new Paragraph(numero(r?.cnsmpcun, 4)?.toString(), times8normal), prmsFilaDerecha)
                 reportesPdfService.addCellTb(tablaEquipos, new Paragraph(numero(r?.cnsmvlor, 4)?.toString(), times8normal), prmsFilaDerecha)
-//            if (r?.cnsmcntd) {
-//                reportesPdfService.addCellTb(tablaEquipos, new Paragraph(numero(r?.cnsmcntd ? (r?.cnsmcntd - r?.compcntd) : 0, 3)?.toString(), times8normal), prmsFilaDerecha)
-//            } else {
-//                reportesPdfService.addCellTb(tablaEquipos, new Paragraph('', times8normal), prmsFilaIzquierda)
-//            }
+
+                totales += (r?.cnsmvlor ?: 0)
             }
         }
+
+        PdfPTable tablaTotal = new PdfPTable(2);
+        tablaTotal.setWidthPercentage(100);
+        tablaTotal.setWidths(arregloEnteros([90, 10]))
+
+        reportesPdfService.addCellTb(tablaTotal, new Paragraph("TOTAL", times10bold), prmsFilaDerecha)
+        reportesPdfService.addCellTb(tablaTotal, new Paragraph(numero(totales, 4)?.toString(), times10bold), prmsFilaDerecha)
 
         PdfPTable tablaHeader = new PdfPTable(2);
         tablaHeader.setWidthPercentage(100);
@@ -241,6 +242,7 @@ class ReportesInventarioController {
         document.add(tablaHeader)
         document.add(headersRemi)
         document.add(tablaEquipos)
+        document.add(tablaTotal)
 
         document.close();
         pdfw.close()
@@ -512,17 +514,21 @@ class ReportesInventarioController {
 
 
     def reporteComposicion() {
-        println("params " + params)
+//        println("params " + params)
 
         def usuario = Persona.get(session.usuario.id)
         def empresa = usuario.empresa
         def obra = Obra.get(params.obra)
 
+        def totalesMat = 0
+        def totalesMano = 0
+        def totalesEquipos = 0
+
         def sql = "select * from rp_consumo(${params.obra.toInteger()})"
         def cn = dbConnectionService.getConnection()
         def datos = cn.rows(sql)
 
-        println("sql " + sql)
+//        println("sql " + sql)
 
         def prmsHeaderHoja = [border: Color.WHITE]
         def prmsFila = [border: Color.WHITE, align: Element.ALIGN_CENTER, valign: Element.ALIGN_MIDDLE]
@@ -632,9 +638,18 @@ class ReportesInventarioController {
                     reportesPdfService.addCellTb(tablaMat, new Paragraph(numero(r?.compcntd, 3)?.toString(), times8normal), prmsFilaDerecha)
                     reportesPdfService.addCellTb(tablaMat, new Paragraph(numero(r?.compprco, 4)?.toString(), times8normal), prmsFilaDerecha)
                     reportesPdfService.addCellTb(tablaMat, new Paragraph(numero((r?.compprco * r?.compcntd) , 4)?.toString(), times8normal), prmsFilaDerecha)
+
+                    totalesMat += ((r?.compprco * r?.compcntd) ?: 0)
                 }
             }
         }
+
+        PdfPTable tablaTotalMat = new PdfPTable(2);
+        tablaTotalMat.setWidthPercentage(100);
+        tablaTotalMat.setWidths(arregloEnteros([90, 10]))
+
+        reportesPdfService.addCellTb(tablaTotalMat, new Paragraph("TOTAL", times10bold), prmsFilaDerecha)
+        reportesPdfService.addCellTb(tablaTotalMat, new Paragraph(numero(totalesMat, 4)?.toString(), times10bold), prmsFilaDerecha)
 
         PdfPTable tablaTituloM = new PdfPTable(2)
         tablaTituloM.setWidthPercentage(100)
@@ -655,9 +670,18 @@ class ReportesInventarioController {
                     reportesPdfService.addCellTb(tablaMano, new Paragraph(numero(r?.compcntd, 3)?.toString(), times8normal), prmsFilaDerecha)
                     reportesPdfService.addCellTb(tablaMano, new Paragraph(numero(r?.compprco, 4)?.toString(), times8normal), prmsFilaDerecha)
                     reportesPdfService.addCellTb(tablaMano, new Paragraph(numero((r?.compprco * r?.compcntd) , 4)?.toString(), times8normal), prmsFilaDerecha)
+
+                    totalesMano += ((r?.compprco * r?.compcntd) ?: 0)
                 }
             }
         }
+
+        PdfPTable tablaTotalMano = new PdfPTable(2);
+        tablaTotalMano.setWidthPercentage(100);
+        tablaTotalMano.setWidths(arregloEnteros([90, 10]))
+
+        reportesPdfService.addCellTb(tablaTotalMano, new Paragraph("TOTAL", times10bold), prmsFilaDerecha)
+        reportesPdfService.addCellTb(tablaTotalMano, new Paragraph(numero(totalesMano, 4)?.toString(), times10bold), prmsFilaDerecha)
 
         PdfPTable tablaTituloE = new PdfPTable(2)
         tablaTituloE.setWidthPercentage(100)
@@ -678,9 +702,18 @@ class ReportesInventarioController {
                     reportesPdfService.addCellTb(tablaEquipos, new Paragraph(numero(r?.compcntd, 3)?.toString(), times8normal), prmsFilaDerecha)
                     reportesPdfService.addCellTb(tablaEquipos, new Paragraph(numero(r?.compprco, 4)?.toString(), times8normal), prmsFilaDerecha)
                     reportesPdfService.addCellTb(tablaEquipos, new Paragraph(numero((r?.compprco * r?.compcntd) , 4)?.toString(), times8normal), prmsFilaDerecha)
+
+                    totalesEquipos += ((r?.compprco * r?.compcntd) ?: 0)
                 }
             }
         }
+
+        PdfPTable tablaTotalEquipos = new PdfPTable(2);
+        tablaTotalEquipos.setWidthPercentage(100);
+        tablaTotalEquipos.setWidths(arregloEnteros([90, 10]))
+
+        reportesPdfService.addCellTb(tablaTotalEquipos, new Paragraph("TOTAL", times10bold), prmsFilaDerecha)
+        reportesPdfService.addCellTb(tablaTotalEquipos, new Paragraph(numero(totalesEquipos, 4)?.toString(), times10bold), prmsFilaDerecha)
 
         PdfPTable tablaHeader = new PdfPTable(2);
         tablaHeader.setWidthPercentage(100);
@@ -694,10 +727,13 @@ class ReportesInventarioController {
         document.add(tabla1)
         document.add(tablaTituloMat)
         document.add(tablaMat)
+        document.add(tablaTotalMat)
         document.add(tablaTituloM)
         document.add(tablaMano)
+        document.add(tablaTotalMano)
         document.add(tablaTituloE)
         document.add(tablaEquipos)
+        document.add(tablaTotalEquipos)
 
         document.close();
         pdfw.close()
