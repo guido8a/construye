@@ -21,8 +21,32 @@ class ReportesInventarioController {
 
     }
 
+    def listaConsumo() {
+        println "listaConsumo" + params
+        def datos;
+        def listaConsumo = ['obranmbr', 'bdga.bdganmbr', 'prsnapll', 'cnsmfcha::text']
+
+        def select = "select cnsm__id, obracdgo, obranmbr, cnsmfcha, cnsmetdo, bdganmbr, " +
+                "prsnnmbr||' '||prsnapll recibe " +
+                "from cnsm, obra, bdga, prsn rcbe "
+        def txwh = "where obra.obra__id = cnsm.obra__id and bdga.bdga__id = cnsm.bdga__id and " +
+                "rcbe.prsn__id = cnsm.prsnrcbe and cnsm.tpcs__id = 1 "
+        def sqlTx = ""
+        def bsca = listaConsumo[params.buscarPor.toInteger()-1]
+        def ordn = listaConsumo[params.ordenar.toInteger()-1]
+
+        txwh += " and $bsca ilike '%${params.criterio}%'"
+        sqlTx = "${select} ${txwh} order by ${ordn} limit 100 ".toString()
+        println "sql: $sqlTx"
+
+        def cn = dbConnectionService.getConnection()
+        datos = cn.rows(sqlTx)
+//        println "data: ${datos[0]}"
+        [data: datos]
+    }
+
     def listaObra() {
-        println "listaObra" + params
+//        println "listaObra" + params
         def listaObra = ['obranmbr', 'obracdgo']
         def datos;
         def select = "select obra.obra__id, obracdgo, obranmbr " +
@@ -38,12 +62,12 @@ class ReportesInventarioController {
 
         def cn = dbConnectionService.getConnection()
         datos = cn.rows(sqlTx)
-        println "data: ${datos}"
+//        println "data: ${datos}"
         [data: datos, tipo: params.tipo, consumo: params.consumo]
     }
 
     def listaComposicion() {
-        println "listaCompo" + params
+//        println "listaCompo" + params
         def listaObra = ['obranmbr', 'obracdgo']
         def datos;
         def select = "select obra.obra__id, obracdgo, obranmbr " +
@@ -59,12 +83,12 @@ class ReportesInventarioController {
 
         def cn = dbConnectionService.getConnection()
         datos = cn.rows(sqlTx)
-        println "data: ${datos}"
+//        println "data: ${datos}"
         [data: datos, tipo: params.tipo, consumo: params.consumo]
     }
 
     def listaDiferencia() {
-        println "listaDif" + params
+//        println "listaDif" + params
         def listaObra = ['obranmbr', 'obracdgo']
         def datos;
         def select = "select obra.obra__id, obracdgo, obranmbr " +
@@ -80,13 +104,13 @@ class ReportesInventarioController {
 
         def cn = dbConnectionService.getConnection()
         datos = cn.rows(sqlTx)
-        println "data: ${datos}"
+//        println "data: ${datos}"
         [data: datos, tipo: params.tipo, consumo: params.consumo]
     }
 
 
     def reporteCostoActual() {
-        println("params " + params)
+//        println("params " + params)
 
         def usuario = Persona.get(session.usuario.id)
         def empresa = usuario.empresa
@@ -96,7 +120,7 @@ class ReportesInventarioController {
         def cn = dbConnectionService.getConnection()
         def datos = cn.rows(sql)
 
-        println("sql " + sql)
+//        println("sql " + sql)
 
         def prmsHeaderHoja = [border: Color.WHITE]
         def prmsFila = [border: Color.WHITE, align: Element.ALIGN_CENTER, valign: Element.ALIGN_MIDDLE]

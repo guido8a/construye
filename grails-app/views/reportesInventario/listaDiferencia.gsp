@@ -27,7 +27,7 @@
         <tr>
             <td style="width: 15%">${dt.obracdgo}</td>
             <td style="width: 77%">${dt.obranmbr}</td>
-            <td style="width: 8%"><div style="text-align: center" class="seleccionaObra" id="reg_${i}"
+            <td style="width: 8%"><div style="text-align: center" class="seleccionaObraDiferencia" id="reg_${i}"
                                        regId="${dt?.obra__id}" regNmbr="${dt?.obranmbr}" regCdgo="${dt?.obracdgo}">
                 <button class="btn btn-small btn-success"><i class="icon-check"></i></button>
             </div></td>
@@ -39,7 +39,7 @@
 </table>
 
 <script type="text/javascript">
-    $(".seleccionaObra").click(function () {
+    $(".seleccionaObraDiferencia").click(function () {
         var obra = $(this).attr("regId");
         location.href="${createLink(controller: 'reportesInventario', action: 'reporteDiferencia')}?obra=" + obra;
         $("#buscarObraDiferencia").dialog("close");
