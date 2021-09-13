@@ -158,7 +158,6 @@ class RubroController extends janus.seguridad.Shield {
 //            println "detalle " + detalle.errors
         } else {
             rubro.fechaModificacion = new Date()
-            rubro.empresa = empresa
             rubro.save(flush: true)
             render "" + item.departamento.subgrupo.grupo.id + ";" + detalle.id + ";" + detalle.item.id + ";" + detalle.cantidad + ";" + detalle.rendimiento + ";" + ((item.tipoLista) ? item.tipoLista?.id : "0")
         }
@@ -416,6 +415,8 @@ class RubroController extends janus.seguridad.Shield {
     def save() {
 //        println "save rubro " + params.rubro
 //        println("params " +  params)
+        def persona = Persona.get(session.usuario.id)
+        def empresa = persona.empresa
         params.rubro.codigo = params.rubro.codigo.toUpperCase()
         params.rubro.codigoEspecificacion = params.rubro.codigoEspecificacion.toUpperCase()
 
@@ -427,6 +428,7 @@ class RubroController extends janus.seguridad.Shield {
             rubro.fechaModificacion = new Date()
         } else {
             rubro = new Item(params)
+            rubro.empresa = empresa
             params.rubro.fecha = new Date()
             rubro.tipoItem = TipoItem.get(2)
         }
