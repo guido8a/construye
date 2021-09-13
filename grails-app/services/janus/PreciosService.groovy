@@ -510,11 +510,9 @@ class PreciosService {
         return result
      }
 
+    /* calcula valores de rubros para toda la obra */
     def rbro_pcun_v4(obra,orden){
-
-
 //        println("ordenv4:" + orden)
-
         def cn = dbConnectionService.getConnection()
         def sql = "select * from rbro_pcun_v2(" + obra + ") order by vlobordn ${orden}"
         def result = []
@@ -524,23 +522,20 @@ class PreciosService {
         }
         cn.close()
         return result
-
     }
 
+    /* calcula valores de rubros para un subpresupuesto */
     def rbro_pcun_v5(obra,subpres,orden){
-
 //        println("ordenv3:" + orden)
-
         def cn = dbConnectionService.getConnection()
         def sql = "select * from rbro_pcun_v2(" + obra + ") where sbpr__id= ${subpres} order by vlobordn ${orden}"
-//        println "rbro_pcun_v5   vlob_pcun_v2 " + sql
+        println "rbro_pcun_v5   vlob_pcun_v2 " + sql
         def result = []
         cn.eachRow(sql.toString()) { r ->
             result.add(r.toRowResult())
         }
         cn.close()
         return result
-
     }
 
 

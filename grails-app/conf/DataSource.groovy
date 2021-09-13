@@ -21,7 +21,7 @@ environments {
             dbCreate = "update"
           /** consugez **/
 //            url = "jdbc:postgresql://127.0.0.1:5432/consugez"  //ok
-            url = "jdbc:postgresql://127.0.0.1:5432/cngz_brre"  //ok
+            url = "jdbc:postgresql://127.0.0.1:5432/cngz"  //v3-- pcmo y pcmt
 
             username = "postgres"
             password = "postgres"

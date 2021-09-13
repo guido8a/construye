@@ -327,6 +327,7 @@
 
                 cargarTabla();
                 $("#vol_id").val("")
+
                 $("#calcular").click(function () {
                     if ($(this).hasClass("active")) {
                         $(this).removeClass("active")

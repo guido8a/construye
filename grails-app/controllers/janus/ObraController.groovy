@@ -287,18 +287,18 @@ class ObraController extends janus.seguridad.Shield {
         if(consultoria) valorMenorCuantia = 0
         println "es consultoría: ${consultoria}"
         def valorObra = obra.valor
-        if (valorObra <= valorMenorCuantia) {
-            if (obra.tipo != 'D') {
-                if (totalP.toDouble().round(6) != 1.000) {
-                    render "La suma de los coeficientes de la formula polinómica (${totalP}) es diferente a 1.000"
-                    return
-                }
-                if (totalC.toDouble().round(6) != 1.000) {
-                    render "La suma de los coeficientes de la Cuadrilla tipo (${totalC}) es diferente a 1.000"
-                    return
-                }
-            }
-        }
+//        if (valorObra <= valorMenorCuantia) {
+//            if (obra.tipo != 'D') {
+//                if (totalP.toDouble().round(6) != 1.000) {
+//                    render "La suma de los coeficientes de la formula polinómica (${totalP}) es diferente a 1.000"
+//                    return
+//                }
+//                if (totalC.toDouble().round(6) != 1.000) {
+//                    render "La suma de los coeficientes de la Cuadrilla tipo (${totalC}) es diferente a 1.000"
+//                    return
+//                }
+//            }
+//        }
 
         def documentos = DocumentoObra.findAllByObra(obra)
         if (documentos.size() < 2) {

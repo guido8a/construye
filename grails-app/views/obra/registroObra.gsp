@@ -139,16 +139,16 @@
                 </button>
             </g:if>
         </g:if>
-        <g:if test="${obra?.estado == 'R' && obra?.tipo != 'D'}">
-            <g:if test="${!obra?.fechaInicio}">
-                <button class="btn" id="btn-memoSIF"><i class="icon-file-text"></i> Memo al S.I.F.
-                </button>
-            </g:if>
-            <g:if test="${obra?.memoSif != "" && obra?.estadoSif != 'R'}">
-                <button class="btn" id="btn-aprobarSif"><i class="icon-file-text"></i> Aprobar S.I.F.
-                </button>
-            </g:if>
-        </g:if>
+        %{--<g:if test="${obra?.estado == 'R' && obra?.tipo != 'D'}">--}%
+            %{--<g:if test="${!obra?.fechaInicio}">--}%
+                %{--<button class="btn" id="btn-memoSIF"><i class="icon-file-text"></i> Memo al S.I.F.--}%
+                %{--</button>--}%
+            %{--</g:if>--}%
+            %{--<g:if test="${obra?.memoSif != "" && obra?.estadoSif != 'R'}">--}%
+                %{--<button class="btn" id="btn-aprobarSif"><i class="icon-file-text"></i> Aprobar S.I.F.--}%
+                %{--</button>--}%
+            %{--</g:if>--}%
+        %{--</g:if>--}%
     </g:if>
     <g:else>%{-- usuarurio de PRSP --}%
 
@@ -206,23 +206,25 @@
                 </button>
             </g:if>
         </g:if>
-        <g:if test="${obra?.estado == 'R' && obra?.tipo != 'D'}">
-            <g:if test="${!obra?.fechaInicio}">
-                <button class="btn" id="btn-memoSIF"><i class="icon-file-text"></i> Memo al S.I.F.
-                </button>
-            </g:if>
-            <g:if test="${obra?.memoSif != "" && obra?.estadoSif != 'R'}">
-                <button class="btn" id="btn-aprobarSif"><i class="icon-file-text"></i> Aprobar S.I.F.
-                </button>
-            </g:if>
-        </g:if>
+        %{--<g:if test="${obra?.estado == 'R' && obra?.tipo != 'D'}">--}%
+            %{--<g:if test="${!obra?.fechaInicio}">--}%
+                %{--<button class="btn" id="btn-memoSIF"><i class="icon-file-text"></i> Memo al S.I.F.--}%
+                %{--</button>--}%
+            %{--</g:if>--}%
+            %{--<g:if test="${obra?.memoSif != "" && obra?.estadoSif != 'R'}">--}%
+                %{--<button class="btn" id="btn-aprobarSif"><i class="icon-file-text"></i> Aprobar S.I.F.--}%
+                %{--</button>--}%
+            %{--</g:if>--}%
+        %{--</g:if>--}%
 
     </g:else>
 
+%{--
     <g:if test="${obra?.id && (obra?.estado != 'R')}">
         <button class="btn" id="revisarPrecios"><i class="icon-check"></i> Precios 0</button>
         <button class="btn btn-warning" id="procesaPrecios"><i class="icon-check"></i> Procesar Precios</button>
     </g:if>
+--}%
 
 </div>
 
