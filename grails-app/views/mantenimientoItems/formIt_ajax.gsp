@@ -47,7 +47,7 @@
                                     <span class="add-on">${cd1}</span>
                                 </g:if>
                                 <span class="add-on">${cd2}</span>
-                                <g:textField name="codigo" maxlength="20" class="allCaps required input-small" value="${cd ? cd : (maximo?.toString()?.padLeft(3, '0') ?: 001.toString()?.padLeft(3, '0'))}"/>
+                                <g:textField name="codigo" maxlength="20" minlength="3" class="allCaps required input-small" value="${cd ? cd : (maximo?.toString()?.padLeft(3, '0') ?: 001.toString()?.padLeft(3, '0'))}"/>
                                 <span class="mandatory">*</span>
 
                                 <p class="help-block ui-helper-hidden"></p>
@@ -330,6 +330,35 @@
             ev.keyCode == 8 || ev.keyCode == 46 || ev.keyCode == 9 ||
             ev.keyCode == 37 || ev.keyCode == 39);
     }
+
+
+
+    function validarNumDec(ev) {
+        /*
+         48-57      -> numeros
+         96-105     -> teclado numerico
+         188        -> , (coma)
+         190        -> . (punto) teclado
+         110        -> . (punto) teclado numerico
+         8          -> backspace
+         46         -> delete
+         9          -> tab
+         37         -> flecha izq
+         39         -> flecha der
+         */
+        return ((ev.keyCode >= 48 && ev.keyCode <= 57) ||
+            (ev.keyCode >= 96 && ev.keyCode <= 105) ||
+            ev.keyCode == 8 || ev.keyCode == 46 || ev.keyCode == 9 ||
+            ev.keyCode == 37 || ev.keyCode == 39);
+    }
+
+    $("#codigo").keydown(function (ev) {
+        return validarNumDec(ev)
+    });
+
+
+
+
 
     label();
 

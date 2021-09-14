@@ -969,6 +969,8 @@ class MantenimientoItemsController extends Shield {
 
     def checkCdIt_ajax() {
         def dep = DepartamentoItem.get(params.dep)
+        def usuario = Persona.get(session.usuario.id)
+        def empresa = usuario.empresa
         if (dep.subgrupo.grupo.id != 2)
             params.codigo = dep.subgrupo.codigo.toString().padLeft(3, '0') + "." + dep.codigo.toString().padLeft(3, '0') + "." + params.codigo
         else
@@ -980,7 +982,7 @@ class MantenimientoItemsController extends Shield {
             if (params.codigo.toString().trim() == item.codigo.toString().trim()) {
                 render true
             } else {
-                def items = Item.findAllByCodigo(params.codigo)
+                def items = Item.findAllByCodigoAndEmpresa(params.codigo, empresa)
                 if (items.size() == 0) {
                     render true
                 } else {
@@ -988,7 +990,7 @@ class MantenimientoItemsController extends Shield {
                 }
             }
         } else {
-            def items = Item.findAllByCodigo(params.codigo)
+            def items = Item.findAllByCodigoAndEmpresa(params.codigo, empresa)
             if (items.size() == 0) {
                 render true
             } else {
@@ -998,12 +1000,14 @@ class MantenimientoItemsController extends Shield {
     }
 
     def checkNmIt_ajax() {
+        def usuario = Persona.get(session.usuario.id)
+        def empresa = usuario.empresa
         if (params.id) {
             def item = Item.get(params.id)
             if (params.nombre == item.nombre) {
                 render true
             } else {
-                def items = Item.findAllByNombre(params.nombre)
+                def items = Item.findAllByNombreAndEmpresa(params.nombre, empresa)
                 if (items.size() == 0) {
                     render true
                 } else {
@@ -1011,7 +1015,7 @@ class MantenimientoItemsController extends Shield {
                 }
             }
         } else {
-            def items = Item.findAllByNombre(params.nombre)
+            def items = Item.findAllByNombreAndEmpresa(params.nombre, empresa)
             if (items.size() == 0) {
                 render true
             } else {
