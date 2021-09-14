@@ -79,7 +79,7 @@ class Item implements Serializable {
         responsable(nullable: true,blank:true)
         empresa(nullable: true,blank:true)
         nombre(size: 1..160, blank: false, attributes: [title: 'nombre'])
-        codigo(size: 1..30, blank: false, unique: true, attributes: [title: 'numero'])
+        codigo(size: 1..30, blank: false, attributes: [title: 'numero'])
         unidad(blank: true, nullable: true, attributes: [title: 'unidad'])
         tipoItem(blank: true, nullable: true, attributes: [title: 'tipoItem'])
         peso(blank: true, nullable: true, attributes: [title: 'peso'])

@@ -905,6 +905,8 @@ class MantenimientoItemsController extends Shield {
     }
 
     def formIt_ajax() {
+        def usuario = Persona.get(session.usuario.id)
+        def empresa = usuario.empresa
         def departamento = DepartamentoItem.get(params.departamento)
         def itemInstance = new Item()
         if (params.id) {
@@ -918,7 +920,7 @@ class MantenimientoItemsController extends Shield {
         println("sub " + subgrupo)
 
 
-        def sql="select max(substr(itemcdgo, length(itemcdgo)-2,3)::integer+1) from item where itemcdgo ilike '${grupo.toString() + "." + subgrupo.toString() + ".%"}'"
+        def sql="select max(substr(itemcdgo, length(itemcdgo)-2,3)::integer+1) from item where itemcdgo ilike '${grupo.toString() + "." + subgrupo.toString() + ".%"}' and empr__id = ${empresa?.id}"
         def cn = dbConnectionService.getConnection()
         def maximo = cn.rows(sql)
 
