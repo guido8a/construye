@@ -35,7 +35,7 @@
                         <g:set var="cd2" value="${departamento.codigo.toString().padLeft(3, '0')}"/>
                         <g:set var="cd" value="${itemInstance?.codigo}"/>
                         <g:if test="${itemInstance.id && cd}">
-                            <g:set var="cd" value="${cd?.replace(cd1 + ".", '').replace(cd2 + ".", '')}"/>
+                            <g:set var="cd" value="${cd?.replace(cd1 + ".", '')?.replace(cd2 + ".", '')}"/>
                         </g:if>
                         <g:if test="${itemInstance.id}">
                             <g:if test="${itemInstance?.departamento?.subgrupo?.grupoId != 2 && departamento.subgrupo.grupoId != 2}">
@@ -47,7 +47,7 @@
                                     <span class="add-on">${cd1}</span>
                                 </g:if>
                                 <span class="add-on">${cd2}</span>
-                                <g:textField name="codigo" maxlength="20" class="allCaps required input-small" value="${cd}"/>
+                                <g:textField name="codigo" maxlength="20" class="allCaps required input-small" value="${cd ? cd : (maximo?.toString()?.padLeft(3, '0') ?: 001.toString()?.padLeft(3, '0'))}"/>
                                 <span class="mandatory">*</span>
 
                                 <p class="help-block ui-helper-hidden"></p>
@@ -94,43 +94,41 @@
         </div>
     </div>
 
-    <div class="control-group">
-        <div>
-            <span class="control-label label label-inverse">
-                Código CPC (SERCOP)
-            </span>
-        </div>
 
-        %{--TODO: buscador de CPC--}%
+    <table>
+        <tr>
+            <td width="500px">
+                <div class="control-group">
+                    <div>
+                        <span class="control-label label label-inverse">
+                            Unidad
+                        </span>
+                    </div>
 
-        <div class="controls">
-        %{--<g:hiddenField name="id" value="${itemInstance?.id}"/>--}%
-        <input readonly="" type="text" style="width: 154px;;font-size: 12px;" id="item_codigo" value="${janus.pac.CodigoComprasPublicas.get(itemInstance?.codigoComprasPublicas?.id)?.numero}">
-        <input type="hidden" style="width: 60px" id="item_cpac" name="codigoComprasPublicas.id" value="${itemInstance?.codigoComprasPublicas?.id}">
-%{--
-            <g:select id="item_codigo" name="unidad.id" from="${janus.Unidad.list([sort: 'descripcion'])}" optionKey="id" optionValue="descripcion"
-                      class="many-to-one " value="${itemInstance?.unidad?.id}" noSelection="['': '']"/>
---}%
+                    <div class="controls">
+                        <g:select id="unidad" name="unidad.id" from="${janus.Unidad.list([sort: 'descripcion'])}" optionKey="id" optionValue="descripcion"
+                                  class="many-to-one " value="${itemInstance?.unidad?.id}"/>
 
-            <p class="help-block ui-helper-hidden"></p>
-        </div>
-    </div>
-
-
-    <div class="control-group">
-        <div>
-            <span class="control-label label label-inverse">
-                Unidad
-            </span>
-        </div>
-
-        <div class="controls">
-            <g:select id="unidad" name="unidad.id" from="${janus.Unidad.list([sort: 'descripcion'])}" optionKey="id" optionValue="descripcion"
-                      class="many-to-one " value="${itemInstance?.unidad?.id}"/>
-
-            <p class="help-block ui-helper-hidden"></p>
-        </div>
-    </div>
+                        <p class="help-block ui-helper-hidden"></p>
+                    </div>
+                </div>
+            </td>
+            <td>
+                <div class="control-group">
+                    <div>
+                        <span class="control-label label label-inverse">
+                            Código CPC (SERCOP)
+                        </span>
+                    </div>
+                    <div class="controls">
+                        <input readonly="" type="text" style="width: 154px;;font-size: 12px;" id="item_codigo" value="${janus.pac.CodigoComprasPublicas.get(itemInstance?.codigoComprasPublicas?.id)?.numero}">
+                        <input type="hidden" style="width: 60px" id="item_cpac" name="codigoComprasPublicas.id" value="${itemInstance?.codigoComprasPublicas?.id}">
+                        <p class="help-block ui-helper-hidden"></p>
+                    </div>
+                </div>
+            </td>
+        </tr>
+    </table>
 
 %{--
     <div class="control-group">
@@ -201,33 +199,41 @@
         <g:hiddenField name="peso" maxlength="20" class=" required input-small" value="0"/>
     </g:else>
 
-    <div class="control-group">
-        <div>
-            <span class="control-label label label-inverse">
-                Estado
-            </span>
-        </div>
 
-        <div class="controls">
-            <g:select from="['A': 'Activo', 'B': 'Dado de baja']" name="estado" class="input-medium" value="${itemInstance?.estado}" optionKey="key" optionValue="value"/>
+    <table>
+        <tr>
+            <td width="500px">
+                <div class="control-group">
+                    <div>
+                        <span class="control-label label label-inverse">
+                            Fecha
+                        </span>
+                    </div>
 
-            <p class="help-block ui-helper-hidden"></p>
-        </div>
-    </div>
+                    <div class="controls">
+                        <elm:datepicker name="fecha" class="datepicker" style="width: 90px" value="${itemInstance?.fecha}"/>
 
-    <div class="control-group">
-        <div>
-            <span class="control-label label label-inverse">
-                Fecha
-            </span>
-        </div>
+                        <p class="help-block ui-helper-hidden"></p>
+                    </div>
+                </div>
+            </td>
+            <td>
+                <div class="control-group">
+                    <div>
+                        <span class="control-label label label-inverse">
+                            Estado
+                        </span>
+                    </div>
 
-        <div class="controls">
-            <elm:datepicker name="fecha" class="datepicker" style="width: 90px" value="${itemInstance?.fecha}"/>
+                    <div class="controls">
+                        <g:select from="['A': 'Activo', 'B': 'Dado de baja']" name="estado" class="input-medium" value="${itemInstance?.estado}" optionKey="key" optionValue="value"/>
 
-            <p class="help-block ui-helper-hidden"></p>
-        </div>
-    </div>
+                        <p class="help-block ui-helper-hidden"></p>
+                    </div>
+                </div>
+            </td>
+        </tr>
+    </table>
 
 %{--
     <div class="control-group">
@@ -269,7 +275,7 @@
         </div>
 
         <div class="controls">
-            <g:textArea cols="5" rows="4" style="resize: none; height: 65px;" name="observaciones" maxlength="127" class="input-xxlarge allC3aps" value="${itemInstance?.observaciones}"/>
+            <g:textArea style="resize: none; height: 45px; width: 600px" name="observaciones" maxlength="127" class="input-xxlarge allC3aps" value="${itemInstance?.observaciones}"/>
 
             <p class="help-block ui-helper-hidden"></p>
         </div>
@@ -319,10 +325,10 @@
          39         -> flecha der
          */
         return ((ev.keyCode >= 48 && ev.keyCode <= 57) ||
-                (ev.keyCode >= 96 && ev.keyCode <= 105) ||
-                ev.keyCode == 190 || ev.keyCode == 110 ||
-                ev.keyCode == 8 || ev.keyCode == 46 || ev.keyCode == 9 ||
-                ev.keyCode == 37 || ev.keyCode == 39);
+            (ev.keyCode >= 96 && ev.keyCode <= 105) ||
+            ev.keyCode == 190 || ev.keyCode == 110 ||
+            ev.keyCode == 8 || ev.keyCode == 46 || ev.keyCode == 9 ||
+            ev.keyCode == 37 || ev.keyCode == 39);
     }
 
     label();

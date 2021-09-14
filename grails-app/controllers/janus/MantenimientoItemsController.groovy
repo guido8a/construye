@@ -911,9 +911,23 @@ class MantenimientoItemsController extends Shield {
             itemInstance = Item.get(params.id)
         }
 
+        def grupo = departamento.codigo.toString().padLeft(3, '0')
+        def subgrupo = departamento.subgrupo.codigo.toString().padLeft(3, '0')
+
+        println("grupo " + grupo)
+        println("sub " + subgrupo)
+
+
+        def sql="select max(substr(itemcdgo, length(itemcdgo)-2,3)::integer+1) from item where itemcdgo ilike '${grupo.toString() + "." + subgrupo.toString() + ".%"}'"
+        def cn = dbConnectionService.getConnection()
+        def maximo = cn.rows(sql)
+
+        println("sql " + sql)
+        println("maximo " + maximo[0].max)
+
         def campos = ["numero": ["Código", "string"], "descripcion": ["Descripción", "string"]]
 
-        return [departamento: departamento, itemInstance: itemInstance, grupo: params.grupo, campos: campos]
+        return [departamento: departamento, itemInstance: itemInstance, grupo: params.grupo, campos: campos, maximo: maximo[0].max]
     }
 
     def buscaCpac() {
@@ -1326,7 +1340,6 @@ class MantenimientoItemsController extends Shield {
 //        println params.fecha
 //        println params.fecha.class
 
-        //TODO: WTF la fecha llega como Date y no como String??????
         def lugar = []
         def precios = []
         def precioRef = false
