@@ -647,6 +647,10 @@ class ObraController extends janus.seguridad.Shield {
 
     def buscarObra() {
 //        println "buscar obra "+params
+
+        def usuario = Persona.get(session.usuario.id)
+        def empresa = usuario.empresa
+
         def extraParr = ""
         def extraCom = ""
         def extraDep = ""
@@ -781,7 +785,7 @@ class ObraController extends janus.seguridad.Shield {
         }
 
 
-        def extras = " and liquidacion=0"
+        def extras = " and empr__id = ${empresa?.id} and liquidacion=0"
         if (extraParr.size() > 0)
             extras += " and parroquia in (${extraParr})"
         if (extraCan.size() > 0)
@@ -1191,6 +1195,7 @@ class ObraController extends janus.seguridad.Shield {
     def save() {
         def usuario = session.usuario.id
         def persona = Persona.get(usuario)
+        def empresa = persona.empresa
 
         params.oficioIngreso = params.oficioIngreso.toUpperCase()
         params.memoCantidadObra = params.memoCantidadObra.toUpperCase()
@@ -1200,25 +1205,19 @@ class ObraController extends janus.seguridad.Shield {
 
         if (params.anchoVia) {
             params.anchoVia = params.anchoVia.toDouble()
-
         } else {
-
             params.anchoVia = 0
         }
 
         if (params.longitudVia) {
-
             params.longitudVia = params.longitudVia.replaceAll(",", "").toDouble()
         } else {
-
             params.longitudVia = 0
-
         }
 
         if (params.formulaPolinomica) {
             params.formulaPolinomica = params.formulaPolinomica.toUpperCase()
         }
-
 
         if (params.fechaOficioSalida) {
             params.fechaOficioSalida = new Date().parse("dd-MM-yyyy", params.fechaOficioSalida)
@@ -1232,22 +1231,17 @@ class ObraController extends janus.seguridad.Shield {
             params.fechaCreacionObra = new Date().parse("dd-MM-yyyy", params.fechaCreacionObra)
         }
 
-
         if (params.id) {
             if (session.perfil.codigo == 'ADDI' || session.perfil.codigo == 'COGS') {
                 params.departamento = Departamento.get(params.per.id)
             } else {
                 params.departamento = Departamento.get(params.departamento.id)
             }
-
         }
+
         params."departamento.id" = params.departamento.id
 
-//        println("depto" + params.departamento.id)
-//        println("depto aaaa " + params."departamento.id")
-
         def obraInstance
-
 
         if (params.id) {
 
@@ -1286,11 +1280,13 @@ class ObraController extends janus.seguridad.Shield {
 
         }//es edit
         else {
-            if(!Obra.findByCodigo(params.codigo)){
+            if(!Obra.findByCodigoAndEmpresa(params.codigo, empresa)){
 
-                obraInstance = new Obra(params)
 
                 def departamento
+                obraInstance = new Obra(params)
+
+                obraInstance.empresa = empresa
 
                 if (session.perfil.codigo == 'ADDI' || session.perfil.codigo == 'COGS') {
                     departamento = Departamento.get(persona?.departamento?.id)
@@ -1348,19 +1344,13 @@ class ObraController extends janus.seguridad.Shield {
                 flash.message = " No se pudo guardar la obra,  código duplicado!"
                 redirect(action: 'registroObra')
                 return
-
             }
-
-
-
         } //es create
 
         obraInstance.estado = "N"
 //        obraInstance.departamento.id = params.departamento.id
 
         if (!obraInstance.save(flush: true)) {
-
-//            println("--->>>>>>>>>>>>>>>>>>>")
             flash.clase = "alert-error"
             def str = "<h4>No se pudo guardar Obra " + (obraInstance.id ? obraInstance.id : "") + "</h4>"
 
@@ -1378,7 +1368,6 @@ class ObraController extends janus.seguridad.Shield {
             redirect(action: 'registroObra')
             return
         } else {
-//            println("entro")
         }
 
         if (params.id) {
@@ -1452,8 +1441,6 @@ class ObraController extends janus.seguridad.Shield {
             } else {
                 obraInstance.responsableObra = persona   // cambia de dueño al usuario que copia de la PRSP
             }
-
-
 
             if (!obraInstance.save(flush: true)) {
                 flash.clase = "alert-error"

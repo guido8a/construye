@@ -159,7 +159,7 @@
             <div class="controls">
                 %{--<g:select from="['P': 'Peso (capital de cantón)', 'P1': 'Peso (especial)', 'V': 'Volumen (materiales pétreos para hormigones)', 'V1': 'Volumen (materiales pétreos para mejoramiento)', 'V2': 'Volumen (materiales pétreos para carpeta asfáltica)']"--}%
                 %{--name="transporte" class="span4" value="${itemInstance?.transporte}" optionKey="key" optionValue="value"/>--}%
-                <elm:select from="${janus.TipoLista.findAllByUnidadIsNotNull([sort: 'descripcion'])}" optionClass="unidad" id="tipoLista"
+                <elm:select from="${janus.TipoLista.findAllByUnidadIsNotNull([sort: 'id'])}" optionClass="unidad" id="tipoLista"
                             name="tipoLista.id" class="span4" value="${itemInstance?.tipoListaId}" optionKey="id" optionValue="descripcion"/>
                 <p class="help-block ui-helper-hidden"></p>
             </div>

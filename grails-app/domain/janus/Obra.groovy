@@ -1,5 +1,7 @@
 package janus
 
+import janus.construye.Empresa
+
 class Obra implements Serializable {
     Persona responsableObra
     Persona revisor
@@ -107,7 +109,6 @@ class Obra implements Serializable {
     Persona firmaInicioObra
     String anexos
 
-
     String observacionesInicioObra
 	Date fechaImpresionInicioObra
 
@@ -129,6 +130,8 @@ class Obra implements Serializable {
     String coordenadasVia
     int precioManoObra = 0
     int precioMateriales = 0
+
+    Empresa empresa
 
     static auditable = true
     static mapping = {
@@ -264,6 +267,7 @@ class Obra implements Serializable {
             coordenadasVia column: 'obracrvi'
             precioManoObra column: 'obrapcmo'
             precioMateriales column: 'obrapcmt'
+            empresa column: 'empr__id'
 
         }
     }
@@ -394,6 +398,7 @@ class Obra implements Serializable {
         indiceGastoObra(blank:true, nullable:true)
 
         coordenadasVia(blank:true, nullable:true)
+        empresa(blank:false, nullable:false)
     }
 
     String toString() {
