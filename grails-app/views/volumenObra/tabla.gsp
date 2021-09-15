@@ -37,7 +37,7 @@
             Impr. Subpre.
         </a>
         <a href="#" class="btn  " id="imprimir_excel" style="margin-left:-7px">
-            <i class="icon-table"></i>
+            <i class="fa fa-file-excel-o"></i>
             Excel
         </a>
 
@@ -46,7 +46,7 @@
             Subpre. VAE
         </a>
         <a href="#" class="btn  " id="imprimir_vae_excel">
-            %{--<i class="icon-table"></i>--}%
+            <i class="fa fa-file-excel-o"></i>
            VAE Excel
         </a>
         <g:if test="${obra?.estado != 'R' && duenoObra == 1}">

@@ -20,11 +20,6 @@
             padding: 2px 6px;
             margin-top: -10px
         }
-/*
-        .textoRojo {
-            color: #800000; !important;
-        }    
-*/
         </style>
     </head>
 
@@ -52,7 +47,6 @@
         </div>
     </div>
 
-        %{--<div class="tituloTree">--}%
         <div style=" font-size: 14px;  color: #0088CC;">
             Volúmenes de la obra: ${obra.nombre + " (" + obra.codigo + ")"}
             <input type="hidden" id="override" value="0">
@@ -134,14 +128,13 @@
                                       id="subPres"/>
                             </span>
 
-                            %{--todo descomentar esto--}%
                             %{--<g:select name="subpresupuesto" from="${subPresupuesto1}" optionKey="id" optionValue="descripcion" style="width: 300px;;font-size: 10px" id="subPres"/>--}%
 
                         </span>
 
                     <g:if test="${persona?.departamento?.codigo == 'PRSP'}">
                     %{--<g:if test="${duenoObra == 1}">--}%
-                        <a href="#" class="btn boton" id="btnCrearSP" title="Crear subpresupuesto" style="margin-top: -10px;">
+                        <a href="#" class="btn boton btn-primary" id="btnCrearSP" title="Crear subpresupuesto" style="margin-top: -10px;">
                             <i class="icon-plus"></i>
                         </a>
                         <a href="#" class="btn boton" id="btnBorrarSP" title="Borrar subpresupuesto" style="margin-top: -10px;">
@@ -152,19 +145,6 @@
                         </a>
 
                     </g:if>
-                        %{--<g:else>--}%
-                        %{--<g:if test="${persona?.departamento?.id == obra?.departamento?.id}">--}%
-                            %{--<a href="#" class="btn" id="btnCrearSP" title="Crear subpresupuesto" style="margin-top: -10px;">--}%
-                                %{--<i class="icon-plus"></i>--}%
-                            %{--</a>--}%
-                            %{--<a href="#" class="btn" id="btnBorrarSP" title="Borrar subpresupuesto" style="margin-top: -10px;">--}%
-                                %{--<i class="icon-minus"></i>--}%
-                            %{--</a>--}%
-                            %{--<a href="#" class="btn" id="btnEditarSP" title="Editar subpresupuesto" style="margin-top: -10px;">--}%
-                                %{--<i class="icon-edit"></i>--}%
-                            %{--</a>--}%
-                        %{--</g:if>--}%
-                        %{--</g:else>--}%
 
                     </div>
 
