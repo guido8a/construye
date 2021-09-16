@@ -336,7 +336,7 @@
 
                 <div class="span2">
                     <g:textField type="text" name="factorVolumen" class="inputVar num"
-                                 value="${g.formatNumber(number: (obra?.factorVolumen) ?: par.factorVolumen.replace('.',','), maxFractionDigits: 2, minFractionDigits: 2, format: '##,##0', locale: 'ec')}"/>
+                                 value="${g.formatNumber(number: (obra?.factorVolumen) ?: par.factorVolumen.replace('.',','), maxFractionDigits: 2, minFractionDigits: 2, format: '##,##0')}"/>
                 </div>
             </div>
 
