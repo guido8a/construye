@@ -894,6 +894,7 @@
 
                 <ul class="nav">
                     <li><a href="#" id="btnVar"><i class="icon-pencil"></i>Variables</a></li>
+                    <g:if test="${obra?.factorPeso > 0}">
                     <li><a href="${g.createLink(controller: 'volumenObra', action: 'volObra', id: obra?.id)}"><i
                             class="icon-list-alt"></i>Vol. Obra
                     </a></li>
@@ -944,6 +945,12 @@
                             </a>
                         </li>
                     </g:if>
+                    </g:if>
+                    <g:else>
+                        <li>
+                        <a href="#">Ingrese las variables de la Obra para poder registrar las cantidades de obra</a>
+                        </li>
+                    </g:else>
 
                 </ul>
 
