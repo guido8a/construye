@@ -435,10 +435,11 @@ class ObraController extends janus.seguridad.Shield {
     }
 
     def registroObra() {
+        def usuario = Persona.get(session.usuario.id)
+        def empresa = usuario.empresa
 
         def cn = dbConnectionService.getConnection()
-//        println "---" + params
-//        println "---" + params
+
         def obra
         def perfil = session.perfil
         def persona = Persona.get(session.usuario.id)
@@ -462,22 +463,8 @@ class ObraController extends janus.seguridad.Shield {
         }
 
         def sbprMF = [:]
-
-
-//        println "fecha: " + fechaPrecio
-
-//filtro original combos programa tipo clase
-
-//        if(grupo != null){
-//            programa = Programacion.findAllByGrupo(grupo)
-//            tipoObra = TipoObra.findAllByGrupo(grupo)
-//            claseObra = ClaseObra.findAllByGrupo(grupo)
-//        }else {
-//            programa = -1
-//            tipoObra = -1
-//            claseObra = -1
-//        }
-
+        def tipoLista = TipoLista.get(6)
+        def listaPrecios = Lugar.findAllByEmpresaAndTipoLista(empresa, tipoLista)
 
         programa = Programacion.list();
         tipoObra = TipoObra.list();
@@ -490,7 +477,6 @@ class ObraController extends janus.seguridad.Shield {
 //        println("programa" + programa)
 //        println("tipo" + tipoObra)
 //        println("clase" + claseObra)
-
 
         def matrizOk = false
 
@@ -541,13 +527,13 @@ class ObraController extends janus.seguridad.Shield {
 
             duenoObra = esDuenoObra(obra) ? 1 : 0
 
-            println "dueÑo: $duenoObra, concurso: $concurso"
+//            println "dueÑo: $duenoObra, concurso: $concurso"
 //            println "sbprMF: ${sbprMF}"
 
             [campos: campos, prov: prov, obra: obra, subs: subs, persona: persona, formula: formula, volumen: volumen,
              matrizOk: matrizOk, verif: verif, verifOK: verifOK, perfil: perfil, programa: programa, tipoObra: tipoObra,
              claseObra: claseObra, grupoDir: grupo, dire  : direccion, depar: departamentos, concurso: concurso,
-             personasPRSP: personasPRSP, duenoObra: duenoObra, sbprMF:sbprMF]
+             personasPRSP: personasPRSP, duenoObra: duenoObra, sbprMF:sbprMF, listaPreciosC: listaPrecios]
         } else {
 
             duenoObra = 0
@@ -555,7 +541,7 @@ class ObraController extends janus.seguridad.Shield {
 
             [campos: campos, prov: prov, persona: persona, matrizOk: matrizOk, perfil: perfil, programa: programa,
              tipoObra: tipoObra, claseObra: claseObra, grupoDir: grupo, dire: direccion, depar: departamentos,
-             fcha: fechaPrecio, personasPRSP: personasPRSP, duenoObra: duenoObra, sbprMF:sbprMF]
+             fcha: fechaPrecio, personasPRSP: personasPRSP, duenoObra: duenoObra, sbprMF:sbprMF, listaPreciosC: listaPrecios]
         }
     }
 

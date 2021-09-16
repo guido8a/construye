@@ -2,7 +2,7 @@
 <html>
     <head>
         <meta name="layout" content="main">
-        <title>PRECIOS Y MANT. DE ITEMS</title>
+        <title>REGISTRO Y MANT. DE PRECIOS</title>
 
         <script type="text/javascript" src="${resource(dir: 'js/jquery/plugins/jstree', file: 'jquery.jstree.js')}"></script>
         <script type="text/javascript" src="${resource(dir: 'js/jquery/plugins/jstree/_lib', file: 'jquery.cookie.js')}"></script>

@@ -663,11 +663,7 @@
 
             <div class="span2" style="margin-right: 20px; margin-left: 0px; width: 300px;"><g:select
                     style="width: 300px;" name="listaManoObra.id"
-                    from="${janus.Lugar.findAll('from Lugar  where tipoLista=6')}" optionKey="id"
-                    optionValue="descripcion" value="${obra?.listaManoObra?.id}"
-                    title="Precios para Mano de Obra y Equipos"/></div>
-
-
+                    from="${listaPreciosC}" optionKey="id" optionValue="descripcion" value="${obra?.listaManoObra?.id}"  title="Precios para Mano de Obra y Equipos"/></div>
             <div class="span1">Fecha</div>
 
             <div class="span2" style="margin-left: 0;"><elm:datepicker name="fechaPreciosRubros"
@@ -872,7 +868,7 @@
 
         <div class="span3" style="margin-top: 10px">
             <div class="span3">
-                <g:select name="oferenteCopia" from="${janus.Persona.findAll('from Persona where departamento=13')}"
+                <g:select name="oferenteCopia" from="${janus.Persona.findAllByDepartamento(Departamento.get(13))}"
                           optionKey="id" optionValue="${{
                     it.nombre + ' ' + it.apellido
                 }}"/>

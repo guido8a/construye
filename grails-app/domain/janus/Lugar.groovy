@@ -1,10 +1,13 @@
 package janus
 
+import janus.construye.Empresa
+
 class Lugar implements Serializable {
     int codigo
     String descripcion
     String tipo
     TipoLista tipoLista
+    Empresa empresa
     static auditable = true
     static mapping = {
         table 'lgar'
@@ -18,11 +21,13 @@ class Lugar implements Serializable {
             descripcion column: 'lgardscr'
             tipo column: 'lgartipo'
             tipoLista column: 'tpls__id'
+            empresa column: 'empr__id'
         }
     }
     static constraints = {
         codigo(blank: false, attributes: [title: 'codigo'])
         tipo(size: 1..1, blank: true, nullable: true, inList: ['C', 'V'], attributes: [title: 'tipo'])
         descripcion(size: 1..40, blank: false, attributes: [title: 'descripcion'])
+        empresa(blank: false, nullable: false)
     }
 }

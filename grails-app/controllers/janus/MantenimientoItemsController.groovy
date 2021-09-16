@@ -20,9 +20,10 @@ class MantenimientoItemsController extends Shield {
     } //index
 
     String makeBasicTree(params) {
+        println "PARAMS  "+params
+
         def usuario = Persona.get(session.usuario.id)
         def empresa = usuario.empresa
-        println "PARAMS  "+params
         def id = params.id
         def tipo = params.tipo
         def precios = params.precios
@@ -67,8 +68,7 @@ class MantenimientoItemsController extends Shield {
                     } else {
                         hijos = []
                         if (tipoLista) {
-//                            hijos = Lugar.findAllByTipoLista(tipoLista)
-                            hijos = Lugar.findAllByTipoListaAndTipo(tipoLista, 'B')
+                            hijos = Lugar.findAllByEmpresaAndTipoListaAndTipo(empresa, tipoLista, 'B')
                         }
                     }
                 } else if(vae){
@@ -117,7 +117,7 @@ class MantenimientoItemsController extends Shield {
                             hijosH = ["Todos"]
                         } else {
                             if (tipoLista) {
-                                hijosH = Lugar.findAllByTipoLista(tipoLista)
+                                hijosH = Lugar.findAllByEmpresaAndTipoLista(empresa, tipoLista)
                             }
                         }
                     } else if(vae){
@@ -137,7 +137,7 @@ class MantenimientoItemsController extends Shield {
                             hijosH = ["Todos"]
                         } else {
                             if (tipoLista) {
-                                hijosH = Lugar.findAllByTipoLista(tipoLista)
+                                hijosH = Lugar.findAllByEmpresaAndTipoLista(empresa, tipoLista)
                             }
                         }
                     } else if(vae){
@@ -1553,6 +1553,8 @@ class MantenimientoItemsController extends Shield {
     }
 
     def saveLg_ajax() {
+        def usuario = Persona.get(session.usuario.id)
+        def empresa = usuario.empresa
         def accion = "create"
         def lugar = new Lugar()
         params.descripcion = params.descripcion.toString().toUpperCase()
@@ -1561,6 +1563,8 @@ class MantenimientoItemsController extends Shield {
             accion = "edit"
         }
         lugar.properties = params
+        lugar.empresa = empresa
+
         if (lugar.save(flush: true)) {
             render "OK_" + accion + "_" + lugar.id + "_" + (lugar.descripcion + (params.all.toString().toBoolean() ? " (" + lugar.tipo + ")" : "")) + "_c"
         } else {

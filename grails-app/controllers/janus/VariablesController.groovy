@@ -7,6 +7,17 @@ class VariablesController  extends janus.seguridad.Shield{
     def variables_ajax() {
 //        println params
         def obra = Obra.get(params.obra)
+
+
+        def usuario = Persona.get(session.usuario.id)
+        def empresa = usuario.empresa
+
+        def listaCanton = Lugar.findAllByEmpresaAndTipoLista(empresa, TipoLista.get(1))
+        def listaPetreos = Lugar.findAllByEmpresaAndTipoLista(empresa, TipoLista.get(3))
+        def listaEspecial = Lugar.findAllByEmpresaAndTipoLista(empresa, TipoLista.get(2))
+        def listaMejoramiento = Lugar.findAllByEmpresaAndTipoLista(empresa, TipoLista.get(4))
+        def listaCarpeta = Lugar.findAllByEmpresaAndTipoLista(empresa, TipoLista.get(5))
+
         def par = Parametros.list()
         if (par.size() > 0)
             par = par.pop()
@@ -45,7 +56,8 @@ class VariablesController  extends janus.seguridad.Shield{
         }
 
         [choferes: choferes, volquetes: volquetes, obra: obra, par: par, volquetes2: volquetes2,
-         transporteCamioneta: transporteCamioneta, transporteAcemila: transporteAcemila, total1: total1]
+         transporteCamioneta: transporteCamioneta, transporteAcemila: transporteAcemila, total1: total1, listaCarpeta: listaCarpeta,
+         listaMejoramiento: listaMejoramiento, listaEspecial: listaEspecial, listaPetreos: listaPetreos, listaCanton: listaCanton]
     }
 
     def saveVar_ajax() {
