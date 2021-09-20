@@ -49,7 +49,7 @@ class VolumenObraController extends janus.seguridad.Shield {
 
         [obra: obra, volumenes: volumenes, campos: campos, subPresupuesto1: subPresupuesto1, grupoFiltrado: grupoFiltrado,
          subpreFiltrado: subpreFiltrado, grupos: grupoFiltrado, persona: persona, vmc: valorMenorCuantia, duenoObra: duenoObra,
-        valorLicitacion: valorLicitacion]
+         valorLicitacion: valorLicitacion]
     }
 
     def cargarSubpres() {
@@ -166,7 +166,6 @@ class VolumenObraController extends janus.seguridad.Shield {
         def itemVolumenDest = VolumenesObra.findByItemAndSubPresupuestoAndObra(rubro, sbprDest, obra)
 
         def volumen
-
         def volu = VolumenesObra.list()
 
         if (params.id)
@@ -181,21 +180,16 @@ class VolumenObraController extends janus.seguridad.Shield {
 
             } else {
                 volumen = VolumenesObra.findByObraAndItemAndSubPresupuesto(obra, rubro, sbprDest)
-
-
                 if (volumen == null)
                     volumen = new VolumenesObra()
-
             }
         }
 
-
         if(params.canti){
-        volumen.cantidad = params.canti.toDouble()
+            volumen.cantidad = params.canti.toDouble()
         }else{
-        volumen.cantidad = itemVolumen.cantidad.toDouble()
+            volumen.cantidad = itemVolumen.cantidad.toDouble()
         }
-
 
         volumen.orden = (volu.orden.size().toInteger()) + 1
         volumen.subPresupuesto = SubPresupuesto.get(params.subDest)
@@ -212,10 +206,8 @@ class VolumenObraController extends janus.seguridad.Shield {
 //            render "error"
         } else {
             preciosService.actualizaOrden(volumen, "insert")
-
             flash.clase = "alert-success"
             flash.message = "Copiado rubro " + rubro.nombre
-
             redirect(action: "tablaCopiarRubro", params: [obra: obra.id, sub: volumen.subPresupuesto.id])
         }
     }
@@ -313,29 +305,29 @@ class VolumenObraController extends janus.seguridad.Shield {
         def vol = VolumenesObra.get(params.id)
         def obra = vol.obra
         def orden = vol.orden
-        def msg = "ok"
+        def msg = ""
         def cronos = Cronograma.findAllByVolumenObra(vol)
+
         cronos.each { c ->
             if (c.porcentaje == 0) {
                 c.delete(flush: true)
             } else {
                 msg = "Error no se puede borrar el rubro porque esta presente en el cronograma con un valor diferente de cero."
+                render"no"
             }
         }
 
         try {
-            if (msg == "ok") {
+            if (msg == "") {
                 preciosService.actualizaOrden(vol, "delete")
                 vol.delete(flush: true)
+                render "ok"
             }
-
         } catch (e) {
-            println "e " + e
-            msg = "Error"
+            println "error al borrar el rubro desde vol obra " + e
+            msg = "no"
         }
-        redirect(action: "tabla", params: [obra: obra.id, sub: vol.subPresupuesto.id, ord: 1, msg: msg])
-
-
+//        redirect(action: "tabla", params: [obra: obra.id, sub: vol.subPresupuesto.id, ord: 1, msg: msg])
     }
 
     def copiarRubros() {
@@ -349,16 +341,17 @@ class VolumenObraController extends janus.seguridad.Shield {
     def tablaCopiarRubro() {
         def usuario = session.usuario.id
         def persona = Persona.get(usuario)
+        def empresa = persona.empresa
         def direccion = Direccion.get(persona?.departamento?.direccion?.id)
         def grupo = Grupo.findAllByDireccion(direccion)
         def obra = Obra.get(params.obra)
         def valores
 
-        if (params.sub && params.sub != "null") {
+//        if (params.sub && params.sub != "null") {
             valores = preciosService.rbro_pcun_v3(obra.id, params.sub)
-        } else {
-            valores = preciosService.rbro_pcun_v2(obra.id)
-        }
+//        } else {
+//            valores = preciosService.rbro_pcun_v2(obra.id)
+//        }
 
         def subPres = VolumenesObra.findAllByObra(obra, [sort: "orden"]).subPresupuesto.unique()
         def subPresupuesto1 = SubPresupuesto.findAllByGrupoInList(subPres.grupo, [sort: 'descripcion'])
@@ -432,7 +425,7 @@ class VolumenObraController extends janus.seguridad.Shield {
 //                if(!subpresupuesto.delete(flush:true)){
 //                render "NO_Error al borrar el subpresupuesto"
 //                }else{
-                 render "OK_Subpresupuesto borrado correctamente"
+                render "OK_Subpresupuesto borrado correctamente"
 //                }
             }else{
                 render "NO_Error al borrar el subpresupuesto"

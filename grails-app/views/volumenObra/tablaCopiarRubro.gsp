@@ -15,7 +15,7 @@
         <b>Subpresupuesto de origen:</b>
         <g:select name="subpresupuestoOrg" from="${subPres}" optionKey="id" optionValue="descripcion"
                   noSelection="['' : ' - Seleccione un subpresupuesto - ']"
-                  style="width: 300px;font-size: 10px; margin-left: 50px" id="subPres_desc" value="${subPre}"></g:select>
+                  style="width: 300px;font-size: 10px; margin-left: 50px" id="subPres_desc" value="${subPre}"/>
 
         %{--todo descomentar esto--}%
         %{--<g:select name="subpresupuestoOrg" from="${subPresupuesto1}" optionKey="id" optionValue="descripcion"  noSelection="['' : ' - Seleccione un subpresupuesto - ']" style="width: 300px;font-size: 10px; margin-left: 50px" id="subPres_desc" value="${subPre}"></g:select>--}%
@@ -45,7 +45,7 @@
         %{--todo descomentar esto--}%
         <g:select name="subpresupuestoDes" from="${subPresupuesto1}" optionKey="id" optionValue="descripcion"
                   style="width: 300px;font-size: 10px; margin-left: 45px" id="subPres_destino"
-                  noSelection="['' : ' - Seleccione un subpresupuesto - ']"></g:select>
+                  noSelection="['' : ' - Seleccione un subpresupuesto - ']"/>
 
 
     </div>
@@ -53,11 +53,11 @@
 
         <a href="#" class="btn  " id="copiar_todos">
             <i class="icon-copy"></i>
-            Copiar Todos los Rubros
+            Copiar <strong style="color: #67a153">Todos</strong> los Rubros
         </a>
         <a href="#" class="btn  " id="copiar_sel">
             <i class="icon-copy"></i>
-            Copiar rubros seleccionados
+            Copiar rubros <strong style="color: #67a153">seleccionados</strong>
         </a>
 
 
@@ -153,41 +153,29 @@
 
     $("#copiar_todos").click(function () {
 
-
-
         var tbody = $("#tabla_material");
         var datos
-        var subPresDest = $("#subPres_destino").val()
-        var subPre = $("#subPres_desc").val()
+        var subPresDest = $("#subPres_destino").val();
+        var subPre = $("#subPres_desc").val();
 
         if(subPre == "" || subPresDest == ""){
-
             $("#faltaOrigenDialog").dialog("open")
-
-
         } else {
 
             tbody.children("tr").each(function () {
+                var trId = $(this).attr("id");
+                datos ="rubro=" + trId + "&subDest=" + subPresDest + "&obra=" + ${obra.id} + "&sub=" + subPre;
 
-                var trId = $(this).attr("id")
-
-                //console.log("ID:" + trId)
-
-
-                datos ="rubro=" + trId + "&subDest=" + subPresDest + "&obra=" + ${obra.id} + "&sub=" + subPre
-
-                $.ajax({type : "POST", url : "${g.createLink(controller: 'volumenObra',action:'copiarItem')}",
+                $.ajax({
+                    type : "POST",
+                    url : "${g.createLink(controller: 'volumenObra',action:'copiarItem')}",
                     data     : datos,
                     success  : function (msg) {
                         $("#detalle").html(msg)
-
                     }
                 });
-
-
             });
         }
-
     });
 
 
@@ -213,7 +201,6 @@
                 var ord = $(this).attr("ord")
                 var canti = $(this).attr("cant")
 
-
                 datos ="&rubro=" + trId + "&subDest=" + subPresDest + "&obra=" + ${obra.id} + "&sub=" + subPre + "&orden=" + ord + "&canti=" + canti
 
                 $.ajax({
@@ -223,27 +210,11 @@
                     data     : datos,
                     success  : function (msg) {
                         $("#detalle").html(msg)
-
                     }
                 });
-
-
-//                //console.log("id:" + trId)
             } else {
-
-
-                //console.log("entro else")
-
-
             }
-
-
-
-
         });
-
-
-
     });
 
     %{--$("#ver_todos").click(function(){--}%
@@ -307,20 +278,13 @@
         title     : 'Elegir subpresupuestos!',
         buttons   : {
             "Aceptar" : function () {
-
-
                 $("#faltaOrigenDialog").dialog("close");
-
             }
         }
-
-
     });
 
     $("#regresar").click(function () {
-
        location.href = "${g.createLink(controller: 'volumenObra', action: 'volObra', id: obra?.id)}"
-
     });
 
 </script>

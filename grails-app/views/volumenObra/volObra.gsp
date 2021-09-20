@@ -48,7 +48,7 @@
     </div>
 
         <div style=" font-size: 14px;  color: #0088CC;">
-            Volúmenes de la obra: ${obra.nombre + " (" + obra.codigo + ")"}
+            Volúmenes de la obra: <strong>${obra.nombre + " ( Código: " + obra.codigo + ")"}</strong>
             <input type="hidden" id="override" value="0">
         </div>
         <div style="height: 25px; margin-bottom:10px; border-bottom: 1px solid rgba(148, 148, 148, 1);">
@@ -176,24 +176,16 @@
                         <input type="text" style="width: 30px;text-align: right" id="item_orden" value="${(volumenes?.size() > 0) ? volumenes.size() + 1 : 1}">
                     </div>
 
-                    <div class="span1" style="margin-left: 10px;padding-top:0px; width: 25px;">
+                    <div class="span2" style="margin-left: 10px;padding-top:0px; width: 65px;">
                         <input type="hidden" value="" id="vol_id">
-
                         <g:if test="${obra?.estado != 'R' && duenoObra == 1}">
-                            <a href="#" class="btn btn-primary" title="agregar" id="item_agregar">
+                            <a href="#" class="btn btn-small btn-primary" title="Guardar item" id="item_agregar">
                                 <i class="icon-plus"></i>
                             </a>
+                            <a href="#" class="btn btn-small btn-primary" title="Cancelar" id="btnCancelar">
+                                <i class="fa fa-times"></i>
+                            </a>
                         </g:if>
-%{--
-                        <g:else>
-                            <g:if test="${obra.estado != 'R' && obra?.departamento?.id == persona?.departamento?.id}">
-                                <a href="#" class="btn btn-primary" title="agregar" id="item_agregar">
-                                    <i class="icon-plus"></i>
-                                </a>
-                            </g:if>
-                        </g:else>
---}%
-
                     </div>
                 </div>
             </div>
@@ -250,11 +242,7 @@
                     Está seguro que desea borrar el subpresupuesto?
                 </div>
             </fieldset>
-
         </div>
-
-
-
 
         <script type="text/javascript">
 
@@ -292,12 +280,10 @@
                 });
             }
             $(function () {
-                %{--$("#detalle").html("<img src='${resource(dir: 'images',file: 'loadingText.gif')}' width='300px' height='45px'>")--}%
-//                var total = 0
-
                 $("#grupos").change(function () {
                     $.ajax({
-                        type    : "POST", url : "${g.createLink(controller: 'volumenObra',action:'cargarSubpres')}",
+                        type    : "POST",
+                        url : "${g.createLink(controller: 'volumenObra',action:'cargarSubpres')}",
                         data    : "grupo=" + $("#grupos").val(),
                         success : function (msg) {
                             $("#div_cmb_sub").html(msg)
@@ -327,17 +313,18 @@
 //                    console.log($(this),$(this).html())
 
                             total += parseFloat(str_replace(",", "", $(this).html()))
-                        })
+                        });
+
                         if ($("#subPres_desc").val() == "-1") {
                             $.ajax({
-                                type    : "POST", url : "${g.createLink(controller: 'volumenObra', action:'setMontoObra')}",
+                                type    : "POST",
+                                url : "${g.createLink(controller: 'volumenObra', action:'setMontoObra')}",
                                 data    : "obra=${obra?.id}&monto=" + total,
                                 success : function (msg) {
 
                                 }
                             });
                         }
-
                         $("#divTotal").html(number_format(total, 2, ".", ","))
                     }
                 });
@@ -353,13 +340,11 @@
                 });
 
                 $("#reporteGrupos").click(function () {
-
                     location.href = "${g.createLink(controller: 'reportes',action: 'reporteSubgrupos',id: obra?.id)}"
                 });
 
                 $("#item_codigo").blur(function () {
                     if ($("#item_id").val() == "" && $("#item_codigo").val() != "") {
-//                console.log($("#item_id").val())
                         $.ajax({type : "POST", url : "${g.createLink(controller: 'volumenObra',action:'buscarRubroCodigo')}",
                             data     : "codigo=" + $("#item_codigo").val(),
                             success  : function (msg) {
@@ -378,14 +363,10 @@
                 });
 
                 $("#item_codigo").keydown(function (ev) {
-
                     if (ev.keyCode * 1 != 9 && (ev.keyCode * 1 < 37 || ev.keyCode * 1 > 40)) {
-
                         $("#item_id").val("")
                         $("#item_nombre").val("")
-
                     } else {
-//                ////console.log("no reset")
                     }
                 });
 
@@ -420,21 +401,16 @@
                                         var alerta;
 
                                         if (msg != "NO") {
-//                                    $("#sp").html(msg);
-
                                             alerta = '<div class="alert alert-success" role="status"><a class="close" data-dismiss="alert" href="#">×</a>';
                                             alerta += p[1];
                                             alerta += '</div>';
                                             $("#modal-SubPresupuesto").modal("hide");
                                             $("#div_cmb_sub").html(p[2])
-
                                         }
                                         else {
-
                                             alerta = '<div class="alert alert-error" role="status"><a class="close" data-dismiss="alert" href="#">×</a>';
                                             alerta += p[1];
                                             alerta += '</div>';
-
                                         }
 
                                         $("#mensaje").html(alerta);
@@ -460,9 +436,7 @@
                 });
 
                 $("#btnBorrarSP").click(function () {
-
                     $("#borrarSPDialog").dialog("open")
-
                 });
 
                 $("#btnEditarSP").click(function () {
@@ -501,15 +475,12 @@
                                         var alerta;
 
                                         if (msg != "NO") {
-//                                    $("#sp").html(msg);
                                             $("#modal-SubPresupuesto").modal("hide");
-
                                             alerta = '<div class="alert alert-success" role="status"><a class="close" data-dismiss="alert" href="#">×</a>';
                                             alerta += p[1];
                                             alerta += '</div>';
                                             $("#modal-SubPresupuesto").modal("hide");
                                             $("#div_cmb_sub").html(p[2])
-
                                         } else {
                                             alerta = '<div class="alert alert-error" role="status"><a class="close" data-dismiss="alert" href="#">×</a>';
                                             alerta += p[1];
@@ -555,8 +526,6 @@
 
                             var id = $("#subPres").val();
 
-//                            //console.log("id:" + id)
-
                             $.ajax({
                                 type    : "POST",
                                 url     : "${createLink(controller:"subPresupuesto",action:'delete2')}",
@@ -587,7 +556,6 @@
                         "Cancelar" : function () {
 
                             $("#borrarSPDialog").dialog("close");
-
                         }
                     }
 
@@ -709,35 +677,6 @@
                            "la obra, en la sección Transporte Especial");
                     }
                 });
-
-/*
-                $("#item_cantidad").change(function () {
-                    var cantidad = $("#item_cantidad").val()
-                    if (cantidad * 1 < -0.0001) {
-                        console.log('menor')
-                        $("#lbl_cntd").addClass("textoRojo")
-                        $.box({
-                            imageClass : "box_info",
-                            text       : "Cantidades de obra negativos se usa sólo para presupuestos de <b>Contratos Complementarios</b> " +
-                             "si no es el caso, por favor ingrese cantidades de obra mayores que cero",
-                            title      : "Alerta",
-                            iconClose  : false,
-                            dialog     : {
-                                resizable : false,
-                                draggable : false,
-                                buttons   : {
-                                    "Aceptar" : function () {
-                                    }
-                                },
-                                width     : 500
-                            }
-                        });
-                    } else {
-                        $("#lbl_cntd").removeClass("textoRojo")
-                    }
-                });
-*/
-
             });
         </script>
     </body>
