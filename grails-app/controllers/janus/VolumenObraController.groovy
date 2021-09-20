@@ -155,10 +155,9 @@ class VolumenObraController extends janus.seguridad.Shield {
 
     def copiarItem() {
 
-//        println "copiarItem "+params
+        println "copiarItem "+params
         def obra = Obra.get(params.obra)
         def rubro = Item.get(params.rubro)
-//        println("rubro " + rubro)
         def sbprDest = SubPresupuesto.get(params.subDest)
         def sbpr = SubPresupuesto.get(params.sub)
 
@@ -167,15 +166,13 @@ class VolumenObraController extends janus.seguridad.Shield {
 
         def volumen
         def volu = VolumenesObra.list()
+        def errores = ''
 
         if (params.id)
             volumen = VolumenesObra.get(params.id)
         else {
             if (itemVolumenDest) {
-
-                flash.clase = "alert-error"
-                flash.message = "No se puede copiar el rubro " + rubro.nombre
-                redirect(action: "tablaCopiarRubro", params: [obra: obra.id])
+                render "er_No se puede copiar el rubro " + rubro.nombre
                 return
 
             } else {
@@ -196,22 +193,13 @@ class VolumenObraController extends janus.seguridad.Shield {
         volumen.obra = obra
         volumen.item = rubro
         if (!volumen.save(flush: true)) {
-//            println "error volumen obra "+volumen.errors
-
-            flash.clase = "alert-error"
-            flash.message = "Error, no es posible completar la acción solicitada "
-
-            redirect(action: "tablaCopiarRubro", params: [obra: obra.id])
-
-//            render "error"
+            println("Error al copiar los rubros " + volumen.errors)
+            render "no_Error al copiar los rubros"
         } else {
             preciosService.actualizaOrden(volumen, "insert")
-            flash.clase = "alert-success"
-            flash.message = "Copiado rubro " + rubro.nombre
-            redirect(action: "tablaCopiarRubro", params: [obra: obra.id, sub: volumen.subPresupuesto.id])
+            render "ok"
         }
     }
-
 
     /** carga tabla de detalle de volúmenes de obra **/
     def tabla() {
@@ -332,10 +320,9 @@ class VolumenObraController extends janus.seguridad.Shield {
 
     def copiarRubros() {
         def obra = Obra.get(params.obra)
-        def volumenes = VolumenesObra.findAllByObra(obra)
-//        flash.message = "seleccione el subpresupuesto de origen y a continuación el subpresupuesto de destino"
+        def volumenes = VolumenesObra.findAllByObra(obra, [sort:"descripcion"])
 
-        return [obra: obra, volumenes: volumenes]
+        return [obra: obra, volumenes: volumenes, origen: volumenes.subPresupuesto.unique()]
     }
 
     def tablaCopiarRubro() {
@@ -352,6 +339,7 @@ class VolumenObraController extends janus.seguridad.Shield {
 //        } else {
 //            valores = preciosService.rbro_pcun_v2(obra.id)
 //        }
+
 
         def subPres = VolumenesObra.findAllByObra(obra, [sort: "orden"]).subPresupuesto.unique()
         def subPresupuesto1 = SubPresupuesto.findAllByGrupoInList(subPres.grupo, [sort: 'descripcion'])
@@ -431,9 +419,24 @@ class VolumenObraController extends janus.seguridad.Shield {
                 render "NO_Error al borrar el subpresupuesto"
             }
         }
+    }
 
+    def destino_ajax(){
 
-//        println("cronos " + cronogramas)
+        println("params " + params)
 
+        def destinos = []
+
+        if(params.origen && params.origen != ''){
+            def origen = SubPresupuesto.get(params.origen)
+            def obra = Obra.get(params.obra)
+
+            def subPres = VolumenesObra.findAllByObra(obra, [sort: "orden"]).subPresupuesto.unique()
+            destinos = SubPresupuesto.findAllByGrupoInListAndIdNotInList(subPres.grupo, [origen.id], [sort: "descripcion"])
+
+            println("destinos " + destinos)
+        }
+
+        return[destinos: destinos]
     }
 }
