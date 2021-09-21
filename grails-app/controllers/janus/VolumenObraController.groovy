@@ -426,7 +426,8 @@ class VolumenObraController extends janus.seguridad.Shield {
 
     def copiarRubrosObra(){
         def obra = Obra.get(params.id)
-        def destinos = VolumenesObra.findAllByObra(obra, [sort: "descripcion"]).subPresupuesto.unique()
+//        def destinos = VolumenesObra.findAllByObra(obra, [sort: "descripcion"]).subPresupuesto.unique()
+        def destinos = SubPresupuesto.findAllByIdGreaterThan(0, [sort: "descripcion"])
         return[obra:obra, destinos: destinos]
     }
 
@@ -463,14 +464,15 @@ class VolumenObraController extends janus.seguridad.Shield {
         def obra = Obra.get(params.obra)
         def listaObra = ['obranmbr', 'obracdgo']
         def datos;
-        def select = "select obra.obra__id, obracdgo, obranmbr from obra "
-        def txwh = "where obra.empr__id = ${empresa?.id} and obra.obra__id != ${obra?.id}"
+        def select = "select obra.obra__id, obracdgo, obranmbr from obra, vlob "
+        def txwh = "where vlob.obra__id = obra.obra__id and obra.empr__id = ${empresa?.id} and " +
+                "obra.obra__id != ${obra?.id} "
         def sqlTx = ""
         def bsca = listaObra[params.buscarPor.toInteger()-1]
         def ordn = listaObra[params.ordenar.toInteger()-1]
         txwh += " and $bsca ilike '%${params.criterio}%'"
 
-        sqlTx = "${select} ${txwh} order by ${ordn} limit 100 ".toString()
+        sqlTx = "${select} ${txwh} group by obra.obra__id, obracdgo, obranmbr order by ${ordn} limit 100 ".toString()
         println "sql: $sqlTx"
 
         def cn = dbConnectionService.getConnection()
