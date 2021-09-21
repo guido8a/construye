@@ -83,6 +83,10 @@
                     <i class="icon-print"></i>
                     Reporte Grupos/Subgrupos
                 </a>
+                <a href="#" class="btn btn-ajax btn-primary" id="btnCopiarRubroObra" title="Copiar rubros de una obra">
+                    <i class="fa fa-copy"></i>
+                    Copiar Rubros de una Obra
+                </a>
             </div>
         </div>
 
@@ -245,6 +249,10 @@
         </div>
 
         <script type="text/javascript">
+
+            $("#btnCopiarRubroObra").click(function () {
+                location.href="${createLink(controller: 'volumenObra', action: 'copiarRubrosObra')}?id=" + '${obra?.id}'
+            });
 
             var aviso = false;  //aviso de TR...
 

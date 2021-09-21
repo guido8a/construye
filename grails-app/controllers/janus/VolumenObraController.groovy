@@ -3,8 +3,10 @@ package janus
 import janus.pac.TipoProcedimiento
 
 class VolumenObraController extends janus.seguridad.Shield {
+
     def buscadorService
     def preciosService
+    def dbConnectionService
 
     def volObra() {
 
@@ -33,12 +35,6 @@ class VolumenObraController extends janus.seguridad.Shield {
 //        def responsableObra = obra?.responsableObra?.id
         def duenoObra = 0
 
-//        personasPRSP.each{
-//            if(it.id == responsableObra ){
-//                duenoObra = 1
-//            }
-//        }
-
         duenoObra = esDuenoObra(obra)? 1 : 0
 
         def valorMenorCuantia = TipoProcedimiento.findBySigla("MCD")?.techo?:  210000
@@ -59,8 +55,6 @@ class VolumenObraController extends janus.seguridad.Shield {
         [subs: subs]
     }
 
-
-
     def setMontoObra() {
         def tot = params.monto
         try {
@@ -68,7 +62,6 @@ class VolumenObraController extends janus.seguridad.Shield {
         } catch (e) {
             tot = 0
         }
-//        println " total de la obra:; $tot"
         def obra = Obra.get(params.obra)
         if (obra.valor != tot) {
             obra.valor = tot
@@ -403,18 +396,13 @@ class VolumenObraController extends janus.seguridad.Shield {
             render "NO_No se puede borrar el subpresupuesto, uno o mas rubros ya se encuentran en el cronograma!"
         }else{
             volumenes.each {v->
-//                v.delete(flush: true)
                 if(!v.delete(flush:true)){
                     errores += v.errors.getErrorCount()
                 }
             }
             println("errores " + errores)
             if(errores == 0){
-//                if(!subpresupuesto.delete(flush:true)){
-//                render "NO_Error al borrar el subpresupuesto"
-//                }else{
                 render "OK_Subpresupuesto borrado correctamente"
-//                }
             }else{
                 render "NO_Error al borrar el subpresupuesto"
             }
@@ -423,20 +411,79 @@ class VolumenObraController extends janus.seguridad.Shield {
 
     def destino_ajax(){
 
-        println("params " + params)
+//        println("params " + params)
 
         def destinos = []
 
         if(params.origen && params.origen != ''){
             def origen = SubPresupuesto.get(params.origen)
             def obra = Obra.get(params.obra)
-
             def subPres = VolumenesObra.findAllByObra(obra, [sort: "orden"]).subPresupuesto.unique()
             destinos = SubPresupuesto.findAllByGrupoInListAndIdNotInList(subPres.grupo, [origen.id], [sort: "descripcion"])
-
-            println("destinos " + destinos)
         }
-
         return[destinos: destinos]
+    }
+
+    def copiarRubrosObra(){
+        def obra = Obra.get(params.id)
+        def destinos = VolumenesObra.findAllByObra(obra, [sort: "descripcion"]).subPresupuesto.unique()
+        return[obra:obra, destinos: destinos]
+    }
+
+    def tablaCopiarRubroObra(){
+
+        println("params tcr " + params)
+
+        def usuario = session.usuario.id
+        def persona = Persona.get(usuario)
+        def direccion = Direccion.get(persona?.departamento?.direccion?.id)
+        def grupo = Grupo.findAllByDireccion(direccion)
+        def obra = Obra.get(params.obra)
+        def valores
+
+        valores = preciosService.rbro_pcun_v3(obra.id, params.sub)
+
+        def subPres = VolumenesObra.findAllByObra(obra, [sort: "orden"]).subPresupuesto.unique()
+        def subPresupuesto1 = SubPresupuesto.findAllByGrupoInList(subPres.grupo, [sort: 'descripcion'])
+
+        def precios = [:]
+        def prch = 0
+        def prvl = 0
+        def indirecto = obra.totales / 100
+
+        preciosService.ac_rbroObra(obra.id)
+        [precios: precios, subPres: subPres, subPre: params.sub, obra: obra, precioVol: prch, precioChof: prvl,
+         indirectos: indirecto * 100, valores: valores, subPresupuesto1: subPresupuesto1, grupo: grupo]
+    }
+
+    def listaObras() {
+        println("lista de obras " + params)
+        def usuario = Persona.get(session.usuario.id)
+        def empresa = usuario.empresa
+        def obra = Obra.get(params.obra)
+        def listaObra = ['obranmbr', 'obracdgo']
+        def datos;
+        def select = "select obra.obra__id, obracdgo, obranmbr from obra "
+        def txwh = "where obra.empr__id = ${empresa?.id} and obra.obra__id != ${obra?.id}"
+        def sqlTx = ""
+        def bsca = listaObra[params.buscarPor.toInteger()-1]
+        def ordn = listaObra[params.ordenar.toInteger()-1]
+        txwh += " and $bsca ilike '%${params.criterio}%'"
+
+        sqlTx = "${select} ${txwh} order by ${ordn} limit 100 ".toString()
+        println "sql: $sqlTx"
+
+        def cn = dbConnectionService.getConnection()
+        datos = cn.rows(sqlTx)
+        println "data: ${datos}"
+        [data: datos, tipo: params.tipo, consumo:params.consumo, obra: obra]
+    }
+
+    def subOrigen_ajax(){
+        println("params so " + params)
+        def obra = Obra.get(params.obra)
+        def origenes = VolumenesObra.findAllByObra(obra, [sort: "orden"]).subPresupuesto.unique()
+        println("origenes " + origenes)
+        return[origen: origenes]
     }
 }
