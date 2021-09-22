@@ -36,7 +36,7 @@
 
 <div class="row-fluid">
     <div class="span2">
-        <a href="#" class="btn" id="regresar">
+        <a href="#" class="btn" id="btnRegresarVol">
             <i class="icon-arrow-left"></i>
             Regresar
         </a>
@@ -168,6 +168,10 @@
 
 
 <script type="text/javascript">
+
+    $("#btnRegresarVol").click(function () {
+        location.href = "${g.createLink(controller: 'volumenObra', action: 'volObra', id: obra?.id)}"
+    });
 
     $("#buscar_codigo").click(function () {
         $("#buscarObra").dialog("open");

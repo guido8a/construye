@@ -73,11 +73,6 @@
         });
     }
 
-    $("#subPres_desc").change(function(){
-        var sub = $(this).val();
-        cargarTablaOrigen(sub);
-    });
-
 
 </script>
 

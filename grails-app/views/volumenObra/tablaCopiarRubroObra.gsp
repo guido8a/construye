@@ -93,7 +93,7 @@
                                             width: 350,
                                             buttons: {
                                                 "Aceptar": function () {
-                                                    location.reload(true)
+                                                    // location.reload(true)
                                                 }
                                             }
                                         }
@@ -109,12 +109,92 @@
         }
     });
 
+    %{--$("#copiar_sel").click(function () {--}%
+    %{--    var tbody = $("#tabla_material");--}%
+    %{--    var datos--}%
+    %{--    var subPresDest = $("#subPres_destino").val();--}%
+    %{--    var subPre = $("#subPres_desc").val();--}%
+    %{--    var rbros = [];--}%
+
+    %{--    if(subPre == ""){--}%
+    %{--        cajaTexto("Seleccione el subpresupuesto de " +  "<strong>" + "origen" + "</strong>", "Alerta");--}%
+    %{--    } else {--}%
+    %{--        if(subPresDest == ""){--}%
+    %{--            cajaTexto("Seleccione el subpresupuesto de " +  "<strong>" + "destino" + "</strong>", "Alerta");--}%
+    %{--        }else{--}%
+    %{--            tbody.children("tr").each(function () {--}%
+    %{--                if(($(this).children("td").children().get(1).checked) == true){--}%
+    %{--                    var selec = [];--}%
+
+    %{--                    var trId = $(this).attr("id");--}%
+    %{--                    var ord = $(this).attr("ord");--}%
+    %{--                    var canti = $(this).attr("cant");--}%
+
+    %{--                    datos ="&rubro=" + trId + "&subDest=" + subPresDest + "&obra=" + ${obra.id} + "&sub=" + subPre + "&orden=" + ord + "&canti=" + canti;--}%
+
+    %{--                    $.ajax({--}%
+    %{--                        type : "POST",--}%
+    %{--                        async : false,--}%
+    %{--                        url : "${g.createLink(controller: 'volumenObra',action:'copiarItem')}",--}%
+    %{--                        data     : datos,--}%
+    %{--                        success  : function (msg) {--}%
+    %{--                            var parts = msg.split("_");--}%
+    %{--                            if(parts[0] == 'ok'){--}%
+    %{--                                $.box({--}%
+    %{--                                    imageClass: "box_info",--}%
+    %{--                                    text: "Rubros copiados correctamente",--}%
+    %{--                                    title: "Alerta",--}%
+    %{--                                    iconClose: false,--}%
+    %{--                                    dialog: {--}%
+    %{--                                        resizable: false,--}%
+    %{--                                        draggable: false,--}%
+    %{--                                        width: 350,--}%
+    %{--                                        buttons: {--}%
+    %{--                                            "Aceptar": function () {--}%
+    %{--                                                location.reload(true)--}%
+    %{--                                            }--}%
+    %{--                                        }--}%
+    %{--                                    }--}%
+    %{--                                });--}%
+    %{--                            }else{--}%
+    %{--                                if(parts[0] == 'er'){--}%
+    %{--                                    $.box({--}%
+    %{--                                        imageClass: "box_info",--}%
+    %{--                                        text: parts[1],--}%
+    %{--                                        title: "Alerta",--}%
+    %{--                                        iconClose: false,--}%
+    %{--                                        dialog: {--}%
+    %{--                                            resizable: false,--}%
+    %{--                                            draggable: false,--}%
+    %{--                                            width: 350,--}%
+    %{--                                            buttons: {--}%
+    %{--                                                "Aceptar": function () {--}%
+    %{--                                                    location.reload(true)--}%
+    %{--                                                }--}%
+    %{--                                            }--}%
+    %{--                                        }--}%
+    %{--                                    });--}%
+    %{--                                }else{--}%
+    %{--                                    cajaTexto(parts[1], "Error")--}%
+    %{--                                }--}%
+    %{--                            }--}%
+    %{--                        }--}%
+    %{--                    });--}%
+    %{--                } else {--}%
+    %{--                }--}%
+    %{--            });--}%
+    %{--        }--}%
+    %{--    }--}%
+    %{--});--}%
+
+
     $("#copiar_sel").click(function () {
         var tbody = $("#tabla_material");
         var datos
         var subPresDest = $("#subPres_destino").val();
         var subPre = $("#subPres_desc").val();
         var rbros = [];
+        var selec = [];
 
         if(subPre == ""){
             cajaTexto("Seleccione el subpresupuesto de " +  "<strong>" + "origen" + "</strong>", "Alerta");
@@ -122,73 +202,80 @@
             if(subPresDest == ""){
                 cajaTexto("Seleccione el subpresupuesto de " +  "<strong>" + "destino" + "</strong>", "Alerta");
             }else{
+
                 tbody.children("tr").each(function () {
+
                     if(($(this).children("td").children().get(1).checked) == true){
-                        var selec = [];
 
                         var trId = $(this).attr("id");
                         var ord = $(this).attr("ord");
                         var canti = $(this).attr("cant");
 
-                        datos ="&rubro=" + trId + "&subDest=" + subPresDest + "&obra=" + ${obra.id} + "&sub=" + subPre + "&orden=" + ord + "&canti=" + canti;
+                        selec.push(trId);
 
-                        $.ajax({
-                            type : "POST",
-                            async : false,
-                            url : "${g.createLink(controller: 'volumenObra',action:'copiarItem')}",
-                            data     : datos,
-                            success  : function (msg) {
-                                var parts = msg.split("_");
-                                if(parts[0] == 'ok'){
-                                    $.box({
-                                        imageClass: "box_info",
-                                        text: "Rubros copiados correctamente",
-                                        title: "Alerta",
-                                        iconClose: false,
-                                        dialog: {
-                                            resizable: false,
-                                            draggable: false,
-                                            width: 350,
-                                            buttons: {
-                                                "Aceptar": function () {
-                                                    location.reload(true)
-                                                }
-                                            }
-                                        }
-                                    });
-                                }else{
-                                    if(parts[0] == 'er'){
-                                        $.box({
-                                            imageClass: "box_info",
-                                            text: parts[1],
-                                            title: "Alerta",
-                                            iconClose: false,
-                                            dialog: {
-                                                resizable: false,
-                                                draggable: false,
-                                                width: 350,
-                                                buttons: {
-                                                    "Aceptar": function () {
-                                                        location.reload(true)
-                                                    }
-                                                }
-                                            }
-                                        });
-                                    }else{
-                                        cajaTexto(parts[1], "Error")
-                                    }
-                                }
-                            }
-                        });
-                    } else {
+                        %{--datos ="&rubro=" + trId + "&subDest=" + subPresDest + "&obra=" + ${obra.id} + "&sub=" + subPre + "&orden=" + ord + "&canti=" + canti;--}%
+
+                      } else {
                     }
                 });
+
+                $.ajax({
+                    type : "POST",
+                    async : false,
+                    url : "${g.createLink(controller: 'volumenObra',action:'copiarRubro')}",
+                    data     : {
+                        selec: selec,
+                        obra: '${obra?.id}',
+                        destino: subPresDest
+                    },
+                    success  : function (msg) {
+                        var parts = msg.split("_");
+                        if(parts[0] == 'ok'){
+                            $.box({
+                                imageClass: "box_info",
+                                text: "Rubros copiados correctamente",
+                                title: "Alerta",
+                                iconClose: false,
+                                dialog: {
+                                    resizable: false,
+                                    draggable: false,
+                                    width: 350,
+                                    buttons: {
+                                        "Aceptar": function () {
+                                            location.reload(true)
+                                        }
+                                    }
+                                }
+                            });
+                        }else{
+                            if(parts[0] == 'er'){
+                                $.box({
+                                    imageClass: "box_info",
+                                    text: parts[1],
+                                    title: "Alerta",
+                                    iconClose: false,
+                                    dialog: {
+                                        resizable: false,
+                                        draggable: false,
+                                        width: 350,
+                                        buttons: {
+                                            "Aceptar": function () {
+                                                location.reload(true)
+                                            }
+                                        }
+                                    }
+                                });
+                            }else{
+                                cajaTexto(parts[1], "Error")
+                            }
+                        }
+                    }
+                });
+
+
+
             }
         }
-    });
-
-    $("#regresar").click(function () {
-        location.href = "${g.createLink(controller: 'volumenObra', action: 'volObra', id: obra?.id)}"
     });
 
     function cajaTexto(texto, titulo){

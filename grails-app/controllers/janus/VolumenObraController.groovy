@@ -2,6 +2,8 @@ package janus
 
 import janus.pac.TipoProcedimiento
 
+import java.awt.List
+
 class VolumenObraController extends janus.seguridad.Shield {
 
     def buscadorService
@@ -487,5 +489,82 @@ class VolumenObraController extends janus.seguridad.Shield {
         def origenes = VolumenesObra.findAllByObra(obra, [sort: "orden"]).subPresupuesto.unique()
         println("origenes " + origenes)
         return[origen: origenes]
+    }
+
+    def copiarRubro() {
+
+      println("params copiar rubro " + params)
+
+//        params."selec[]".each{
+//            println("--> " + it)
+//        }
+
+        def obra = Obra.get(params.obra)
+        def rubro = Item.get(params.rubro)
+        def sbprDest = SubPresupuesto.get(params.subDest)
+//        def sbpr = SubPresupuesto.get(params.sub)
+
+//        def itemVolumen = VolumenesObra.findByItemAndSubPresupuesto(rubro, sbpr)
+//        def itemVolumenDest = VolumenesObra.findByItemAndSubPresupuestoAndObra(rubro, sbprDest, obra)
+
+
+//
+//        if(params."select[]" > 1){
+//            println("si")
+//        }else{
+//            println("no")
+//        }
+
+        def existe = []
+        def noExiste = []
+
+        params."selec[]".each{
+            def rb = Item.get(it)
+            if(VolumenesObra.findByItemAndSubPresupuestoAndObra(rb, sbprDest, obra)){
+                existe.add(rb.id)
+            }else{
+                noExiste.add(rb.id)
+            }
+        }
+
+        println("Existe " + existe)
+        println("no existe " + noExiste)
+
+
+//        def volumen
+//        def volu = VolumenesObra.list()
+//        def errores = ''
+//
+//        if (params.id)
+//            volumen = VolumenesObra.get(params.id)
+//        else {
+//            if (itemVolumenDest) {
+//                render "er_No se puede copiar el rubro " + rubro.nombre
+//                return
+//
+//            } else {
+//                volumen = VolumenesObra.findByObraAndItemAndSubPresupuesto(obra, rubro, sbprDest)
+//                if (volumen == null)
+//                    volumen = new VolumenesObra()
+//            }
+//        }
+//
+//        if(params.canti){
+//            volumen.cantidad = params.canti.toDouble()
+//        }else{
+//            volumen.cantidad = itemVolumen.cantidad.toDouble()
+//        }
+//
+//        volumen.orden = (volu.orden.size().toInteger()) + 1
+//        volumen.subPresupuesto = SubPresupuesto.get(params.subDest)
+//        volumen.obra = obra
+//        volumen.item = rubro
+//        if (!volumen.save(flush: true)) {
+//            println("Error al copiar los rubros " + volumen.errors)
+//            render "no_Error al copiar los rubros"
+//        } else {
+//            preciosService.actualizaOrden(volumen, "insert")
+//            render "ok"
+//        }
     }
 }
