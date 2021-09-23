@@ -43,26 +43,34 @@
     </div>
 </div>
 
-<div class="row-fluid" style="margin-top: 10px">
-    <div class="span2" style="width: 130px;">
-        <g:hiddenField name="obra__id"/>
-      Obra
-        <input type="text" name="obra" class="span20 allCaps required input-small"
-               value="${''}" id="input_codigo" readonly="true"
-               maxlength="30" minlength="2">
 
-        <p class="help-block ui-helper-hidden"></p>
-    </div>
+<div style="border-bottom: 1px solid black;padding-left: 50px;position: relative; margin-bottom: 10px">
 
-    <div class="span1" style="margin-top: 20px; width: 80px">
-        <a class="btn btn-small btn-primary btn-ajax" href="#" rel="tooltip" title="Agregar" id="buscar_codigo">
-            <i class="icon-search"></i> Buscar
-        </a>
-    </div>
+    <p class="css-vertical-text">Obra</p>
 
-    <div class="span8" style="margin-left: 10px">
-        Descripción
-        <input type="text" name="nombre" class="span12" value="${''}" id="obradscr" readonly="true">
+    <div class="linea" style="height: 50px;"></div>
+
+    <div class="row-fluid" style="margin-top: 10px">
+        <div class="span2" style="width: 130px;">
+            <g:hiddenField name="obra__id"/>
+            Obra
+            <input type="text" name="obra" class="span20 allCaps required input-small"
+                   value="${''}" id="input_codigo" readonly="true"
+                   maxlength="30" minlength="2">
+
+            <p class="help-block ui-helper-hidden"></p>
+        </div>
+
+        <div class="span1" style="margin-top: 20px; width: 80px">
+            <a class="btn btn-small btn-primary btn-ajax" href="#" rel="tooltip" title="Agregar" id="buscar_codigo">
+                <i class="icon-search"></i> Buscar
+            </a>
+        </div>
+
+        <div class="span8" style="margin-left: 10px">
+            Descripción
+            <input type="text" name="nombre" class="span12" value="${''}" id="obradscr" readonly="true">
+        </div>
     </div>
 </div>
 
@@ -99,29 +107,29 @@
 <table class="table table-bordered table-striped table-condensed table-hover hidden" id="tabla" style="margin-top: 10px">
     <thead>
     <tr>
-        <th style="width: 10px;">
+        <th style="width: 5%;">
             *
         </th>
-        <th style="width: 20px;">
+        <th style="width: 5%;">
             #
         </th>
-        <th style="width: 200px;">
+        <th style="width: 20%;">
             Subpresupuesto
         </th>
-        <th style="width: 80px;">
+        <th style="width: 7%;">
             Código
         </th>
-        <th style="width: 400px;">
+        <th style="width: 50px;">
             Rubro
         </th>
-        <th style="width: 60px" class="col_unidad">
+        <th style="width: 5%" class="col_unidad">
             Unidad
         </th>
-        <th style="width: 80px">
+        <th style="width: 8%">
             Cantidad
         </th>
-        <th class="col_precio" style="display: none;">Unitario</th>
-        <th class="col_total" style="display: none;">C.Total</th>
+        %{--        <th class="col_precio" style="display: none;">Unitario</th>--}%
+        %{--        <th class="col_total" style="display: none;">C.Total</th>--}%
     </tr>
     </thead>
 </table>

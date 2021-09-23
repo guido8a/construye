@@ -25,10 +25,10 @@
             </a>
         </g:if>
 
-        <a href="#" class="btn  " id="copiar_rubros">
-            <i class="icon-copy"></i>
-            Copiar Rubros
-        </a>
+%{--        <a href="#" class="btn  " id="copiar_rubros" title="Copiar rubros desde un subpresupuesto">--}%
+%{--            <i class="icon-copy"></i>--}%
+%{--            Copiar Rubros--}%
+%{--        </a>--}%
         <a href="#" class="btn  " id="imprimir_sub">
             <i class="icon-print"></i>
             Impr. Subpre.
@@ -51,31 +51,31 @@
 <table class="table table-bordered table-striped table-condensed table-hover">
     <thead>
     <tr>
-        <th style="width: 20px;">
+        <th style="width: 5%;">
             #
         </th>
-        <th style="width: 120px;">
+        <th style="width: 15%;">
             Subpresupuesto
         </th>
-        <th style="width: 80px;">
+        <th style="width: 7%;">
             Código
         </th>
-        <th style="width: 100px;">
-            Especificación
-        </th>
-        <th style="width: 300px;">
+%{--        <th style="width: 100px;">--}%
+%{--            Especificación--}%
+%{--        </th>--}%
+        <th style="width: 50%;">
             Rubro
         </th>
-        <th style="width: 40px" class="col_unidad">
+        <th style="width: 5%" class="col_unidad">
             Unidad
         </th>
-        <th style="width: 80px">
+        <th style="width: 8%">
             Cantidad
         </th>
         <th class="col_precio" style="display: none;">Unitario</th>
         <th class="col_total" style="display: none;">C.Total</th>
         <g:if test="${obra.estado!='R' && duenoObra == 1}">
-            <th style="width: 40px" class="col_delete"></th>
+            <th style="width: 10%" class="col_delete"></th>
         </g:if>
     </tr>
     </thead>
@@ -83,13 +83,13 @@
 
     <g:each in="${valores}" var="val" status="j">
         <tr class="item_row ${val.rbrocdgo[0..1] == 'TR'? 'desalojo':''}" id="${val.vlob__id}"  item="${val}"  dscr="${val.vlobdscr}" sub="${val.sbpr__id}" cdgo="${val.item__id}" title="${val.vlobdscr}">
-            <td style="width: 20px" class="orden">${val.vlobordn}</td>
-            <td style="width: 200px" class="sub">${val.sbprdscr.trim()}</td>
-            <td class="cdgo">${val.rbrocdgo.trim()}</td>
-            <td class="cdes">${val.itemcdes?.trim()}</td>
-            <td class="nombre">${val.rbronmbr.trim()}</td>
-            <td style="width: 60px !important;text-align: center" class="col_unidad">${val.unddcdgo.trim()}</td>
-            <td style="text-align: right" class="cant">
+            <td style="width: 5%" class="orden">${val.vlobordn}</td>
+            <td style="width: 15%" class="sub">${val.sbprdscr.trim()}</td>
+            <td class="cdgo" style="width: 7%">${val.rbrocdgo.trim()}</td>
+%{--            <td class="cdes" style="width: 50%">${val.itemcdes?.trim()}</td>--}%
+            <td class="nombre" style="width: 50%">${val.rbronmbr.trim()}</td>
+            <td style="width: 5%;text-align: center" class="col_unidad" >${val.unddcdgo.trim()}</td>
+            <td style="width: 8%; text-align: right" class="cant">
                 <g:formatNumber number="${val.vlobcntd}" format="##,##0" minFractionDigits="2" maxFractionDigits="2" locale="ec"/>
             </td>
             <td class="col_precio" style="display: none;text-align: right" id="i_${val.item__id}"><g:formatNumber
@@ -98,7 +98,7 @@
                 <g:formatNumber number="${val.totl}" format="##,##0" minFractionDigits="2"  maxFractionDigits="2" locale="ec"/>
             </td>
             <g:if test="${obra.estado!='R' && duenoObra == 1}">
-                <td style="width: 70px;text-align: center" class="col_delete">
+                <td style="width: 10%;text-align: center" class="col_delete">
                     <a class="btn btn-small btn-primary editarItem" href="#" rel="tooltip" title="Editar" iden="${val.vlob__id}" data-cod="${val.rbrocdgo}" item="${val}"  dscr="${val.vlobdscr}" sub="${val.sbpr__id}" cdgo="${val.item__id}" title="${val.vlobdscr}">
                         <i class="fa fa-edit"></i>
                     </a>

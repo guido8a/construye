@@ -434,7 +434,7 @@ class VolumenObraController extends janus.seguridad.Shield {
 
     def tablaCopiarRubroObra(){
 
-        println("params tcr " + params)
+//        println("params tcr " + params)
 
         def obraActual = Obra.get(params.obraActual)
         def usuario = session.usuario.id
@@ -493,7 +493,7 @@ class VolumenObraController extends janus.seguridad.Shield {
 
     def copiarRubro() {
 
-        println("params copiar rubro " + params)
+//        println("params copiar rubro " + params)
 
         def errores = []
         def copiados = []
@@ -527,8 +527,8 @@ class VolumenObraController extends janus.seguridad.Shield {
             }
         }
 
-        println("Existe " + existe)
-        println("no existe " + noExiste)
+//        println("Existe " + existe)
+//        println("no existe " + noExiste)
 
         noExiste.each{ e->
             def volumen = VolumenesObra.get(e.toInteger())
@@ -550,6 +550,6 @@ class VolumenObraController extends janus.seguridad.Shield {
         def vlob = VolumenesObra.findByObra(obra)
         preciosService.actualizaOrden(vlob, "insert")
 
-        render "_" + (copiados?.size() > 0 ? (copiados.join('<br>')) : 0)  + "_" + (existe?.size() > 0 ? existe : 0) + "_" + (errores?.size() > 0 ? errores : 0)
+        render "_" + (copiados?.size() > 0 ? copiados.join('<br>') : 0)  + "_" + (existe?.size() > 0 ? existe.join("<br>") : 0) + "_" + (errores?.size() > 0 ? errores.join("<br>") : 0)
     }
 }

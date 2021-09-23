@@ -37,15 +37,13 @@ class SubPresupuestoController extends janus.seguridad.Shield {
     } //form_ajax
 
     def save() {
-//
-//        println "save sp: " + params
 
+        println "save sp: " + params
 
         def grupoFiltrado = Grupo.findAllByCodigoNotIlikeAndCodigoNotIlikeAndCodigoNotIlike('1','2', '3');
         def subpreFiltrado = []
         def var
         subpreFiltrado=SubPresupuesto.findAllByGrupo(grupoFiltrado[0])
-
 
         def subPresupuestoInstance
         if (params.id) {
@@ -64,7 +62,8 @@ class SubPresupuestoController extends janus.seguridad.Shield {
             subPresupuestoInstance.properties = params
         }//es edit
         else {
-            def subp = SubPresupuesto.findByDescripcion(params.descripcion)
+            def grp = Grupo.get(params."grupo.id")
+            def subp = SubPresupuesto.findByDescripcionAndGrupo(params.descripcion.toString()?.trim(), grp)
             println "sub "+subp
             if(subp){
                 if (params.volob.toString() == "1") {
@@ -102,42 +101,13 @@ class SubPresupuestoController extends janus.seguridad.Shield {
         }
 
         if (params.id) {
-
-//            def grupoFiltrado = Grupo.findAllByCodigoNotIlikeAndCodigoNotIlikeAndCodigoNotIlike('1','2', '3');
-//            def subpreFiltrado = []
-//            def var
-//            subpreFiltrado=SubPresupuesto.findAllByGrupo(grupoFiltrado[0])
-
-//            flash.clase = "alert-success"
             def message = "Se ha actualizado correctamente Sub Presupuesto " + subPresupuestoInstance.descripcion
-
             render "ok_"+ message + '_' + g.select (name:"subpresupuesto", from: subpreFiltrado , optionKey:"id", optionValue:"descripcion", style:"width: 280px;;font-size: 10px", id:"subPres", value: subPresupuestoInstance.id)
-
-
         } else {
-
-//            def grupoFiltrado = Grupo.findAllByCodigoNotIlikeAndCodigoNotIlikeAndCodigoNotIlike('1','2', '3');
-//            def subpreFiltrado = []
-//            def var
-//            subpreFiltrado=SubPresupuesto.findAllByGrupo(grupoFiltrado[0])
-
-
-//            flash.clase = "alert-success"
              def message = "Se ha creado correctamente Sub Presupuesto " + subPresupuestoInstance.descripcion
-//            render "ok_"+flash.message + '_' +  g.select(name: "subpresupuesto", from: SubPresupuesto.list([order: 'descripcion']), optionKey: "id", optionValue: "descripcion", style: "width: 300px;font-size: 10px", id: "subPres", value: subPresupuestoInstance.id)
             render "ok_"+ message + '_' + g.select (name:"subpresupuesto", from: subpreFiltrado , optionKey:"id", optionValue:"descripcion", style:"width: 280px;;font-size: 10px", id:"subPres", value: subPresupuestoInstance.id)
-
         }
-//        if (params.volob.toString() == "1") {
-////            def sel = g.select(name: "subpresupuesto", from: SubPresupuesto.list([order: 'descripcion']), optionKey: "id", optionValue: "descripcion", style: "width: 300px;font-size: 10px", id: "subPres", value: subPresupuestoInstance.id)
-//
-//            def sel = g.select (name:"subpresupuesto", from: subpreFiltrado , optionKey:"id", optionValue:"descripcion", style:"width: 280px;;font-size: 10px", id:"subPres", value: subPresupuestoInstance.id)
-//
-//            render sel
-//
-//                } else {
-//            redirect(action: 'list')
-//        }
+
     } //save
 
     def show_ajax() {
