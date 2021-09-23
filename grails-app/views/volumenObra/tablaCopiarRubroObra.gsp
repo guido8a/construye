@@ -74,7 +74,7 @@
                             var parts = msg.split("_");
                             $.box({
                                 imageClass: "box_info",
-                                text: "Copiados: " + parts[1] + "<br>" + "Existentes(No copiados): " + parts[2] + "<br>" + "Errores: " + parts[3],
+                                text: "Copiados: <br>" + parts[1] + "<br>" + "Existentes(No copiados): " + parts[2] + "<br>" + "Errores: " + parts[3],
                                 title: "Alerta",
                                 iconClose: false,
                                 dialog: {

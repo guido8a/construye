@@ -549,6 +549,6 @@ class VolumenObraController extends janus.seguridad.Shield {
 
         preciosService.actualizaOrden(nuevoVolumen, "insert")
 
-        render "_" + (copiados?.size() > 0 ? copiados : 0)  + "_" + (existe?.size() > 0 ? existe : 0) + "_" + (errores?.size() > 0 ? errores : 0)
+        render "_" + (copiados?.size() > 0 ? (copiados.join('<br>')) : 0)  + "_" + (existe?.size() > 0 ? existe : 0) + "_" + (errores?.size() > 0 ? errores : 0)
     }
 }
