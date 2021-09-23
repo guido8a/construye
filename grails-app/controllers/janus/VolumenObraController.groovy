@@ -330,7 +330,7 @@ class VolumenObraController extends janus.seguridad.Shield {
         def valores
 
 //        if (params.sub && params.sub != "null") {
-            valores = preciosService.rbro_pcun_v3(obra.id, params.sub)
+        valores = preciosService.rbro_pcun_v3(obra.id, params.sub)
 //        } else {
 //            valores = preciosService.rbro_pcun_v2(obra.id)
 //        }
@@ -428,7 +428,6 @@ class VolumenObraController extends janus.seguridad.Shield {
 
     def copiarRubrosObra(){
         def obra = Obra.get(params.id)
-//        def destinos = VolumenesObra.findAllByObra(obra, [sort: "descripcion"]).subPresupuesto.unique()
         def destinos = SubPresupuesto.findAllByIdGreaterThan(0, [sort: "descripcion"])
         return[obra:obra, destinos: destinos]
     }
@@ -437,6 +436,7 @@ class VolumenObraController extends janus.seguridad.Shield {
 
         println("params tcr " + params)
 
+        def obraActual = Obra.get(params.obraActual)
         def usuario = session.usuario.id
         def persona = Persona.get(usuario)
         def direccion = Direccion.get(persona?.departamento?.direccion?.id)
@@ -456,7 +456,7 @@ class VolumenObraController extends janus.seguridad.Shield {
 
         preciosService.ac_rbroObra(obra.id)
         [precios: precios, subPres: subPres, subPre: params.sub, obra: obra, precioVol: prch, precioChof: prvl,
-         indirectos: indirecto * 100, valores: valores, subPresupuesto1: subPresupuesto1, grupo: grupo]
+         indirectos: indirecto * 100, valores: valores, subPresupuesto1: subPresupuesto1, grupo: grupo, obraActual: obraActual]
     }
 
     def listaObras() {
@@ -493,78 +493,63 @@ class VolumenObraController extends janus.seguridad.Shield {
 
     def copiarRubro() {
 
-      println("params copiar rubro " + params)
+        println("params copiar rubro " + params)
 
-//        params."selec[]".each{
-//            println("--> " + it)
-//        }
-
-        def obra = Obra.get(params.obra)
-        def rubro = Item.get(params.rubro)
-        def sbprDest = SubPresupuesto.get(params.subDest)
-//        def sbpr = SubPresupuesto.get(params.sub)
-
-//        def itemVolumen = VolumenesObra.findByItemAndSubPresupuesto(rubro, sbpr)
-//        def itemVolumenDest = VolumenesObra.findByItemAndSubPresupuestoAndObra(rubro, sbprDest, obra)
-
-
-//
-//        if(params."select[]" > 1){
-//            println("si")
-//        }else{
-//            println("no")
-//        }
-
+        def errores = []
+        def copiados = []
         def existe = []
         def noExiste = []
 
-        params."selec[]".each{
-            def rb = Item.get(it)
-            if(VolumenesObra.findByItemAndSubPresupuestoAndObra(rb, sbprDest, obra)){
-                existe.add(rb.id)
+        def obra = Obra.get(params.obra)
+        def rubro
+        def volumenOriginal
+        def sbprDest = SubPresupuesto.get(params.destino)
+        def existentes = VolumenesObra.findAllByObraAndSubPresupuesto(obra, sbprDest, [sort: "orden"])
+        def nuevoVolumen
+
+        if(params.tamano.toInteger() > 1){
+            params."selec[]".each{
+                volumenOriginal = VolumenesObra.get(it)
+                rubro = volumenOriginal.item
+                if(VolumenesObra.findByItemAndSubPresupuestoAndObra(rubro, sbprDest, obra)){
+                    existe.add(volumenOriginal.item.nombre)
+                }else{
+                    noExiste.add(volumenOriginal.id)
+                }
+            }
+        }else{
+            volumenOriginal = VolumenesObra.get( params."selec[]")
+            rubro = volumenOriginal.item
+            if(VolumenesObra.findByItemAndSubPresupuestoAndObra(rubro, sbprDest, obra)){
+                existe.add(volumenOriginal.item.nombre)
             }else{
-                noExiste.add(rb.id)
+                noExiste.add(volumenOriginal.id)
             }
         }
 
         println("Existe " + existe)
         println("no existe " + noExiste)
 
+        noExiste.each{ e->
+            def volumen = VolumenesObra.get(e.toInteger())
+            nuevoVolumen = new VolumenesObra()
+            nuevoVolumen.item = volumen.item
+            nuevoVolumen.obra = obra
+            nuevoVolumen.cantidad = volumen.cantidad
+            nuevoVolumen.subPresupuesto = sbprDest
+            nuevoVolumen.orden = existentes ? (existentes?.last()?.orden + 1) : 1
 
-//        def volumen
-//        def volu = VolumenesObra.list()
-//        def errores = ''
-//
-//        if (params.id)
-//            volumen = VolumenesObra.get(params.id)
-//        else {
-//            if (itemVolumenDest) {
-//                render "er_No se puede copiar el rubro " + rubro.nombre
-//                return
-//
-//            } else {
-//                volumen = VolumenesObra.findByObraAndItemAndSubPresupuesto(obra, rubro, sbprDest)
-//                if (volumen == null)
-//                    volumen = new VolumenesObra()
-//            }
-//        }
-//
-//        if(params.canti){
-//            volumen.cantidad = params.canti.toDouble()
-//        }else{
-//            volumen.cantidad = itemVolumen.cantidad.toDouble()
-//        }
-//
-//        volumen.orden = (volu.orden.size().toInteger()) + 1
-//        volumen.subPresupuesto = SubPresupuesto.get(params.subDest)
-//        volumen.obra = obra
-//        volumen.item = rubro
-//        if (!volumen.save(flush: true)) {
-//            println("Error al copiar los rubros " + volumen.errors)
-//            render "no_Error al copiar los rubros"
-//        } else {
+            if(!nuevoVolumen.save(flush: true)){
+                println("error al grabar el nuevo volumen de obra " + nuevoVolumen.errors)
+                errores.add(volumen.item.nombre)
+            }else{
+                copiados.add(volumen.item.nombre)
+            }
+        }
+
+        render "_" + (copiados?.size() > 0 ? copiados : 0)  + "_" + (existe?.size() > 0 ? existe : 0) + "_" + (errores?.size() > 0 ? errores : 0)
+
 //            preciosService.actualizaOrden(volumen, "insert")
-//            render "ok"
-//        }
+
     }
 }

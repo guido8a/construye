@@ -5,7 +5,6 @@
   Time: 10:30
 --%>
 
-
 <g:if test="${flash.message}">
     <div class="span12" style="height: 35px;margin-bottom: 10px; margin-left: -25px">
         <div class="alert ${flash.clase ?: 'alert-info'}" role="status" style="text-align: center">
@@ -19,7 +18,7 @@
     <table class="table table-bordered table-striped table-condensed table-hover">
         <tbody id="tabla_material">
         <g:each in="${valores}" var="val" status="">
-            <tr class="item_row" id="${val.item__id}" item="${val}" sub="${val.sbpr__id}" ord="${val.vlobordn}" cant="${val.vlobcntd}">
+            <tr class="item_row" id="${val.item__id}" item="${val}" sub="${val.sbpr__id}" ord="${val.vlobordn}" cant="${val.vlobcntd}" data-vlob="${val.vlob__id}">
 
                 <td style="width: 10px" class="sel"><g:checkBox class="chec" name="selec" checked="false" id="seleccionar1" value="${val.item__id}"/></td>
                 <td style="width: 20px" class="orden">${val.vlobordn}</td>
@@ -47,6 +46,8 @@
         var datos
         var subPresDest = $("#subPres_destino").val();
         var subPre = $("#subPres_desc").val();
+        var selec = [];
+        var tamano = 0;
 
         if(subPre == ""){
             cajaTexto("Seleccione el subpresupuesto de " +  "<strong>" + "origen" + "</strong>", "Alerta");
@@ -55,138 +56,45 @@
                 cajaTexto("Seleccione el subpresupuesto de " +  "<strong>" + "destino" + "</strong>", "Alerta");
             }else{
                 tbody.children("tr").each(function () {
-                    var trId = $(this).attr("id");
-                    datos ="rubro=" + trId + "&subDest=" + subPresDest + "&obra=" + ${obra.id} + "&sub=" + subPre;
+
+                    var vlob = $(this).data("vlob");
+                    selec.push(vlob);
+                    tamano += 1;
                     $.ajax({
                         type : "POST",
-                        url : "${g.createLink(controller: 'volumenObra',action:'copiarItem')}",
-                        data     : datos,
+                        async : false,
+                        url : "${g.createLink(controller: 'volumenObra',action:'copiarRubro')}",
+                        data     : {
+                            selec: selec,
+                            obra: '${obraActual?.id}',
+                            destino: subPresDest,
+                            tamano: tamano
+                        },
                         success  : function (msg) {
                             var parts = msg.split("_");
-                            if(parts[0] == 'ok'){
-                                $.box({
-                                    imageClass: "box_info",
-                                    text: "Rubros copiados correctamente",
-                                    title: "Alerta",
-                                    iconClose: false,
-                                    dialog: {
-                                        resizable: false,
-                                        draggable: false,
-                                        width: 350,
-                                        buttons: {
-                                            "Aceptar": function () {
-                                                location.reload(true)
-                                            }
+                            $.box({
+                                imageClass: "box_info",
+                                text: "Copiados: " + parts[1] + "<br>" + "Existentes(No copiados): " + parts[2] + "<br>" + "Errores: " + parts[3],
+                                title: "Alerta",
+                                iconClose: false,
+                                dialog: {
+                                    resizable: false,
+                                    draggable: false,
+                                    width: 500,
+                                    buttons: {
+                                        "Aceptar": function () {
+                                            // location.reload(true)
                                         }
                                     }
-                                });
-                            }else{
-                                if(parts[0] == 'er'){
-                                    $.box({
-                                        imageClass: "box_info",
-                                        text: parts[1],
-                                        title: "Alerta",
-                                        iconClose: false,
-                                        dialog: {
-                                            resizable: false,
-                                            draggable: false,
-                                            width: 350,
-                                            buttons: {
-                                                "Aceptar": function () {
-                                                    // location.reload(true)
-                                                }
-                                            }
-                                        }
-                                    });
-                                }else{
-                                    cajaTexto(parts[1], "Error")
                                 }
-                            }
+                            });
                         }
                     });
+
                 });
             }
         }
     });
-
-    %{--$("#copiar_sel").click(function () {--}%
-    %{--    var tbody = $("#tabla_material");--}%
-    %{--    var datos--}%
-    %{--    var subPresDest = $("#subPres_destino").val();--}%
-    %{--    var subPre = $("#subPres_desc").val();--}%
-    %{--    var rbros = [];--}%
-
-    %{--    if(subPre == ""){--}%
-    %{--        cajaTexto("Seleccione el subpresupuesto de " +  "<strong>" + "origen" + "</strong>", "Alerta");--}%
-    %{--    } else {--}%
-    %{--        if(subPresDest == ""){--}%
-    %{--            cajaTexto("Seleccione el subpresupuesto de " +  "<strong>" + "destino" + "</strong>", "Alerta");--}%
-    %{--        }else{--}%
-    %{--            tbody.children("tr").each(function () {--}%
-    %{--                if(($(this).children("td").children().get(1).checked) == true){--}%
-    %{--                    var selec = [];--}%
-
-    %{--                    var trId = $(this).attr("id");--}%
-    %{--                    var ord = $(this).attr("ord");--}%
-    %{--                    var canti = $(this).attr("cant");--}%
-
-    %{--                    datos ="&rubro=" + trId + "&subDest=" + subPresDest + "&obra=" + ${obra.id} + "&sub=" + subPre + "&orden=" + ord + "&canti=" + canti;--}%
-
-    %{--                    $.ajax({--}%
-    %{--                        type : "POST",--}%
-    %{--                        async : false,--}%
-    %{--                        url : "${g.createLink(controller: 'volumenObra',action:'copiarItem')}",--}%
-    %{--                        data     : datos,--}%
-    %{--                        success  : function (msg) {--}%
-    %{--                            var parts = msg.split("_");--}%
-    %{--                            if(parts[0] == 'ok'){--}%
-    %{--                                $.box({--}%
-    %{--                                    imageClass: "box_info",--}%
-    %{--                                    text: "Rubros copiados correctamente",--}%
-    %{--                                    title: "Alerta",--}%
-    %{--                                    iconClose: false,--}%
-    %{--                                    dialog: {--}%
-    %{--                                        resizable: false,--}%
-    %{--                                        draggable: false,--}%
-    %{--                                        width: 350,--}%
-    %{--                                        buttons: {--}%
-    %{--                                            "Aceptar": function () {--}%
-    %{--                                                location.reload(true)--}%
-    %{--                                            }--}%
-    %{--                                        }--}%
-    %{--                                    }--}%
-    %{--                                });--}%
-    %{--                            }else{--}%
-    %{--                                if(parts[0] == 'er'){--}%
-    %{--                                    $.box({--}%
-    %{--                                        imageClass: "box_info",--}%
-    %{--                                        text: parts[1],--}%
-    %{--                                        title: "Alerta",--}%
-    %{--                                        iconClose: false,--}%
-    %{--                                        dialog: {--}%
-    %{--                                            resizable: false,--}%
-    %{--                                            draggable: false,--}%
-    %{--                                            width: 350,--}%
-    %{--                                            buttons: {--}%
-    %{--                                                "Aceptar": function () {--}%
-    %{--                                                    location.reload(true)--}%
-    %{--                                                }--}%
-    %{--                                            }--}%
-    %{--                                        }--}%
-    %{--                                    });--}%
-    %{--                                }else{--}%
-    %{--                                    cajaTexto(parts[1], "Error")--}%
-    %{--                                }--}%
-    %{--                            }--}%
-    %{--                        }--}%
-    %{--                    });--}%
-    %{--                } else {--}%
-    %{--                }--}%
-    %{--            });--}%
-    %{--        }--}%
-    %{--    }--}%
-    %{--});--}%
-
 
     $("#copiar_sel").click(function () {
         var tbody = $("#tabla_material");
@@ -195,6 +103,7 @@
         var subPre = $("#subPres_desc").val();
         var rbros = [];
         var selec = [];
+        var tamano = 0;
 
         if(subPre == ""){
             cajaTexto("Seleccione el subpresupuesto de " +  "<strong>" + "origen" + "</strong>", "Alerta");
@@ -202,20 +111,12 @@
             if(subPresDest == ""){
                 cajaTexto("Seleccione el subpresupuesto de " +  "<strong>" + "destino" + "</strong>", "Alerta");
             }else{
-
                 tbody.children("tr").each(function () {
-
                     if(($(this).children("td").children().get(1).checked) == true){
-
-                        var trId = $(this).attr("id");
-                        var ord = $(this).attr("ord");
-                        var canti = $(this).attr("cant");
-
-                        selec.push(trId);
-
-                        %{--datos ="&rubro=" + trId + "&subDest=" + subPresDest + "&obra=" + ${obra.id} + "&sub=" + subPre + "&orden=" + ord + "&canti=" + canti;--}%
-
-                      } else {
+                        var vlob = $(this).data("vlob");
+                        selec.push(vlob);
+                        tamano += 1;
+                    } else {
                     }
                 });
 
@@ -225,55 +126,30 @@
                     url : "${g.createLink(controller: 'volumenObra',action:'copiarRubro')}",
                     data     : {
                         selec: selec,
-                        obra: '${obra?.id}',
-                        destino: subPresDest
+                        obra: '${obraActual?.id}',
+                        destino: subPresDest,
+                        tamano: tamano
                     },
                     success  : function (msg) {
                         var parts = msg.split("_");
-                        if(parts[0] == 'ok'){
-                            $.box({
-                                imageClass: "box_info",
-                                text: "Rubros copiados correctamente",
-                                title: "Alerta",
-                                iconClose: false,
-                                dialog: {
-                                    resizable: false,
-                                    draggable: false,
-                                    width: 350,
-                                    buttons: {
-                                        "Aceptar": function () {
-                                            location.reload(true)
-                                        }
+                        $.box({
+                            imageClass: "box_info",
+                            text: "Copiados: " + parts[1] + "<br>" + "Existentes(No copiados): " + parts[2] + "<br>" + "Errores: " + parts[3],
+                            title: "Alerta",
+                            iconClose: false,
+                            dialog: {
+                                resizable: false,
+                                draggable: false,
+                                width: 500,
+                                buttons: {
+                                    "Aceptar": function () {
+                                        // location.reload(true)
                                     }
                                 }
-                            });
-                        }else{
-                            if(parts[0] == 'er'){
-                                $.box({
-                                    imageClass: "box_info",
-                                    text: parts[1],
-                                    title: "Alerta",
-                                    iconClose: false,
-                                    dialog: {
-                                        resizable: false,
-                                        draggable: false,
-                                        width: 350,
-                                        buttons: {
-                                            "Aceptar": function () {
-                                                location.reload(true)
-                                            }
-                                        }
-                                    }
-                                });
-                            }else{
-                                cajaTexto(parts[1], "Error")
                             }
-                        }
+                        });
                     }
                 });
-
-
-
             }
         }
     });

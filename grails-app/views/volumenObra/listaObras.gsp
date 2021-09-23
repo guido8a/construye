@@ -65,7 +65,8 @@
             async: true,
             data     : {
                 sub: subpresupuesto,
-                obra: $("#obra__id").val()
+                obra: $("#obra__id").val(),
+                obraActual: '${obra?.id}'
             },
             success  : function (msg) {
                 $("#detalle").html(msg)

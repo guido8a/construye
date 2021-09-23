@@ -213,42 +213,6 @@
         });
     }
 
-    %{--cargarDestinos($("#subPres_desc option:selected").val());--}%
-
-    %{--function cargarDestinos(origen){--}%
-    %{--    $.ajax({--}%
-    %{--        type : "POST",--}%
-    %{--        url : "${g.createLink(controller: 'volumenObra',action:'destino_ajax')}",--}%
-    %{--        data     : {--}%
-    %{--            obra: '${obra?.id}',--}%
-    %{--            origen: origen--}%
-    %{--        },--}%
-    %{--        success  : function (msg) {--}%
-    %{--            $("#divDestino").html(msg)--}%
-    %{--        }--}%
-    %{--    });--}%
-    %{--}--}%
-
-    %{--cargarTablaOrigen($("#subPres_desc option:selected").val());--}%
-
-    %{--function cargarTablaOrigen(subpresupuesto){--}%
-    %{--    var interval = loading("detalle");--}%
-    %{--    $.ajax({--}%
-    %{--        type : "POST",--}%
-    %{--        url : "${g.createLink(controller: 'volumenObra',action:'tablaCopiarRubro')}",--}%
-    %{--        data     : {--}%
-    %{--            obra: '${obra?.id}',--}%
-    %{--            sub: subpresupuesto--}%
-    %{--        },--}%
-    %{--        success  : function (msg) {--}%
-    %{--            clearInterval(interval);--}%
-    %{--            $("#detalle").html(msg)--}%
-    %{--        }--}%
-    %{--    });--}%
-    %{--}--}%
-
-
-
     function loading(div) {
         y = 0;
         return setInterval(function () {
