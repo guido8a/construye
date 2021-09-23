@@ -547,7 +547,8 @@ class VolumenObraController extends janus.seguridad.Shield {
             }
         }
 
-        preciosService.actualizaOrden(nuevoVolumen, "insert")
+        def vlob = VolumenesObra.findByObra(obra)
+        preciosService.actualizaOrden(vlob, "insert")
 
         render "_" + (copiados?.size() > 0 ? (copiados.join('<br>')) : 0)  + "_" + (existe?.size() > 0 ? existe : 0) + "_" + (errores?.size() > 0 ? errores : 0)
     }
