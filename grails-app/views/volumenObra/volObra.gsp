@@ -117,18 +117,17 @@
     <div class="borde_abajo" style="padding-left: 5px;position: relative; height: 92px">
 
         <div class="row-fluid" style="margin-left: 0px">
-            <div class="span3" style="width: 135px; ">
+            <div class="span3" style="width: 185px; ">
                 <b>Tipo de Obra:</b><g:select name="grupos" id="grupos" from="${grupoFiltrado}" optionKey="id" optionValue="descripcion"
-                                              style="margin-left: 0px; width: 130px; font-size: 11px" value="${janus.Grupo.findByDireccion(obra.departamento.direccion)?.id}"/>
+                                              style="margin-left: 0px; width: 180px; font-size: 11px" value="${janus.Grupo.findByDireccion(obra.departamento.direccion)?.id}"/>
             </div>
 
             <div class="row-fluid" style="margin-left: 0px">
-                <div class="span4" style="width: 450px">
+                <div class="span4" style="width: 400px">
                     <b>Crear Subpresupuesto / Ingresar Rubros:</b>
                     <span id="sp">
                         <span id="div_cmb_sub">
-                            <g:select name="subpresupuesto" from="${subpreFiltrado}" optionKey="id" optionValue="descripcion"
-                                      id="subPres"/>
+                            <g:select name="subpresupuesto" from="${subpreFiltrado}" optionKey="id" optionValue="descripcion" id="subPres"/>
                         </span>
                     </span>
 
@@ -136,8 +135,8 @@
                         <a href="#" class="btn boton btn-primary" id="btnCrearSP" title="Crear subpresupuesto" style="margin-top: -10px;">
                             <i class="icon-plus"></i>
                         </a>
-                        <a href="#" class="btn boton" id="btnBorrarSP" title="Borrar subpresupuesto" style="margin-top: -10px;">
-                            <i class="icon-minus"></i>
+                        <a href="#" class="btn boton btn-danger" id="btnBorrarSP" title="Borrar subpresupuesto" style="margin-top: -10px;">
+                            <i class="icon-trash"></i>
                         </a>
                         <a href="#" class="btn boton" id="btnEditarSP" title="Editar subpresupuesto" style="margin-top: -10px;">
                             <i class="icon-edit"></i>
@@ -148,12 +147,18 @@
                 <div class="span1" style="margin-left: 0px; width: 100px;">
                     <b>Código</b>
                     <input type="text" style="width: 100px;;font-size: 10px" id="item_codigo" class="allCaps">
-                    <input type="hidden" style="width: 60px" id="item_id">
+                    <input type="hidden" id="item_id">
                 </div>
 
-                <div class="span4" style="margin-left: 15px;">
+                <div class="span1" style="margin-top: 20px; width: 80px">
+                    <a class="btn btn-small btn-primary btn-ajax" href="#" rel="tooltip" title="Agregar" id="btnRubro">
+                        <i class="icon-search"></i> Buscar
+                    </a>
+                </div>
+
+                <div class="span4" style="margin-left: 0px;">
                     <b>Rubro</b>
-                    <input type="text" style="width: 420px;font-size: 10px" id="item_nombre" readonly="true">
+                    <input type="text" style="width: 350px;font-size: 10px" id="item_nombre" readonly="true">
                 </div>
 
                 <div class="span2" style="margin-left: 0px; width: 780px;">
@@ -299,6 +304,10 @@
     }
     $(function () {
         $("#grupos").change(function () {
+            cargarSub();
+        });
+
+        function cargarSub(){
             $.ajax({
                 type    : "POST",
                 url : "${g.createLink(controller: 'volumenObra',action:'cargarSubpres')}",
@@ -307,7 +316,7 @@
                     $("#div_cmb_sub").html(msg)
                 }
             });
-        });
+        }
 
         cargarTabla();
         $("#vol_id").val("")
@@ -344,14 +353,14 @@
             }
         });
 
-        $("#item_codigo").dblclick(function () {
+        // $("#item_codigo").dblclick(function () {
+        $("#btnRubro").click(function () {
             var btnOk = $('<a href="#" data-dismiss="modal" class="btn">Cerrar</a>');
             $("#modalTitle").html("Lista de rubros");
             $("#modalFooter").html("").append(btnOk);
             $("#modal-rubro").modal("show");
-            $("#buscarDialog").unbind("click")
+            $("#buscarDialog").unbind("click");
             $("#buscarDialog").bind("click", enviar)
-
         });
 
         $("#reporteGrupos").click(function () {
@@ -365,11 +374,11 @@
                     success  : function (msg) {
                         // console.log("msg "+msg)
                         if (msg != "-1") {
-                            var parts = msg.split("&&")
-                            $("#item_id").val(parts[0])
+                            var parts = msg.split("&&");
+                            $("#item_id").val(parts[0]);
                             $("#item_nombre").val(parts[2])
                         } else {
-                            $("#item_id").val("")
+                            $("#item_id").val("");
                             $("#item_nombre").val("")
                         }
                     }
@@ -398,37 +407,57 @@
                     var $frm = $("#frmSave-SubPresupuesto");
 
                     btnSave.click(function () {
-                        spinner.replaceWith($btnOrig);
-                        if ($frm.valid()) {
-                            btnSave.replaceWith(spinner);
-                        }
                         var data = $frm.serialize();
+                        spinner.replaceWith($btnOrig);
 
-                        $.ajax({
-                            type    : "POST",
-                            url     : $frm.attr("action"),
-                            data    : data,
-                            success : function (msg) {
-                                var p = msg.split("_");
-                                var alerta;
-
-                                if (p[0] != "NO") {
-                                    alerta = '<div class="alert alert-success" role="status"><a class="close" data-dismiss="alert" href="#">×</a>';
-                                    alerta += p[1];
-                                    alerta += '</div>';
-                                    $("#div_cmb_sub").html(p[1])
+                        if ($frm.valid()) {
+                            $.ajax({
+                                type    : "POST",
+                                url     : $frm.attr("action"),
+                                data    : data,
+                                success : function (msg) {
                                     $("#modal-SubPresupuesto").modal("hide");
-                                }
-                                else {
-                                    alerta = '<div class="alert alert-error" role="status"><a class="close" data-dismiss="alert" href="#">×</a>';
-                                    alerta += p[1];
-                                    alerta += '</div>';
-                                }
+                                    var p = msg.split("_");
+                                    var alerta;
 
-                                $("#mensaje").html(alerta);
-                            }
-                        });
-
+                                    if (p[0] != "NO") {
+                                        $.box({
+                                            imageClass : "box_info",
+                                            text       : p[1],
+                                            title      : "Alerta",
+                                            iconClose  : false,
+                                            dialog     : {
+                                                resizable : false,
+                                                draggable : false,
+                                                width     : 500,
+                                                buttons   : {
+                                                    "Aceptar" : function () {
+                                                        cargarSub();
+                                                    }
+                                                }
+                                            }
+                                        });
+                                    }
+                                    else {
+                                        $.box({
+                                            imageClass : "box_info",
+                                            text       : p[1],
+                                            title      : "Alerta",
+                                            iconClose  : false,
+                                            dialog     : {
+                                                resizable : false,
+                                                draggable : false,
+                                                width     : 500,
+                                                buttons   : {
+                                                    "Aceptar" : function () {
+                                                    }
+                                                }
+                                            }
+                                        });
+                                    }
+                                }
+                            });
+                        }
                         return false;
                     });
 
@@ -445,10 +474,6 @@
                 }
             });
             return false;
-        });
-
-        $("#btnBorrarSP").click(function () {
-            $("#borrarSPDialog").dialog("open")
         });
 
         $("#btnEditarSP").click(function () {
@@ -470,39 +495,58 @@
                     var $frm = $("#frmSave-SubPresupuesto");
 
                     btnSave.click(function () {
-                        spinner.replaceWith($btnOrig);
-                        if ($frm.valid()) {
-                            btnSave.replaceWith(spinner);
-                        }
+
                         var data = $frm.serialize();
-//                        var data =
 
-                        $.ajax({
-                            type    : "POST",
-                            url     : $frm.attr("action"),
-                            data    : data,
-                            success : function (msg) {
-
-                                var p = msg.split("_");
-                                var alerta;
-
-                                if (msg != "NO") {
+                        if ($frm.valid()) {
+                            $.ajax({
+                                type    : "POST",
+                                url     : $frm.attr("action"),
+                                data    : data,
+                                success : function (msg) {
                                     $("#modal-SubPresupuesto").modal("hide");
-                                    alerta = '<div class="alert alert-success" role="status"><a class="close" data-dismiss="alert" href="#">×</a>';
-                                    alerta += p[1];
-                                    alerta += '</div>';
-                                    $("#modal-SubPresupuesto").modal("hide");
-                                    $("#div_cmb_sub").html(p[2])
-                                } else {
-                                    alerta = '<div class="alert alert-error" role="status"><a class="close" data-dismiss="alert" href="#">×</a>';
-                                    alerta += p[1];
-                                    alerta += '</div>';
+                                    var p = msg.split("_");
+                                    var alerta;
+
+                                    if (p[0] != "NO") {
+                                        $.box({
+                                            imageClass : "box_info",
+                                            text       : p[1],
+                                            title      : "Alerta",
+                                            iconClose  : false,
+                                            dialog     : {
+                                                resizable : false,
+                                                draggable : false,
+                                                width     : 500,
+                                                buttons   : {
+                                                    "Aceptar" : function () {
+                                                        // location.reload(true)
+                                                        cargarSub();
+                                                    }
+                                                }
+                                            }
+                                        });
+                                    }
+                                    else {
+                                        $.box({
+                                            imageClass : "box_info",
+                                            text       : p[1],
+                                            title      : "Alerta",
+                                            iconClose  : false,
+                                            dialog     : {
+                                                resizable : false,
+                                                draggable : false,
+                                                width     : 500,
+                                                buttons   : {
+                                                    "Aceptar" : function () {
+                                                    }
+                                                }
+                                            }
+                                        });
+                                    }
                                 }
-
-                                $("#mensaje").html(alerta);
-
-                            }
-                        });
+                            });
+                        }
 
                         return false;
                     });
@@ -523,55 +567,119 @@
 
         });
 
-        $("#borrarSPDialog").dialog({
+        $("#btnBorrarSP").click(function () {
+            // $("#borrarSPDialog").dialog("open")
 
-            autoOpen  : false,
-            resizable : false,
-            modal     : true,
-            draggable : false,
-            width     : 350,
-            height    : 180,
-            position  : 'center',
-            title     : 'Borrar Subpresupuesto',
-            buttons   : {
-                "Aceptar"  : function () {
+            $.box({
+                imageClass : "box_info",
+                text       : "Está seguro de borrar este subpresupuesto?",
+                title      : "Alerta",
+                iconClose  : false,
+                dialog     : {
+                    resizable : false,
+                    draggable : false,
+                    width     : 450,
+                    buttons   : {
+                        "Aceptar" : function () {
+                            var id = $("#subPres").val();
+                            $.ajax({
+                                type    : "POST",
+                                url     : "${createLink(controller:"subPresupuesto",action:'delete2')}",
+                                data    : {
+                                    id : id
+                                },
+                                success : function (msg) {
+                                    var p = msg.split("_");
+                                    var alerta;
+                                    if (msg != "NO") {
 
-                    var id = $("#subPres").val();
+                                        $.box({
+                                            imageClass : "box_info",
+                                            text       : "Se ha borrado correctamente el subpresupuesto",
+                                            title      : "Alerta",
+                                            iconClose  : false,
+                                            dialog     : {
+                                                resizable : false,
+                                                draggable : false,
+                                                width     : 450,
+                                                buttons   : {
+                                                    "Aceptar" : function () {
+                                                        cargarSub();
+                                                    }
+                                                }
+                                            }
+                                        });
 
-                    $.ajax({
-                        type    : "POST",
-                        url     : "${createLink(controller:"subPresupuesto",action:'delete2')}",
-                        data    : {
-                            id : id
+                                        // alerta = '<div class="alert alert-success" role="status"><a class="close" data-dismiss="alert" href="#">×</a>';
+                                        // alerta += p[1];
+                                        // alerta += '</div>';
+                                        // $("#div_cmb_sub").html(p[2])
+                                    } else {
+                                        alerta = '<div class="alert alert-error" role="status"><a class="close" data-dismiss="alert" href="#">×</a>';
+                                        alerta += p[1];
+                                        alerta += '</div>';
+                                    }
+                                    $("#mensaje").html(alerta);
+                                }
+                            });
                         },
-                        success : function (msg) {
-                            var p = msg.split("_");
-                            var alerta;
-                            if (msg != "NO") {
+                        "Cancelar" : function () {
 
-                                alerta = '<div class="alert alert-success" role="status"><a class="close" data-dismiss="alert" href="#">×</a>';
-                                alerta += p[1];
-                                alerta += '</div>';
-
-                                $("#div_cmb_sub").html(p[2])
-                            } else {
-                                alerta = '<div class="alert alert-error" role="status"><a class="close" data-dismiss="alert" href="#">×</a>';
-                                alerta += p[1];
-                                alerta += '</div>';
-                            }
-                            $("#mensaje").html(alerta);
                         }
-                    });
-
-                    $("#borrarSPDialog").dialog("close");
-                },
-                "Cancelar" : function () {
-
-                    $("#borrarSPDialog").dialog("close");
+                    }
                 }
-            }
+            });
 
         });
+
+        %{--$("#borrarSPDialog").dialog({--}%
+        %{--    autoOpen  : false,--}%
+        %{--    resizable : false,--}%
+        %{--    modal     : true,--}%
+        %{--    draggable : false,--}%
+        %{--    width     : 350,--}%
+        %{--    height    : 180,--}%
+        %{--    position  : 'center',--}%
+        %{--    title     : 'Borrar Subpresupuesto',--}%
+        %{--    buttons   : {--}%
+        %{--        "Aceptar"  : function () {--}%
+
+        %{--            var id = $("#subPres").val();--}%
+
+        %{--            $.ajax({--}%
+        %{--                type    : "POST",--}%
+        %{--                url     : "${createLink(controller:"subPresupuesto",action:'delete2')}",--}%
+        %{--                data    : {--}%
+        %{--                    id : id--}%
+        %{--                },--}%
+        %{--                success : function (msg) {--}%
+        %{--                    var p = msg.split("_");--}%
+        %{--                    var alerta;--}%
+        %{--                    if (msg != "NO") {--}%
+
+        %{--                        alerta = '<div class="alert alert-success" role="status"><a class="close" data-dismiss="alert" href="#">×</a>';--}%
+        %{--                        alerta += p[1];--}%
+        %{--                        alerta += '</div>';--}%
+
+        %{--                        $("#div_cmb_sub").html(p[2])--}%
+        %{--                    } else {--}%
+        %{--                        alerta = '<div class="alert alert-error" role="status"><a class="close" data-dismiss="alert" href="#">×</a>';--}%
+        %{--                        alerta += p[1];--}%
+        %{--                        alerta += '</div>';--}%
+        %{--                    }--}%
+        %{--                    $("#mensaje").html(alerta);--}%
+        %{--                }--}%
+        %{--            });--}%
+
+        %{--            $("#borrarSPDialog").dialog("close");--}%
+        %{--        },--}%
+        %{--        "Cancelar" : function () {--}%
+
+        %{--            $("#borrarSPDialog").dialog("close");--}%
+        %{--        }--}%
+        %{--    }--}%
+
+        %{--});--}%
 
         $("#item_agregar").click(function () {
             $("#calcular").removeClass("active");
@@ -606,18 +714,20 @@
                 if ($("#vol_id").val() * 1 > 0)
                     datos += "&id=" + $("#vol_id").val();
 
-                $.ajax({type : "POST", url : "${g.createLink(controller: 'volumenObra',action:'addItem')}",
+                $.ajax({
+                    type : "POST",
+                    url : "${g.createLink(controller: 'volumenObra',action:'addItem')}",
                     data     : datos,
                     success  : function (msg) {
                         if (msg != "error") {
-                            $("#detalle").html(msg)
-                            $("#vol_id").val("")
-                            $("#item_codigo").val("")
-                            $("#item_id").val("")
-                            $("#item_nombre").val("")
-                            $("#item_cantidad").val("")
-                            $("#item_descripcion").val("")
-                            $("#item_orden").val($("#item_orden").val() * 1 + 1)
+                            $("#detalle").html(msg);
+                            $("#vol_id").val("");
+                            $("#item_codigo").val("");
+                            $("#item_id").val("");
+                            $("#item_nombre").val("");
+                            $("#item_cantidad").val("");
+                            $("#item_descripcion").val("");
+                            $("#item_orden").val($("#item_orden").val() * 1 + 1);
                             $("#override").val("0")
                         } else {
 

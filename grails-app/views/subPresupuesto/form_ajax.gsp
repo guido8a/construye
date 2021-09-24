@@ -33,7 +33,7 @@ Antes de crear un subpresupuesto asegúrese de que no exista en ningún grupo. R
         </div>
 
         <div class="controls">
-            <g:textArea cols="15" rows="3" name="descripcion" maxlength="127" class=" required allCaps" value="${subPresupuestoInstance?.descripcion}" style="resize: none" />
+            <g:textArea name="descripcion" maxlength="127" class=" required allCaps" value="${subPresupuestoInstance?.descripcion}" style="resize: none" />
             <span class="mandatory">*</span>
 
             <p class="help-block ui-helper-hidden"></p>

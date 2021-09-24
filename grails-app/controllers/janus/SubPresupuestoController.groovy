@@ -149,14 +149,8 @@ class SubPresupuestoController extends janus.seguridad.Shield {
         }
     } //delete
 
-
-
     def delete2() {
-
         def subPresupuestoInstance = SubPresupuesto.get(params.id)
-//
-//        println("paramsdelete:" + params)
-//        println("sub" + subPresupuestoInstance)
 
         if (!subPresupuestoInstance) {
             flash.clase = "alert-error"
@@ -173,12 +167,10 @@ class SubPresupuestoController extends janus.seguridad.Shield {
             def var
             subpreFiltrado=SubPresupuesto.findAllByGrupo(grupoFiltrado[0])
 
-
-//            flash.clase = "alert-success"
             def message = "Se ha eliminado correctamente Sub Presupuesto " + subPresupuestoInstance.descripcion
+            render "ok"
 
-            render "ok_"+ message + '_' + g.select (name:"subpresupuesto", from: subpreFiltrado , optionKey:"id", optionValue:"descripcion", style:"width: 280px;;font-size: 10px", id:"subPres", value: subPresupuestoInstance.id)
-//            render "ok_"+flash.message + '_' + g.select(name: "subpresupuesto", from: SubPresupuesto.list([order: 'descripcion', sort: 'descripcion']), optionKey: "id", optionValue: "descripcion", style: "width: 280px;font-size: 10px", id: "subPres", value: subPresupuestoInstance.id)
+//            render "ok_"+ message + '_' + g.select (name:"subpresupuesto", from: subpreFiltrado , optionKey:"id", optionValue:"descripcion", style:"width: 300px;;font-size: 10px", id:"subPres", value: subPresupuestoInstance.id)
         }
         catch (DataIntegrityViolationException e) {
             flash.clase = "alert-error"
