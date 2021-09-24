@@ -131,8 +131,6 @@
 
 <script type="text/javascript">
 
-
-
     $.contextMenu({
         selector: '.item_row',
         callback: function (key, options) {
@@ -333,18 +331,7 @@
 
     });
 
-
     $("#imprimir_excel").click(function () {
-//        var $boton = $(this).clone(true)
-//        $(this).replaceWith(spinner);
-
-        %{--var dsps=${obra.distanciaPeso}--}%
-        %{--var dsvs=${obra.distanciaVolumen}--}%
-        %{--var volqueta=${precioVol}--}%
-        %{--var chofer=${precioChof}--}%
-
-        %{--var url = "${g.createLink(controller: 'reportes', action: 'reporteExcelVolObra')}"--}%
-
         $("#dlgLoad").dialog("open");
 
         $.ajax({
@@ -356,30 +343,27 @@
             success: function (msg) {
                 location.href = "${g.createLink(controller: 'reportes',action: 'reporteExcelVolObra',id: obra?.id)}?sub=" + $("#subPres_desc").val();
                 $("#dlgLoad").dialog("close");
-//                spinner.replaceWith($boton);
             }
         });
     });
 
     $("#subPres_desc").change(function () {
-        $("#ver_todos").removeClass("active")
-        $("#divTotal").html("")
-        $("#calcular").removeClass("active")
+        $("#ver_todos").removeClass("active");
+        $("#divTotal").html("");
+        $("#calcular").removeClass("active");
 
-        var datos = "obra=${obra.id}&sub=" + $("#subPres_desc").val() + "&ord=" + 1
-        var interval = loading("detalle")
+        var datos = "obra=${obra.id}&sub=" + $("#subPres_desc").val() + "&ord=" + 1;
+        var interval = loading("detalle");
         $.ajax({type: "POST", url: "${g.createLink(controller: 'volumenObra',action:'tabla')}",
             data: datos,
             success: function (msg) {
-                clearInterval(interval)
+                clearInterval(interval);
                 $("#detalle").html(msg)
             }
         });
     });
 
-
-    var datos = "?fecha=${obra.fechaPreciosRubros?.format('dd-MM-yyyy')}Wid=" + $(".item_row").attr("id") + "Wobra=${obra.id}"
-
+    var datos = "?fecha=${obra.fechaPreciosRubros?.format('dd-MM-yyyy')}Wid=" + $(".item_row").attr("id") + "Wobra=${obra.id}";
 
     // $(".item_row").dblclick(function () {
     $(".editarItem").click(function () {
@@ -477,11 +461,11 @@
     });
 
     $("#ordenarAsc").click(function () {
-        $("#divTotal").html("")
-        $("#calcular").removeClass("active")
+        $("#divTotal").html("");
+        $("#calcular").removeClass("active");
         var orden = 1;
-        var datos = "obra=${obra.id}&sub=" + $("#subPres_desc").val() + "&ord=" + orden
-        var interval = loading("detalle")
+        var datos = "obra=${obra.id}&sub=" + $("#subPres_desc").val() + "&ord=" + orden;
+        var interval = loading("detalle");
         $.ajax({type: "POST", url: "${g.createLink(controller: 'volumenObra',action:'tabla')}",
             data: datos,
             success: function (msg) {

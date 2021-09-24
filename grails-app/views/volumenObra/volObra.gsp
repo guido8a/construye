@@ -146,7 +146,7 @@
 
                 <div class="span1" style="margin-left: 0px; width: 100px;">
                     <b>Código</b>
-                    <input type="text" style="width: 100px;;font-size: 10px" id="item_codigo" class="allCaps">
+                    <input type="text" style="width: 100px;;font-size: 10px" id="item_codigo" class="allCaps" readonly="true">
                     <input type="hidden" id="item_id">
                 </div>
 
@@ -244,8 +244,95 @@
     </fieldset>
 </div>
 
+<div id="busqueda" style="overflow: hidden">
+    <fieldset class="borde" style="border-radius: 4px">
+        <div class="row-fluid" style="margin-left: 20px">
+            <div class="span2">Grupo</div>
+
+            <div class="span2">Buscar Por</div>
+
+            <div class="span2">Criterio</div>
+
+            <div class="span2">Ordenado por</div>
+        </div>
+
+        <div class="row-fluid" style="margin-left: 20px">
+            <div class="span2">
+                <g:select name="buscarGrupo_name"  id="buscarGrupo" from="['1': 'Materiales', '2': 'Mano de Obra', '3': 'Equipos']"
+                          style="width: 100%" optionKey="key" optionValue="value"/></div>
+
+            <div class="span2"><g:select name="buscarPor" class="buscarPor" from="${[1: 'Nombre', 2: 'Código']}"
+                                         style="width: 100%" optionKey="key"
+                                         optionValue="value"/></div>
+
+            <div class="span2">
+                <g:textField name="criterio" class="criterio" style="width: 80%"/>
+            </div>
+
+            <div class="span2">
+                <g:select name="ordenar" class="ordenar" from="${[1: 'Nombre', 2: 'Código']}"
+                          style="width: 100%" optionKey="key"
+                          optionValue="value"/></div>
+
+            <div class="span2" style="margin-left: 60px"><button class="btn btn-info" id="btn-consultar"><i
+                    class="icon-check"></i> Consultar
+            </button></div>
+
+        </div>
+    </fieldset>
+
+    <fieldset class="borde">
+        <div id="divTabla" style="height: 460px; overflow-y:auto; overflow-x: auto;">
+        </div>
+    </fieldset>
+</div>
+
 
 <script type="text/javascript">
+
+
+    $("#btnRubro").click(function () {
+        $("#busqueda").dialog("open");
+        $(".ui-dialog-titlebar-close").html("x");
+        return false;
+    });
+
+    $("#busqueda").dialog({
+        autoOpen: false,
+        resizable: false,
+        modal: true,
+        draggable: false,
+        width: 1000,
+        height: 600,
+        position: 'center',
+        title: 'Materiales y Equipos a Entregar'
+    });
+
+    $("#btn-consultar").click(function () {
+        busqueda();
+    });
+
+    function busqueda() {
+        var buscarPor = $("#buscarPor").val();
+        var criterio = $(".criterio").val();
+        var ordenar = $("#ordenar").val();
+        var grupo = $("#buscarGrupo").val();
+        $.ajax({
+            type: "POST",
+            url: "${createLink(controller: 'volumenObra', action:'listaItem')}",
+            data: {
+                buscarPor: buscarPor,
+                criterio: criterio,
+                ordenar: ordenar,
+                grupo: grupo
+            },
+            success: function (msg) {
+                $("#divTabla").html(msg);
+            }
+        });
+    }
+
+
 
     $("#btnCancelar").click(function () {
         $("#calcular").removeClass("active");
@@ -284,8 +371,8 @@
         }, 500);
         return interval
     }
-    function cargarTabla() {
 
+    function cargarTabla() {
         var interval = loading("detalle")
         var datos = ""
         if ($("#subPres_desc").val() * 1 > 0) {
@@ -354,14 +441,14 @@
         });
 
         // $("#item_codigo").dblclick(function () {
-        $("#btnRubro").click(function () {
-            var btnOk = $('<a href="#" data-dismiss="modal" class="btn">Cerrar</a>');
-            $("#modalTitle").html("Lista de rubros");
-            $("#modalFooter").html("").append(btnOk);
-            $("#modal-rubro").modal("show");
-            $("#buscarDialog").unbind("click");
-            $("#buscarDialog").bind("click", enviar)
-        });
+        // $("#btnRubro").click(function () {
+        //     var btnOk = $('<a href="#" data-dismiss="modal" class="btn">Cerrar</a>');
+        //     $("#modalTitle").html("Lista de rubros");
+        //     $("#modalFooter").html("").append(btnOk);
+        //     $("#modal-rubro").modal("show");
+        //     $("#buscarDialog").unbind("click");
+        //     $("#buscarDialog").bind("click", enviar)
+        // });
 
         $("#reporteGrupos").click(function () {
             location.href = "${g.createLink(controller: 'reportes',action: 'reporteSubgrupos',id: obra?.id)}"
@@ -631,55 +718,6 @@
             });
 
         });
-
-        %{--$("#borrarSPDialog").dialog({--}%
-        %{--    autoOpen  : false,--}%
-        %{--    resizable : false,--}%
-        %{--    modal     : true,--}%
-        %{--    draggable : false,--}%
-        %{--    width     : 350,--}%
-        %{--    height    : 180,--}%
-        %{--    position  : 'center',--}%
-        %{--    title     : 'Borrar Subpresupuesto',--}%
-        %{--    buttons   : {--}%
-        %{--        "Aceptar"  : function () {--}%
-
-        %{--            var id = $("#subPres").val();--}%
-
-        %{--            $.ajax({--}%
-        %{--                type    : "POST",--}%
-        %{--                url     : "${createLink(controller:"subPresupuesto",action:'delete2')}",--}%
-        %{--                data    : {--}%
-        %{--                    id : id--}%
-        %{--                },--}%
-        %{--                success : function (msg) {--}%
-        %{--                    var p = msg.split("_");--}%
-        %{--                    var alerta;--}%
-        %{--                    if (msg != "NO") {--}%
-
-        %{--                        alerta = '<div class="alert alert-success" role="status"><a class="close" data-dismiss="alert" href="#">×</a>';--}%
-        %{--                        alerta += p[1];--}%
-        %{--                        alerta += '</div>';--}%
-
-        %{--                        $("#div_cmb_sub").html(p[2])--}%
-        %{--                    } else {--}%
-        %{--                        alerta = '<div class="alert alert-error" role="status"><a class="close" data-dismiss="alert" href="#">×</a>';--}%
-        %{--                        alerta += p[1];--}%
-        %{--                        alerta += '</div>';--}%
-        %{--                    }--}%
-        %{--                    $("#mensaje").html(alerta);--}%
-        %{--                }--}%
-        %{--            });--}%
-
-        %{--            $("#borrarSPDialog").dialog("close");--}%
-        %{--        },--}%
-        %{--        "Cancelar" : function () {--}%
-
-        %{--            $("#borrarSPDialog").dialog("close");--}%
-        %{--        }--}%
-        %{--    }--}%
-
-        %{--});--}%
 
         $("#item_agregar").click(function () {
             $("#calcular").removeClass("active");
