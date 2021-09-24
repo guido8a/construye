@@ -6,7 +6,6 @@
 --%>
 
 <table class="table table-bordered table-striped table-hover table-condensed" id="tabla">
-
     <thead>
     <tr>
         <th style="width: 10%">Código</th>
@@ -18,7 +17,6 @@
 
     <tbody>
     </tbody>
-
 </table>
 
 <div class="" style="width: 99.7%;height: 420px; overflow-y: auto;float: right; margin-top: -20px">
@@ -48,4 +46,3 @@
         $("#busqueda").dialog("close");
     });
 </script>
-
