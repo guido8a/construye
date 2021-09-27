@@ -118,7 +118,10 @@
 
                 <div class="span2" style="width: 150px;">
                     Código
-                    <input type="text" name="rubro.codigo" class="span20 allCaps required input-small" value="${rubro?.codigo ? (rubro?.codigo?.contains("-") ? rubro?.codigo?.split("-")[1] : rubro?.codigo) : ''}"
+                    %{--<input type="text" name="rubro.codigo" class="span20 allCaps required input-small" value="${rubro?.codigo ? (rubro?.codigo?.contains("-") ? rubro?.codigo?.split("-")[1] : rubro?.codigo) : ''}"--}%
+                           %{--id="input_codigo" maxlength="30" minlength="2">--}%
+                    <input type="text" name="rubro.codigo" class="span20 allCaps required input-small"
+                           value="${rubro?.codigo}"
                            id="input_codigo" maxlength="30" minlength="2">
 
                     <p class="help-block ui-helper-hidden"></p>
