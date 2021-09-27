@@ -109,13 +109,6 @@
 
             <div class="row-fluid">
 
-                <div class="span1" style="width: 60px;">
-                    Sigla
-                    <input type="text" name="sigla" class="span20 allCaps required input-small" value="${empresa?.sigla}" readonly="true">
-
-                    <p class="help-block ui-helper-hidden"></p>
-                </div>
-
                 <div class="span2" style="width: 150px;">
                     Código
                     %{--<input type="text" name="rubro.codigo" class="span20 allCaps required input-small" value="${rubro?.codigo ? (rubro?.codigo?.contains("-") ? rubro?.codigo?.split("-")[1] : rubro?.codigo) : ''}"--}%
@@ -134,7 +127,7 @@
                     <p class="help-block ui-helper-hidden"></p>
                 </div>
 
-                <div class="span5" style="width: 450px; margin-left: 10px">
+                <div class="span6" style="width: 500px; margin-left: 10px">
                     Descripción
                     <input type="text" name="rubro.nombre" class="span72" value="${rubro?.nombre}" id="input_descripcion">
                 </div>
