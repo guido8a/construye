@@ -39,7 +39,7 @@
                         </span>
                     </td>
                     <td>
-                        <g:textField name="sigla" maxlength="8" class="allCaps form-control" value="${empresaInstance?.sigla}"/>
+                        <g:textField name="sigla" maxlength="4" minlength="4" class="allCaps form-control" value="${empresaInstance?.sigla}"/>
                         <p class="help-block ui-helper-hidden"></p>
                     </td>
                 </tr>

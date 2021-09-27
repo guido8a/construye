@@ -1,4 +1,4 @@
-<%@ page import="janus.Grupo" %>
+<%@ page import="janus.TipoLista; janus.Grupo" %>
 <!doctype html>
 <html>
 <head>
@@ -29,19 +29,19 @@
         <i class="icon-list-ul"></i>
         Lista
     </a>
-        <a href="${g.createLink(action: 'rubroPrincipal')}" class="btn btn-ajax btn-new">
-            <i class="icon-file-alt"></i>
-            Nuevo
+    <a href="${g.createLink(action: 'rubroPrincipal')}" class="btn btn-ajax btn-new">
+        <i class="icon-file-alt"></i>
+        Nuevo
+    </a>
+    <g:if test="${rubro?.aprobado != 'R'}">
+        <a href="#" class="btn btn-ajax btn-new" id="guardar">
+            <i class="icon-save"></i>
+            Guardar
         </a>
-        <g:if test="${rubro?.aprobado != 'R'}">
-            <a href="#" class="btn btn-ajax btn-new" id="guardar">
-                <i class="icon-save"></i>
-                Guardar
-            </a>
-            <a href="#" class="btn btn-ajax btn-new" id="borrar">
-                <i class="icon-trash"></i>
-                Borrar
-            </a>
+        <a href="#" class="btn btn-ajax btn-new" id="borrar">
+            <i class="icon-trash"></i>
+            Borrar
+        </a>
     </g:if>
     <a href="${g.createLink(action: 'rubroPrincipal')}" class="btn btn-ajax btn-new">
         <i class="icon-remove"></i>
@@ -97,7 +97,6 @@
     </g:if>
 </div>
 
-
 <div id="list-grupo" class="span12" role="main" style="margin-top: 10px;margin-left: -10px">
 
     <div style="border-bottom: 1px solid black;padding-left: 50px;position: relative;">
@@ -109,9 +108,17 @@
             <div class="linea" style="height: 100px;"></div>
 
             <div class="row-fluid">
+
+                <div class="span1" style="width: 60px;">
+                    Sigla
+                    <input type="text" name="sigla" class="span20 allCaps required input-small" value="${empresa?.sigla}" readonly="true">
+
+                    <p class="help-block ui-helper-hidden"></p>
+                </div>
+
                 <div class="span2" style="width: 150px;">
                     Código
-                    <input type="text" name="rubro.codigo" class="span20 allCaps required input-small" value="${rubro?.codigo}"
+                    <input type="text" name="rubro.codigo" class="span20 allCaps required input-small" value="${rubro?.codigo?.split("-")[1]}"
                            id="input_codigo" maxlength="30" minlength="2">
 
                     <p class="help-block ui-helper-hidden"></p>
@@ -124,7 +131,7 @@
                     <p class="help-block ui-helper-hidden"></p>
                 </div>
 
-                <div class="span6" style="width: 550px; margin-left: 10px">
+                <div class="span5" style="width: 450px; margin-left: 10px">
                     Descripción
                     <input type="text" name="rubro.nombre" class="span72" value="${rubro?.nombre}" id="input_descripcion">
                 </div>
@@ -178,8 +185,6 @@
                 <div class="span2" style="color: #01a; width: 260px; margin-left: 10px" >
                     Responsable: <br>
                     <g:if test="${rubro?.aprobado != 'R'}">
-                    %{--<g:select name="rubro.responsable.id" id="selResponsable" from="${resps}" value="${rubro?.responsable?.id?:session.usuario.id}"--}%
-                    %{--optionKey="id" noSelection="['-1': 'Seleccione..']" style="width:100%;" readonly="true"></g:select>--}%
                         <input type="hidden" name="rubro.responsable" class="span72" value="${rubro?.responsable?.id?:session.usuario.id}" id="selResponsable">
                         <input type="text" name="persona" class="span72" value="${rubro?.responsable?:session.usuario}" id="Responsable" readonly>
                     </g:if>
@@ -201,18 +206,10 @@
         <div class="linea" style="height: 100px;"></div>
 
         <div class="row-fluid" style="color: #248">
-            %{--<div class="span3">--}%
-            %{--<div style="height: 40px;float: left;width: 100px">Lista de precios</div>--}%
-
-            %{--<div class="btn-group span7" data-toggle="buttons-radio" style="float: right;">--}%
-            %{--<button type="button" class="btn btn-info active tipoPrecio" id="C">Civiles</button>--}%
-            %{--<button type="button" class="btn btn-info tipoPrecio" id="V">Viales</button>--}%
-            %{--</div>--}%
-            %{--</div>--}%
 
             <div class="span6" style="width: 500px;">
                 Lista de precios: MO y Equipos
-                <g:select name="item.ciudad.id" from="${janus.Lugar.findAll('from Lugar  where tipoLista=6')}" optionKey="id" optionValue="descripcion" class="span10" id="ciudad" style="width: 300px"/>
+                <g:select name="item.ciudad.id" from="${janus.Lugar.findAllByTipoLista(janus.TipoLista.get(6))}" optionKey="id" optionValue="descripcion" class="span10" id="ciudad" style="width: 300px"/>
             </div>
 
             <div class="span3" style="width: 180px;">
@@ -244,19 +241,25 @@
         <div class="row-fluid" style="margin-bottom: 5px">
             <div class="span2">
                 CÓDIGO
-                <input type="text" name="item.codigo" id="cdgo_buscar" class="span24">
+                <input type="text" name="item.codigo" id="cdgo_buscar" class="span24" readonly="true">
                 <input type="hidden" id="item_id">
                 <input type="hidden" id="item_tipoLista">
             </div>
 
-            <div class="span6">
+            <div class="span1" style="margin-top: 20px; width: 80px">
+                <a class="btn btn-small btn-primary btn-ajax" href="#" rel="tooltip" title="Agregar rubro" id="btnRubro">
+                    <i class="icon-search"></i> Buscar
+                </a>
+            </div>
+
+            <div class="span5">
                 DESCRIPCIÓN
-                <input type="text" name="item.descripcion" id="item_desc" class="span11" disabled="disabled">
+                <input type="text" name="item.descripcion" id="item_desc" class="span11" readonly="true">
             </div>
 
             <div class="span1" style="margin-right: 0px;margin-left: -30px;">
                 UNIDAD
-                <input type="text" name="item.unidad" id="item_unidad" class="span8" disabled="true">
+                <input type="text" name="item.unidad" id="item_unidad" class="span8" readonly="true">
             </div>
 
             <div class="span1" style="margin-left: -5px !important;">
@@ -269,14 +272,14 @@
                 <input type="text" name="item.rendimiento" class="span8" id="item_rendimiento" value="1" style="text-align: right; color: #44a;width: 170px;">
             </div>
 
-                <g:if test="${rubro?.aprobado != 'R'}">
-                    <div class="span1" style="border: 0px solid black;height: 45px;padding-top: 22px;margin-left: 10px">
-                        <a class="btn btn-small btn-primary btn-ajax" href="#" rel="tooltip" title="Agregar" id="btn_agregarItem">
-                            <i class="icon-plus"></i>
-                        </a>
-                        <a class="btn btn-small btn-primary btn-ajax" href="#" rel="tooltip" title="Precio" id="btn_precio">$</a>
-                    </div>
-                </g:if>
+            <g:if test="${rubro?.aprobado != 'R'}">
+                <div class="span1" style="border: 0px solid black;height: 45px;padding-top: 22px;margin-left: 10px">
+                    <a class="btn btn-small btn-primary btn-ajax" href="#" rel="tooltip" title="Agregar" id="btn_agregarItem">
+                        <i class="icon-plus"></i>
+                    </a>
+                    <a class="btn btn-small btn-primary btn-ajax" href="#" rel="tooltip" title="Precio" id="btn_precio">$</a>
+                </div>
+            </g:if>
         </div>
     </div>
 
@@ -322,11 +325,11 @@
                         </td>
                         <td class="col_total" style="display: none;text-align: right"></td>
                         <td style="width: 50px;text-align: center" class="col_delete">
-                                <g:if test="${rubro?.aprobado != 'R'}">
-                                    <a class="btn btn-small btn-danger borrarItem" href="#" rel="tooltip" title="Eliminar" iden="${rub.id}">
-                                        <i class="icon-trash"></i>
-                                    </a>
-                                </g:if>
+                            <g:if test="${rubro?.aprobado != 'R'}">
+                                <a class="btn btn-small btn-danger borrarItem" href="#" rel="tooltip" title="Eliminar" iden="${rub.id}">
+                                    <i class="icon-trash"></i>
+                                </a>
+                            </g:if>
                         </td>
                     </tr>
                 </g:if>
@@ -370,11 +373,11 @@
                         </td>
                         <td class="col_total" style="display: none;text-align: right"></td>
                         <td style="width: 50px;text-align: center" class="col_delete">
-                                <g:if test="${rubro?.aprobado != 'R'}">
-                                    <a class="btn btn-small btn-danger borrarItem" href="#" rel="tooltip" title="Eliminar" iden="${rub.id}">
-                                        <i class="icon-trash"></i>
-                                    </a>
-                                </g:if>
+                            <g:if test="${rubro?.aprobado != 'R'}">
+                                <a class="btn btn-small btn-danger borrarItem" href="#" rel="tooltip" title="Eliminar" iden="${rub.id}">
+                                    <i class="icon-trash"></i>
+                                </a>
+                            </g:if>
                         </td>
                     </tr>
                 </g:if>
@@ -415,11 +418,11 @@
 
                         <td class="col_total" style="display: none;text-align: right"></td>
                         <td style="width: 50px;text-align: center" class="col_delete">
-                                <g:if test="${rubro?.aprobado != 'R'}">
-                                    <a class="btn btn-small btn-danger borrarItem" href="#" rel="tooltip" title="Eliminar" iden="${rub.id}">
-                                        <i class="icon-trash"></i>
-                                    </a>
-                                </g:if>
+                            <g:if test="${rubro?.aprobado != 'R'}">
+                                <a class="btn btn-small btn-danger borrarItem" href="#" rel="tooltip" title="Eliminar" iden="${rub.id}">
+                                    <i class="icon-trash"></i>
+                                </a>
+                            </g:if>
                         </td>
                     </tr>
                 </g:if>
@@ -490,7 +493,7 @@
             </div>
 
             <div class="span5">
-                <g:select name="volquetes" from="${volquetes2}" optionKey="id" optionValue="nombre" id="cmb_vol" noSelection="${['-1': 'Seleccione']}" value="${aux.volquete.id}"></g:select>
+                <g:select name="volquetes" from="${volquetes2}" optionKey="id" optionValue="nombre" id="cmb_vol" noSelection="${['-1': 'Seleccione']}" value="${aux.volquete.id}"/>
             </div>
 
             <div class="span2">
@@ -508,7 +511,7 @@
             </div>
 
             <div class="span5">
-                <g:select name="volquetes" from="${choferes}" optionKey="id" optionValue="nombre" id="cmb_chof" style="" noSelection="${['-1': 'Seleccione']}" value="${aux.chofer.id}"></g:select>
+                <g:select name="volquetes" from="${choferes}" optionKey="id" optionValue="nombre" id="cmb_chof" style="" noSelection="${['-1': 'Seleccione']}" value="${aux.chofer.id}"/>
             </div>
 
             <div class="span2">
@@ -523,12 +526,10 @@
         <div class="row-fluid" style="border-bottom: 1px solid black;margin-bottom: 5px">
             <div class="span6">
                 <b>Distancia peso</b>
-                %{--<input type="text" style="width: 50px;" id="dist_peso" value="0.00">--}%
             </div>
 
             <div class="span5" style="margin-left: 30px;">
                 <b>Distancia volumen</b>
-                %{--<input type="text" style="width: 50px;" id="dist_vol" value="0.00">--}%
             </div>
         </div>
 
@@ -595,7 +596,7 @@
             </div>
 
             <div class="span4">
-                <g:select name="item.ciudad.id" from="${janus.Lugar.findAll('from Lugar  where tipoLista=1')}"
+                <g:select name="item.ciudad.id" from="${janus.Lugar.findAllByTipoLista(janus.TipoLista.get(1))}"
                           optionKey="id" optionValue="descripcion" class="span10" id="lista_1"/>
             </div>
 
@@ -604,7 +605,7 @@
             </div>
 
             <div class="span4">
-                <g:select name="item.ciudad.id" from="${janus.Lugar.findAll('from Lugar  where tipoLista=3')}"
+                <g:select name="item.ciudad.id" from="${janus.Lugar.findAllByTipoLista(janus.TipoLista.get(3))}"
                           optionKey="id" optionValue="descripcion" class="span10" id="lista_3"/>
             </div>
         </div>
@@ -615,7 +616,7 @@
             </div>
 
             <div class="span4">
-                <g:select name="item.ciudad.id" from="${janus.Lugar.findAll('from Lugar  where tipoLista=2')}"
+                <g:select name="item.ciudad.id" from="${janus.Lugar.findAllByTipoLista(janus.TipoLista.get(2))}"
                           optionKey="id" optionValue="descripcion" class="span10" id="lista_2"/>
             </div>
 
@@ -624,7 +625,7 @@
             </div>
 
             <div class="span4">
-                <g:select name="item.ciudad.id" from="${janus.Lugar.findAll('from Lugar  where tipoLista=4')}"
+                <g:select name="item.ciudad.id" from="${janus.Lugar.findAllByTipoLista(janus.TipoLista.get(4))}"
                           optionKey="id" optionValue="descripcion" class="span10" id="lista_4"/>
             </div>
         </div>
@@ -637,7 +638,7 @@
             </div>
 
             <div class="span4">
-                <g:select name="item.ciudad.id" from="${janus.Lugar.findAll('from Lugar  where tipoLista=5')}"
+                <g:select name="item.ciudad.id" from="${janus.Lugar.findAllByTipoLista(janus.TipoLista.get(5))}"
                           optionKey="id" optionValue="descripcion" class="span10" id="lista_5"/>
             </div>
         </div>
@@ -648,11 +649,9 @@
     <div class="modal-footer" id="modal_trans_footer">
         <a href="#" data-dismiss="modal" class="btn btn-primary">OK</a>
     </div>
-    %{--03.001.00--}%
+
     <div id="imprimirTransporteDialog">
-
         <fieldset>
-
             <div class="span4" style="margin-top: 10px">
                 Se imprime a la Fecha de:
                 <elm:datepicker  name="fechaSalida" class="span8" id="fechaSalidaId" value="${rubro?.fechaModificacion}"
@@ -662,9 +661,7 @@
             <div class="span4" style="margin-top: 10px;">
                 <strong>¿Desea imprimir el reporte desglosando el transporte?</strong>
             </div>
-
         </fieldset>
-
     </div>
 
     <div id="copiar_dlg">
@@ -673,7 +670,6 @@
     </div>
 
 </div>
-
 
 <div class="modal hide fade" id="modal-tree">
     <div class="modal-header" id="modal-header-tree">
@@ -689,8 +685,92 @@
     </div>
 </div>
 
+<div id="busqueda" style="overflow: hidden">
+    <fieldset class="borde" style="border-radius: 4px">
+        <div class="row-fluid" style="margin-left: 20px">
+            <div class="span2">Grupo</div>
+
+            <div class="span2">Buscar Por</div>
+
+            <div class="span2">Criterio</div>
+
+            <div class="span2">Ordenado por</div>
+        </div>
+
+        <div class="row-fluid" style="margin-left: 20px">
+            <div class="span2">
+                <g:select name="buscarGrupo_name"  id="buscarGrupo" from="['1': 'Materiales', '2': 'Mano de Obra', '3': 'Equipos']"
+                          style="width: 100%" optionKey="key" optionValue="value"/></div>
+
+            <div class="span2"><g:select name="buscarPor" class="buscarPor" from="${[1: 'Nombre', 2: 'Código']}"
+                                         style="width: 100%" optionKey="key"
+                                         optionValue="value"/></div>
+
+            <div class="span2">
+                <g:textField name="criterio" class="criterio" style="width: 80%"/>
+            </div>
+
+            <div class="span2">
+                <g:select name="ordenar" class="ordenar" from="${[1: 'Nombre', 2: 'Código']}"
+                          style="width: 100%" optionKey="key"
+                          optionValue="value"/></div>
+
+            <div class="span2" style="margin-left: 60px"><button class="btn btn-info" id="btn-consultar"><i
+                    class="icon-check"></i> Consultar
+            </button></div>
+
+        </div>
+    </fieldset>
+
+    <fieldset class="borde">
+        <div id="divTabla" style="height: 460px; overflow-y:auto; overflow-x: auto;">
+        </div>
+    </fieldset>
+</div>
+
 <script type="text/javascript">
 
+
+    $("#btnRubro").click(function () {
+        $("#busqueda").dialog("open");
+        $(".ui-dialog-titlebar-close").html("x");
+        return false;
+    });
+
+    $("#busqueda").dialog({
+        autoOpen: false,
+        resizable: false,
+        modal: true,
+        draggable: false,
+        width: 1000,
+        height: 600,
+        position: 'center',
+        title: 'Items'
+    });
+
+    $("#btn-consultar").click(function () {
+        busqueda();
+    });
+
+    function busqueda() {
+        var buscarPor = $("#buscarPor").val();
+        var criterio = $(".criterio").val();
+        var ordenar = $("#ordenar").val();
+        var grupo = $("#buscarGrupo").val();
+        $.ajax({
+            type: "POST",
+            url: "${createLink(controller: 'rubro', action:'listaItem')}",
+            data: {
+                buscarPor: buscarPor,
+                criterio: criterio,
+                ordenar: ordenar,
+                grupo: grupo
+            },
+            success: function (msg) {
+                $("#divTabla").html(msg);
+            }
+        });
+    }
 
     $("#btn_precio").click(function () {
         var idItem = $("#item_id").val();
@@ -766,8 +846,6 @@
                                 }
                             });
                         }
-
-
                         return false;
                     });
 
@@ -847,7 +925,7 @@
         $.box({
             imageClass: "box_info",
             text: "Está seguro de cambiar el estado de este"  + '<p style="margin-left: 42px">' + "rubro a " +
-                  '<strong style="color: #ff5c34">' + "NO APROBADO" + "?" + '</strong>' + '</p>',
+                '<strong style="color: #ff5c34">' + "NO APROBADO" + "?" + '</strong>' + '</p>',
             title: "Quitar registro del rubro",
             dialog: {
                 resizable: false,
@@ -883,16 +961,15 @@
                 }
             }
         });
-
     });
 
     function agregar(id,tipo){
         var tipoItem=$("#item_id").attr("tipo");
         var cant = $("#item_cantidad").val();
         if (cant == "")
-            cant = 0
+            cant = 0;
         if (isNaN(cant))
-            cant = 0
+            cant = 0;
         if(tipoItem*1>1){
             if(cant>0){
                 var c = Math.ceil(cant);
@@ -902,7 +979,7 @@
                 }
             }
         }
-        var rend = $("#item_rendimiento").val()
+        var rend = $("#item_rendimiento").val();
         if (isNaN(rend))
             rend = 1
         if ($("#item_id").val() * 1 > 0) {
@@ -914,28 +991,28 @@
                         if(tipo=="H"){
                             window.location.href="${g.createLink(action: 'rubroPrincipal')}?idRubro="+id
                         }
-                        var tr = $("<tr class='item_row'>")
-                        var td = $("<td>")
-                        var band = true
-                        var parts = msg.split(";")
-                        tr.attr("id", parts[1])
-                        tr.attr("tipoLista", parts[5])
-                        var a
-                        td.addClass("cdgo")
-                        td.html($("#cdgo_buscar").val())
-                        tr.append(td)
-                        td = $("<td>")
-                        td.html($("#item_desc").val())
-                        tr.append(td)
+                        var tr = $("<tr class='item_row'>");
+                        var td = $("<td>");
+                        var band = true;
+                        var parts = msg.split(";");
+                        tr.attr("id", parts[1]);
+                        tr.attr("tipoLista", parts[5]);
+                        var a;
+                        td.addClass("cdgo");
+                        td.html($("#cdgo_buscar").val());
+                        tr.append(td);
+                        td = $("<td>");
+                        td.html($("#item_desc").val());
+                        tr.append(td);
 
                         if (parts[0] == "1") {
                             $("#tabla_material").children().find(".cdgo").each(function () {
 //                                    ////console.log($(this))
                                 if ($(this).html() == $("#cdgo_buscar").val()) {
-                                    var tdCant = $(this).parent().find(".cant")
-                                    var tdRend = $(this).parent().find(".rend")
-                                    tdCant.html(number_format(parts[3], 5, ".", ""))
-                                    tdRend.html(number_format(parts[4], 5, ".", ""))
+                                    var tdCant = $(this).parent().find(".cant");
+                                    var tdRend = $(this).parent().find(".rend");
+                                    tdCant.html(number_format(parts[3], 5, ".", ""));
+                                    tdRend.html(number_format(parts[4], 5, ".", ""));
                                     tdRend.attr("valor", parts[4]);
                                     band = false
                                 }
@@ -1111,7 +1188,6 @@
                         $("#cdgo_buscar").val("")
                         $("#cdgo_unidad").val("")
                         $("#cdgo_buscar").focus()
-//                            $("#item_rendimiento").val("1")
                     }
                 });
             } else {
@@ -1174,7 +1250,6 @@
                 $(".contenidoBuscador").html(msg).show("slide");
             }
         });
-
     }
 
     function enviarCopiar() {
@@ -1218,7 +1293,6 @@
                 tablaIndirectos();
             }
         });
-
     }
 
     function totalEquipos() {
@@ -1235,7 +1309,6 @@
         }
 
         equipos.each(function () {
-//            ////console.log("each ",$(this))
             totalE += parseFloat($(this).find(".col_total").html())
         })
 
@@ -1247,11 +1320,9 @@
     }
 
     function calculaHerramientas() {
-//        ////console.log("calc herramientas")
         var h2 = $(".i_3490")
         var h3 = $(".cod_103_001_001")
         var h5 = $(".cod_103_001_002")
-//        //console.log($(".cod_103_001_001"))
         var h
         if (h2.html())
             h = h2
@@ -1266,25 +1337,15 @@
             var listas = "" + $("#lista_1").val() + "#" + $("#lista_2").val() + "#" + $("#lista_3").val() + "#" + $("#lista_4").val() + "#" + $("#lista_5").val() + "#" + $("#ciudad").val()
 
             var datos = "fecha=" + $("#fecha_precios").val() + "&ciudad=" + $("#ciudad").val() + "&tipo=C" + "&listas=" + listas + "&ids=" + str_replace("i_", "", h.attr("id"))
-//            $.each(items, function () {
-//                datos += $(this).attr("id") + "#"
-//            });
-//            var datos = "fecha=" + $("#fecha_precios").val() + "&ciudad=" + $("#ciudad").val() + "&ids="+ str_replace("i_","",h.attr("id"))
-//            ////console.log("si h",h,h.attr("id"))
-//            ////console.log("si h",str_replace("i_","",h.attr("id")) )
             $.ajax({type : "POST", url : "${g.createLink(controller: 'rubro',action:'getPreciosItem')}",
                 data     : datos,
                 success  : function (msg) {
-                    var precios = msg.split("&")
-//                     ////console.log(msg)
+                    var precios = msg.split("&");
                     for (i = 0; i < precios.length; i++) {
-                        var parts = precios[i].split(";")
-//                        ////console.log(parts,parts.length)
+                        var parts = precios[i].split(";");
                         if (parts.length > 1) {
                             precio = parseFloat(parts[1].trim())
-
                         }
-
                     }
                     var padre = h.parent()
                     var rend = padre.find(".rend")
@@ -1343,18 +1404,16 @@
         td = $("<td>")
         trM.append(td)
         materiales.each(function () {
-//            ////console.log($(this),$(this).find(".col_total").html())
             var val = $(this).find(".col_total").html()
             if (val == "")
                 val = 0
             if (isNaN(val))
                 val = 0
-//            ////console.log(val)
             totalM += parseFloat(val)
-        })
+        });
         manos.each(function () {
             totalMa += parseFloat($(this).find(".col_total").html())
-        })
+        });
         td = $("<td class='valor_total' style='text-align: right;font-weight: bold'>")
         td.html(number_format(totalM, 5, ".", ""))
         trM.append(td)
@@ -1363,21 +1422,8 @@
         trMa.append(td)
         $("#tabla_material").append(trM)
         $("#tabla_mano").append(trMa)
-//        ////console.log(totalMa)
         $("#totMat_h").val(totalMa)
         calculaHerramientas()
-//        window.setTimeout(vacio,2000)
-//
-//        equipos.each(function(){
-//            totalE+=parseFloat($(this).find(".col_total").html())
-//        })
-//
-//        td=$("<td class='valor_total'  style='text-align: right;;font-weight: bold'>")
-//        td.html(number_format(totalE, 5, ".", ""))
-//        trE.append(td)
-
-//        $("#tabla_equipo").append(trE)
-
     }
 
     function tablaIndirectos() {
@@ -1407,11 +1453,6 @@
     }
 
     $(function () {
-//                $("#detalle").click(function () {
-//                    $("#modal-detalle").modal("show");
-//                });
-
-
         $("#save-espc").click(function () {
             if ($("#especificaciones").val().trim().length < 1024) {
                 $.ajax({type : "POST", url : "${g.createLink(controller: 'rubro', action:'saveEspc')}",
@@ -1592,16 +1633,6 @@
         });
 
         $("#excel").click(function () {
-            %{--var dsps=$("#dist_peso").val()--}%
-            %{--var dsvs=$("#dist_vol").val()--}%
-            %{--var volqueta=$("#costo_volqueta").val()--}%
-            %{--var chofer=$("#costo_chofer").val()--}%
-            %{--var datos = "?dsps="+dsps+"&dsvs="+dsvs+"&prvl="+volqueta+"&prch="+chofer+"&fecha="+$("#fecha_precios").val()+"&id=${rubro?.id}&lugar="+$("#ciudad").val()--}%
-            %{--location.href="${g.createLink(controller: 'reportes3',action: 'imprimirRubro')}"+datos--}%
-            %{--var datos = "?dsps="+dsps+"&dsvs="+dsvs+"&prvl="+volqueta+"&prch="+chofer+"&fecha="+$("#fecha_precios").val()+"&id=${rubro?.id}&lugar="+$("#ciudad").val()+"&indi="+$("#costo_indi").val()--}%
-            %{--var url = "${g.createLink(controller: 'reportes3',action: 'imprimirRubroExcel')}"+datos--}%
-            %{--location.href=url--}%
-
             var dsp0 = $("#dist_p1").val()
             var dsp1 = $("#dist_p2").val()
             var dsv0 = $("#dist_v1").val()
@@ -1615,44 +1646,10 @@
 
             var url = "${g.createLink(controller: 'reportes3',action: 'imprimirRubroExcel')}" + datos
             location.href = url
-
         });
 
         $("#imprimir").click(function () {
-//            var dsps=$("#dist_peso").val()
-//            var dsvs=$("#dist_vol").val()
-//            var volqueta=$("#costo_volqueta").val()
-//            var chofer=$("#costo_chofer").val()
-
             $("#imprimirTransporteDialog").dialog("open");
-
-//            var dsp0=$("#dist_p1").val()
-//            var dsp1=$("#dist_p2").val()
-//            var dsv0=$("#dist_v1").val()
-//            var dsv1=$("#dist_v2").val()
-//            var dsv2=$("#dist_v3").val()
-//            var listas = $("#lista_1").val()+","+$("#lista_2").val()+","+$("#lista_3").val()+","+$("#lista_4").val()+","+$("#lista_5").val()+","+$("#ciudad").val()
-//            var volqueta=$("#costo_volqueta").val()
-//            var chofer=$("#costo_chofer").val()
-
-            %{--$.ajax({type : "POST", url : "${g.createLink(controller: 'rubro',action:'transporte')}",--}%
-            %{--data     : "dsp0="+dsp0+"&dsp1="+dsp1+"&dsv0="+dsv0+"&dsv1="+dsv1+"&dsv2="+dsv2+"&prvl="+volqueta+"&prch="+chofer+"&fecha="+$("#fecha_precios").val()+"&id=${rubro?.id}&lugar="+$("#ciudad").val()+"&listas="+listas+"&chof="+$("#cmb_chof").val()+"&volq="+$("#cmb_vol").val(),--}%
-            %{--success  : function (msg) {--}%
-            %{--$("#tabla_transporte").html(msg)--}%
-            %{--tablaIndirectos();--}%
-            %{--}--}%
-            %{--});--}%
-
-            %{--"dsp0="+dsp0+"&dsp1="+dsp1+"&dsv0="+dsv0+"&dsv1="+dsv1+"&dsv2="+dsv2+"&prvl="+volqueta+"&prch="+chofer+"&fecha="+$("#fecha_precios").val()+"&id=${rubro?.id}&lugar="+$("#ciudad").val()+"&listas="+listas+"&chof="+$("#cmb_chof").val()+"&volq="+$("#cmb_vol").val()--}%
-            %{--var datos = "?dsps="+dsps+"Wdsvs="+dsvs+"&prvl="+volqueta+"&prch="+chofer+"&fecha="+$("#fecha_precios").val()+"&id=${rubro?.id}&lugar="+$("#ciudad").val()--}%
-            %{--location.href="${g.createLink(controller: 'reportes3',action: 'imprimirRubro')}"+datos--}%
-            %{--var datos = "?dsps="+dsps+"Wdsvs="+dsvs+"Wprvl="+volqueta+"Wprch="+chofer+"Wfecha="+$("#fecha_precios").val()+"Wid=${rubro?.id}Wlugar="+$("#ciudad").val()+"Windi="+$("#costo_indi").val()--}%
-
-
-
-            %{--datos="dsp0="+dsp0+"Wdsp1="+dsp1+"Wdsv0="+dsv0+"Wdsv1="+dsv1+"Wdsv2="+dsv2+"Wprvl="+volqueta+"Wprch="+chofer+"Wfecha="+$("#fecha_precios").val()+"Wid=${rubro?.id}Wlugar="+$("#ciudad").val()+"Wlistas="+listas+"Wchof="+$("#cmb_chof").val()+"Wvolq="+$("#cmb_vol").val()+"Windi="+$("#costo_indi").val()--}%
-            %{--var url = "${g.createLink(controller: 'reportes3',action: 'imprimirRubro')}?"+datos--}%
-            %{--location.href="${g.createLink(controller: 'pdf',action: 'pdfLink')}?url="+url--}%
         });
 
         $("#transporte").click(function () {
@@ -1758,10 +1755,7 @@
             $("#cdgo_buscar").val(codigo)
             $("#item_desc").val(desc)
             $("#item_unidad").val(unidad)
-
-
-
-        })
+        });
 
         $("#selClase").change(function () {
             var clase = $(this).val();
@@ -1910,7 +1904,6 @@
                         });
 
                         $(".col_delete").hide()
-//                        $(".col_unidad").hide()
                         $(".col_tarifa").show()
                         $(".col_hora").show()
                         $(".col_total").show()
@@ -1961,9 +1954,6 @@
                         }
                     }
                 });
-
-                /*aqui*/
-
             } else {
                 $.box({
                     imageClass : "box_info",
@@ -1981,7 +1971,6 @@
                     }
                 });
             }
-
         });
 
         $(".borrarItem").click(function () {
@@ -2009,23 +1998,6 @@
                                         "Cancelar":function(){
 
                                         }
-                                        %{--"Aceptar" : function () {--}%
-                                        %{--$("#dlgLoad").dialog("open");--}%
-                                        %{--$.ajax({type : "POST", url : "${g.createLink(controller: 'rubro',action:'copiaRubro')}",--}%
-                                        %{--data     : "id=${rubro?.id}",--}%
-                                        %{--success  : function (msg) {--}%
-                                        %{--$("#dlgLoad").dialog("close");--}%
-                                        %{--if(msg=="true"){--}%
-                                        %{--alert("Error al generar historico del rubro, comunique este error al administrador del sistema")--}%
-                                        %{--}else{--}%
-                                        %{--console.log("es historico",msg)--}%
-                                        %{--$("#boxHiddenDlg").dialog("close");--}%
-                                        %{--agregar(msg,"H");--}%
-
-                                        %{--}--}%
-                                        %{--}--}%
-                                        %{--});--}%
-                                        %{--}--}%
                                     }
                                 }
                             });
@@ -2051,18 +2023,14 @@
                                             }
                                         }
                                     });
-
                                 }
                             });
 
                         }
                     }
                 });
-
             }
-
         });
-
 
         $(".infoItem").click(function () {
 
@@ -2114,11 +2082,9 @@
             });
         });
 
-
         $("#btn_lista").click(function () {
             var btnOk = $('<a href="#" data-dismiss="modal" class="btn">Cerrar</a>');
             $("#modalTitle").html("Lista de rubros");
-//        $("#modalBody").html($("#buscador_rubro").html());
             $("#modalFooter").html("").append(btnOk);
             $(".contenidoBuscador").html("")
             $("#tipos").hide()
@@ -2128,174 +2094,103 @@
             $("#buscarDialog").unbind("click")
             $("#buscarDialog").bind("click", enviar)
             setTimeout( function() { $( '#criterio' ).focus() }, 500 );
-            //$("#criterio").focus()
         }); //click btn new
 
+        %{--$("#cdgo_buscar").dblclick(function () {--}%
+        %{--    var btnOk = $('<a href="#" data-dismiss="modal" class="btn">Cerrar</a>');--}%
+        %{--    $("#modalTitle").html("Lista de items");--}%
+        %{--    $("#modalFooter").html("").append(btnOk);--}%
+        %{--    $(".contenidoBuscador").html("")--}%
+        %{--    $("#tipos").show()--}%
+        %{--    $("#btn_reporte").hide()--}%
+        %{--    $("#btn_excel").hide()--}%
+        %{--    $("#modal-rubro").modal("show");--}%
+        %{--    $("#buscarDialog").unbind("click")--}%
+        %{--    $("#buscarDialog").bind("click", enviarItem)--}%
+        %{--    setTimeout( function() { $( '#criterio' ).focus() }, 500 );--}%
+        %{--});--}%
 
-        $("#cdgo_buscar").dblclick(function () {
-            var btnOk = $('<a href="#" data-dismiss="modal" class="btn">Cerrar</a>');
-            $("#modalTitle").html("Lista de items");
-            $("#modalFooter").html("").append(btnOk);
-            $(".contenidoBuscador").html("")
-            $("#tipos").show()
-            $("#btn_reporte").hide()
-            $("#btn_excel").hide()
-            $("#modal-rubro").modal("show");
-            $("#buscarDialog").unbind("click")
-            $("#buscarDialog").bind("click", enviarItem)
-            setTimeout( function() { $( '#criterio' ).focus() }, 500 );
-        });
-
-        $("#cdgo_buscar").blur(function () {
-//            ////console.log($("#item_id").val()=="")
-            if ($("#item_id").val() == "" && $("#cdgo_buscar").val() != "") {
-                $.ajax({type : "POST", url : "${g.createLink(controller: 'rubro',action:'buscarRubroCodigo')}",
-                    data     : "codigo=" + $("#cdgo_buscar").val(),
-                    success  : function (msg) {
-                        if (msg != "-1") {
-//                            ////console.log("msg "+msg)
-                            var parts = msg.split("&&")
-                            $("#item_tipoLista").val(parts[1])
-                            $("#item_id").val(parts[0])
-                            $("#item_desc").val(parts[2])
-                            $("#item_unidad").val(parts[3])
-                        } else {
-//                            $("#cdgo_buscar").val("")
-                            $("#item_tipoLista").val("")
-                            $("#item_id").val("")
-                            $("#item_desc").val("")
-                            $("#item_unidad").val("")
-                        }
-                    }
-                });
-            }
-        });
+        %{--$("#cdgo_buscar").blur(function () {--}%
+        %{--    if ($("#item_id").val() == "" && $("#cdgo_buscar").val() != "") {--}%
+        %{--        $.ajax({type : "POST", url : "${g.createLink(controller: 'rubro',action:'buscarRubroCodigo')}",--}%
+        %{--            data     : "codigo=" + $("#cdgo_buscar").val(),--}%
+        %{--            success  : function (msg) {--}%
+        %{--                if (msg != "-1") {--}%
+        %{--                    var parts = msg.split("&&")--}%
+        %{--                    $("#item_tipoLista").val(parts[1])--}%
+        %{--                    $("#item_id").val(parts[0])--}%
+        %{--                    $("#item_desc").val(parts[2])--}%
+        %{--                    $("#item_unidad").val(parts[3])--}%
+        %{--                } else {--}%
+        %{--                    $("#item_tipoLista").val("")--}%
+        %{--                    $("#item_id").val("")--}%
+        %{--                    $("#item_desc").val("")--}%
+        %{--                    $("#item_unidad").val("")--}%
+        %{--                }--}%
+        %{--            }--}%
+        %{--        });--}%
+        %{--    }--}%
+        %{--});--}%
 
         $("#cdgo_buscar").keydown(function (ev) {
-
             if (ev.keyCode * 1 != 9 && (ev.keyCode * 1 < 37 || ev.keyCode * 1 > 40)) {
-                $("#item_tipoLista").val("")
-                $("#item_id").val("")
-                $("#item_desc").val("")
+                $("#item_tipoLista").val("");
+                $("#item_id").val("");
+                $("#item_desc").val("");
                 $("#item_unidad").val("")
-            } else {
-//                ////console.log("no reset")
             }
-
         });
 
         $("#rubro_registro").click(function () {
             if ($(this).hasClass("active")) {
                 if (confirm("Esta seguro de desregistrar este rubro?")) {
-                    $("#registrado").val("N")
+                    $("#registrado").val("N");
                     $("#fechaReg").val("")
                 }
             } else {
                 if (confirm("Esta seguro de registrar este rubro?")) {
-                    $("#registrado").val("R")
-                    var fecha = new Date()
+                    $("#registrado").val("R");
+                    var fecha = new Date();
                     $("#fechaReg").val(fecha.toString("dd/mm/yyyy"))
                 }
             }
         });
 
-
-        %{--function revisarCodigo (espec) {--}%
-        %{--$.ajax({--}%
-        %{--type: 'POST',--}%
-        %{--url: "${createLink(controller: 'rubro', action: 'revisarCodigo_ajax')}",--}%
-        %{--data:{--}%
-        %{--id: '${rubro?.id}',--}%
-        %{--codigo: espec--}%
-        %{--},--}%
-        %{--success: function (msg){--}%
-        %{--console.log(msg)--}%
-        %{--if(msg == 'ok'){--}%
-        %{--$.box({--}%
-        %{--imageClass : "box_info",--}%
-        %{--text       : "Código de especificación duplicado!",--}%
-        %{--title      : "Alerta",--}%
-        %{--iconClose  : false,--}%
-        %{--dialog     : {--}%
-        %{--resizable : false,--}%
-        %{--draggable : false,--}%
-        %{--buttons   : {--}%
-        %{--"Aceptar" : function () {--}%
-        %{--}--}%
-        %{--}--}%
-        %{--}--}%
-        %{--});--}%
-        %{--}else{--}%
-        %{--console.log("Sin error")--}%
-        %{--}--}%
-        %{--}--}%
-        %{--})--}%
-
-        %{--}--}%
-
-
-
         $("#guardar").click(function () {
-
-
-            var cod = $("#input_codigo").val()
-            var desc = $("#input_descripcion").val()
-            var subGr = $("#selSubgrupo").val()
-            var msg = ""
+            var cod = $("#input_codigo").val();
+            var desc = $("#input_descripcion").val();
+            var subGr = $("#selSubgrupo").val();
+            var msg = "";
             var resp = $("#selResponsable").val();
             var espec = $("#input_codigo_es").val();
 
-//            revisarCodigo(espec);
-
-
-            console.log('reponsable:',resp)
             if (cod.trim().length > 30 || cod.trim().length < 2) {
-                msg = "<br>Error: La propiedad código debe tener entre 2 y 30 caracteres."
-            }
-            if (desc.trim().length > 160 || desc.trim().length < 1) {
-                if (msg == "")
-                    msg = "<br>Error: La propiedad descripción debe tener entre 1 y 160 caracteres."
-                else
-                    msg = "<br>Error: La propiedad descripción debe tener entre 1 y 160 caracteres."
-            }
-            if (resp == "-1") {
-                if (msg == "")
-                    msg = "<br>Error: Seleccione un responsable."
-                else
-                    msg += "<br>Error: Seleccione un responsable."
+                msg = "<br><strong>Error:</strong> La propiedad código debe tener entre 2 y 30 caracteres."
             }
 
-//            console.log("antes del ajax")
-            $.ajax({type : "POST", url : "${g.createLink(controller: 'rubro', action:'repetido')}",
+            if (resp == "-1") {
+                msg += "<br><strong>Error:</strong> Seleccione un responsable."
+            }
+
+            $.ajax({
+                type : "POST",
+                url : "${g.createLink(controller: 'rubro', action:'repetido')}",
                 async    : false,
                 data     : "codigo=" + cod + "&id=" + $("#rubro__id").val(),
                 success  : function (retorna) {
-//                    console.log("secces ",retorna)
-                    //console.log("retorna: " + retorna)
-                    if (retorna == "repetido") {
-                        if (msg == "")
-                            msg = "<br>Error: el código " + cod.toUpperCase() + " está repetido"
-                        else
-                            msg += "<br>Error: el código " + cod.toUpperCase() + " está repetido"
 
+                    if (retorna == "repetido") {
+                        msg = "<br><strong>Error:</strong> el código " + cod.toUpperCase() + " está repetido"
                     }
                     if (desc.trim().length > 160 || desc.trim().length < 1) {
-                        if (msg == "")
-                            msg = "<br>Error: La propiedad descripción debe tener entre 1 y 160 caracteres."
-                        else
-                            msg += "<br>La propiedad descripción debe tener entre 1 y 160 caracteres."
+                        msg += "<br>La propiedad descripción debe tener entre 1 y 160 caracteres."
                     }
 
                     if (isNaN(subGr) || subGr * 1 < 1) {
-                        if (msg == "")
-                            msg = "<br>Error: Seleccione un subgrupo usando las listas de Clase, Grupo y Subgrupo"
-                        else
-                            msg += "<br>Seleccione un subgrupo usando las listas de Clase, Grupo y Subgrupo"
+                        msg += "<br>Seleccione un subgrupo usando las listas de Dirección, Grupo y Subgrupo"
                     }
 
-//                    console.log("al final de la validacion: " + msg)
                     if (msg != "") {
-//                        console.log("no sub")
                         $.box({
                             imageClass : "box_info",
                             text       : msg,
@@ -2304,33 +2199,22 @@
                             dialog     : {
                                 resizable : false,
                                 draggable : false,
-                                width     : 600,
+                                width     : 500,
                                 buttons   : {
                                     "Aceptar" : function () {
                                     }
                                 }
                             }
                         });
-
                     } else {
-//                        console.log("sub")
                         $("#frmRubro").submit()
                     }
-
                 }
             });
-
-//            console.log("fin")
         });
 
         <g:if test="${rubro}">
-
-
-
-
-
         $("#btn_agregarItem").click(function () {
-//            console.log("valor:" + $('#item_desc').val().length);
             if($('#item_desc').val().length == 0)  {
                 $.box({
                     imageClass : "box_info",
@@ -2394,12 +2278,10 @@
                                                 if(msg=="true"){
                                                     alert("Error al generar historico del rubro, comunique este error al administrador del sistema")
                                                 }else{
-//                                                    console.log("es historico",msg)
                                                     $("#boxHiddenDlg").dialog("close")
                                                     agregar(msg,"H");
 
                                                 }
-
                                             }
                                         });
                                     }
@@ -2409,12 +2291,9 @@
                         });
                     }else{
                         agregar(${rubro?.id},"");
-
                     }
                 }
             });
-
-
         });
         </g:if>
         <g:else>
@@ -2434,7 +2313,6 @@
                     width     : 500
                 }
             });
-
         });
         </g:else>
 
@@ -2448,11 +2326,6 @@
             height    : 200,
             position  : 'center',
             title     : 'Imprimir Rubro',
-            /*
-                        open: function( event, ui ) {
-                            $( "#fechaSalidaId" ).datepicker( "hide" );
-                        },
-            */
             buttons   : {
                 "Si VAE" : function () {
                     var dsp0 = $("#dist_p1").val();
@@ -2464,11 +2337,6 @@
                     var volqueta = $("#costo_volqueta").val();
                     var chofer = $("#costo_chofer").val();
                     var fechaSalida = $("#fechaSalidaId").val();
-
-                    %{--datos = "dsp0=" + dsp0 + "Wdsp1=" + dsp1 + "Wdsv0=" + dsv0 + "Wdsv1=" + dsv1 + "Wdsv2=" + dsv2 + "Wprvl=" + volqueta + "Wprch=" + chofer + "Wfecha=" + $("#fecha_precios").val() + "Wid=${rubro?.id}Wlugar=" + $("#ciudad").val() + "Wlistas=" + listas + "Wchof=" + $("#cmb_chof").val() + "Wvolq="--}%
-//                        + $("#cmb_vol").val() + "Windi=" + $("#costo_indi").val() + "WfechaSalida=" + fechaSalida
-                    %{--var url = "${g.createLink(controller: 'reportes3',action: 'imprimirRubroVae')}?" + datos--}%
-                    %{--location.href = "${g.createLink(controller: 'pdf',action: 'pdfLink')}?url=" + url--}%
 
                     datos = "dsp0=" + dsp0 + "&dsp1=" + dsp1 + "&dsv0=" + dsv0 + "&dsv1=" + dsv1 + "&dsv2=" + dsv2
                         + "&prvl=" + volqueta + "&prch=" + chofer + "&fecha=" + $("#fecha_precios").val()
@@ -2488,11 +2356,6 @@
                     var volqueta = $("#costo_volqueta").val();
                     var chofer = $("#costo_chofer").val();
                     var fechaSalida = $("#fechaSalidaId").val();
-//                    datos = "dsp0=" + dsp0 + "Wdsp1=" + dsp1 + "Wdsv0=" + dsv0 + "Wdsv1=" + dsv1 + "Wdsv2=" + dsv2 + "Wprvl=" + volqueta + "Wprch=" + chofer + "Wfecha=" + $("#fecha_precios").val()
-                    <!--+ "Wid=${rubro?.id}Wlugar=" + $("#ciudad").val() + "Wlistas=" + listas + "Wchof=" + $("#cmb_chof").val() + "Wvolq=" + $("#cmb_vol").val()-->
-//                    + "Windi=" + $("#costo_indi").val() + "Wtrans=no" + "WfechaSalida=" + fechaSalida;
-                    %{--var url = "${g.createLink(controller: 'reportes3',action: 'imprimirRubroVae')}?" + datos;--}%
-                    %{--location.href = "${g.createLink(controller: 'pdf',action: 'pdfLink')}?url=" + url;--}%
 
                     datos = "dsp0=" + dsp0 + "&dsp1=" + dsp1 + "&dsv0=" + dsv0 + "&dsv1=" + dsv1 + "&dsv2=" + dsv2
                         + "&prvl=" + volqueta + "&prch=" + chofer + "&fecha=" + $("#fecha_precios").val()
@@ -2512,10 +2375,6 @@
                     var volqueta = $("#costo_volqueta").val();
                     var chofer = $("#costo_chofer").val();
                     var fechaSalida = $("#fechaSalidaId").val();
-                    %{--datos = "dsp0=" + dsp0 + "Wdsp1=" + dsp1 + "Wdsv0=" + dsv0 + "Wdsv1=" + dsv1 + "Wdsv2=" + dsv2 + "Wprvl=" + volqueta + "Wprch=" + chofer + "Wfecha=" + $("#fecha_precios").val() + "Wid=${rubro?.id}Wlugar=" + $("#ciudad").val() + "Wlistas=" + listas + "Wchof=" + $("#cmb_chof").val() + "Wvolq="--}%
-//                            + $("#cmb_vol").val() + "Windi=" + $("#costo_indi").val() + "WfechaSalida=" + fechaSalida;
-                    %{--var url = "${g.createLink(controller: 'reportes3',action: 'imprimirRubro')}?" + datos;--}%
-                    %{--location.href = "${g.createLink(controller: 'pdf',action: 'pdfLink')}?url=" + url;--}%
 
                     datos = "dsp0=" + dsp0 + "&dsp1=" + dsp1 + "&dsv0=" + dsv0 + "&dsv1=" + dsv1 + "&dsv2=" + dsv2
                         + "&prvl=" + volqueta + "&prch=" + chofer + "&fecha=" + $("#fecha_precios").val()
@@ -2535,13 +2394,6 @@
                     var volqueta = $("#costo_volqueta").val();
                     var chofer = $("#costo_chofer").val();
                     var fechaSalida = $("#fechaSalidaId").val();
-
-                    %{--datos = "dsp0=" + dsp0 + "Wdsp1=" + dsp1 + "Wdsv0=" + dsv0 + "Wdsv1=" + dsv1 + "Wdsv2=" + dsv2 + "Wprvl=" + volqueta + "Wprch=" + chofer + "Wfecha=" + $("#fecha_precios").val()--}%
-                    %{--        + "Wid=${rubro?.id}Wlugar=" + $("#ciudad").val() + "Wlistas=" + listas + "Wchof=" + $("#cmb_chof").val() + "Wvolq=" + $("#cmb_vol").val()--}%
-                    %{--        + "Windi=" + $("#costo_indi").val() + "Wtrans=no" + "WfechaSalida=" + fechaSalida;--}%
-                    %{--var url = "${g.createLink(controller: 'reportes3',action: 'imprimirRubro')}?" + datos;--}%
-                    %{--location.href = "${g.createLink(controller: 'pdf',action: 'pdfLink')}?url=" + url;--}%
-
 
                     datos = "dsp0=" + dsp0 + "&dsp1=" + dsp1 + "&dsv0=" + dsv0 + "&dsv1=" + dsv1 + "&dsv2=" + dsv2 + "&prvl=" + volqueta + "&prch=" + chofer + "&fecha=" + $("#fecha_precios").val()
                         + "&id=${rubro?.id}&lugar=" + $("#ciudad").val() + "&listas=" + listas + "&chof=" + $("#cmb_chof").val() + "&volq=" + $("#cmb_vol").val()

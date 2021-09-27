@@ -305,7 +305,7 @@
         width: 1000,
         height: 600,
         position: 'center',
-        title: 'Materiales y Equipos a Entregar'
+        title: 'Items'
     });
 
     $("#btn-consultar").click(function () {

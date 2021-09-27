@@ -10,6 +10,7 @@ class RubroController extends janus.seguridad.Shield {
 
     def buscadorService
     def preciosService
+    def dbConnectionService
 
     def index() {
         redirect(action: "rubroPrincipal", params: params)
@@ -63,6 +64,8 @@ class RubroController extends janus.seguridad.Shield {
 
     def rubroPrincipal() {
 //        println "rubroPrincipal params: $params"
+        def usuario = Persona.get(session.usuario.id)
+        def empresa = usuario.empresa
         def rubro
         def campos = ["codigo": ["Código", "string"], "nombre": ["Descripción", "string"], "unidad": ["Unidad", "string"]]
         def grupos = []
@@ -74,8 +77,6 @@ class RubroController extends janus.seguridad.Shield {
         def dpto = Departamento.findAllByPermisosIlike("APU")
         def resps = Persona.findAllByDepartamentoInList(dpto)
 
-
-//        println "depto "+dpto
         def dptoUser = Persona.get(session.usuario.id).departamento
         def modifica = false
         if (dpto.size()>0) {
@@ -83,7 +84,6 @@ class RubroController extends janus.seguridad.Shield {
                 if (d.id.toInteger() == dptoUser.id.toInteger())
                     modifica = true
             }
-
         }
 
         grupoTransporte.each {
@@ -93,7 +93,6 @@ class RubroController extends janus.seguridad.Shield {
                 volquetes = Item.findAllByDepartamento(it)
 
             volquetes2 += volquetes
-
         }
 
         grupos=Grupo.findAll("from Grupo  where id>3")
@@ -102,19 +101,13 @@ class RubroController extends janus.seguridad.Shield {
             def items = Rubro.findAllByRubro(rubro)
             items.sort { it.item.codigo }
             resps = rubro.responsable
-//            println "responsable: $resps, ${resps?.id} rubro: ${rubro.id} ${rubro.codigo} ${rubro.responsable}"
             [campos: campos, rubro: rubro, grupos: grupos, items: items, choferes: choferes, volquetes: volquetes,
-             aux: aux, volquetes2: volquetes2, dpto: dpto, modifica: modifica, resps: resps]
+             aux: aux, volquetes2: volquetes2, dpto: dpto, modifica: modifica, resps: resps, empresa: empresa]
         } else {
-
-//            println "Nuevo .... responsable: ${resps?.id} ${resps}"
-
             [campos: campos, grupos: grupos, choferes: choferes, volquetes: volquetes, aux: aux,
-             volquetes2: volquetes2, dpto: dpto, modifica: modifica, resps: resps]
+             volquetes2: volquetes2, dpto: dpto, modifica: modifica, resps: resps, empresa: empresa]
         }
     }
-
-
 
     def getDatosItem() {
 //        println "get datos items "+params
@@ -417,7 +410,7 @@ class RubroController extends janus.seguridad.Shield {
 //        println("params " +  params)
         def persona = Persona.get(session.usuario.id)
         def empresa = persona.empresa
-        params.rubro.codigo = params.rubro.codigo.toUpperCase()
+        params.rubro.codigo = empresa?.sigla?.toUpperCase() + "-" + params.rubro.codigo.toUpperCase()
         params.rubro.codigoEspecificacion = params.rubro.codigoEspecificacion.toUpperCase()
 
         def rubro
@@ -445,21 +438,17 @@ class RubroController extends janus.seguridad.Shield {
 
         rubro.properties = params.rubro
         rubro.tipoItem = TipoItem.get(2)
-//        println "ren " + rubro.rendimiento
+
         if (!rubro.save(flush: true)) {
             println "error " + rubro.errors
         }else{
             if(rubro.codigoEspecificacion!="" && rubro.codigoEspecificacion){
                 def rubros = Item.findByCodigoNotEqualAndCodigoEspecificacion(rubro.codigo,rubro.codigoEspecificacion,[sort:"codigo"])
-//                println "mismo codigo "+rubros
                 if(rubros){
-//                    println "actualizando "+rubros.especificaciones+"  "+rubros.foto
                     rubro.especificaciones=rubros.especificaciones
                     rubro.save(flush: true)
                 }
-
             }
-
         }
 
         redirect(action: 'rubroPrincipal', params: [idRubro: rubro.id])
@@ -467,10 +456,8 @@ class RubroController extends janus.seguridad.Shield {
 
     def repetido = {
         // verifica codigo
-//        println "Repetido:" + params
         if (!params.id) {
             def hayOtros = Item.findAllByCodigo(params.codigo?.toUpperCase()).size() > 0
-//        println "repetido: " + hayOtros
             render hayOtros ? "repetido" : "ok"
         } else
             render "ok"
@@ -501,9 +488,7 @@ class RubroController extends janus.seguridad.Shield {
         } else {
             response.sendError(403)
         }
-
     }
-
 
     def borrarRubro() {
 //        println "borrar rubro "+params
@@ -550,8 +535,6 @@ class RubroController extends janus.seguridad.Shield {
                 return
             }
         }
-
-
     } //delete
 
     def getPrecios() {
@@ -1018,9 +1001,30 @@ class RubroController extends janus.seguridad.Shield {
         def item = Item.get(params.item)
         def precioRubrosItemsInstance = new PrecioRubrosItems()
         precioRubrosItemsInstance.item = item
-//        def precioRubrosItemsInstance = PrecioRubrosItems.findByItem(item)
-//        def fecha = new Date()
         return [precioRubrosItemsInstance: precioRubrosItemsInstance, params: params, item: item]
+    }
+
+
+    def listaItem() {
+        println "listaItem" + params
+        def listaItems = ['itemnmbr', 'itemcdgo']
+        def datos;
+        def select = "select item.item__id, itemcdgo, itemnmbr, item.tpls__id, unddcdgo " +
+                "from item, undd, dprt, sbgr "
+        def txwh = "where tpit__id = 1 and undd.undd__id = item.undd__id and dprt.dprt__id = item.dprt__id and " +
+                "sbgr.sbgr__id = dprt.sbgr__id "
+        def sqlTx = ""
+        def bsca = listaItems[params.buscarPor.toInteger()-1]
+        def ordn = listaItems[params.ordenar.toInteger()-1]
+        txwh += " and $bsca ilike '%${params.criterio}%' and grpo__id = ${params.grupo}"
+
+        sqlTx = "${select} ${txwh} order by ${ordn} limit 100 ".toString()
+        println "sql: $sqlTx"
+
+        def cn = dbConnectionService.getConnection()
+        datos = cn.rows(sqlTx)
+        println "data: ${datos[0]}"
+        [data: datos]
     }
 
 
