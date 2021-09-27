@@ -2286,7 +2286,7 @@
                             }
                         });
                     }else{
-                        agregar(${rubro?.id},"");
+                        agregar('${rubro?.id}',"");
                     }
                 }
             });
