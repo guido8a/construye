@@ -413,7 +413,7 @@ class RubroController extends janus.seguridad.Shield {
 //        println("params " +  params)
         def persona = Persona.get(session.usuario.id)
         def empresa = persona.empresa
-        params.rubro.codigo = empresa?.sigla?.toUpperCase() + "-" + params.rubro.codigo.toUpperCase()
+        params.rubro.codigo = params.rubro.codigo.toUpperCase()
         params.rubro.codigoEspecificacion = params.rubro.codigoEspecificacion.toUpperCase()
 
         def rubro
