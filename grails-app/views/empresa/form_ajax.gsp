@@ -39,7 +39,7 @@
                         </span>
                     </td>
                     <td>
-                        <g:textField name="sigla" maxlength="4" minlength="4" class="allCaps form-control" value="${empresaInstance?.sigla}"/>
+                        <g:textField name="sigla" maxlength="8" minlength="4" class="allCaps form-control" value="${empresaInstance?.sigla}"/>
                         <p class="help-block ui-helper-hidden"></p>
                     </td>
                 </tr>
@@ -105,8 +105,20 @@
                         </span>
                     </td>
                     <td colspan="4">
-                        <g:textArea name="observaciones"  maxlength="255" class=" form-control" value="${empresaInstance?.observaciones}"  style="width: 630px; resize: none"/>
+                        <g:textField name="observaciones"  maxlength="255" class=" form-control" value="${empresaInstance?.observaciones}"  style="width: 630px; resize: none"/>
                         <p class="help-block ui-helper-hidden"></p>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="1">
+                        <span class="control-label label label-inverse">
+                            Código de numeración
+                        </span>
+                    </td>
+                    <td width="250px">
+                        <g:textField name="codigo" maxlength="4" minlength="4" class="allCaps form-control required" value="${empresaInstance?.codigo}"/>
+                        <p class="help-block ui-helper-hidden"></p>
+                        <span class="mandatory">*</span>
                     </td>
                 </tr>
             </table>

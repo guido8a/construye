@@ -12,6 +12,7 @@ class Empresa implements Serializable{
     Date fechaFin
     String observaciones
     String lugar
+    String codigo
 
         static auditable=[ignore:[]]
         static mapping = {
@@ -33,7 +34,7 @@ class Empresa implements Serializable{
                 fechaFin column: 'emprfcfn'
                 observaciones column: 'emprobsr'
                 lugar column: 'emprlgar'
-
+                codigo column: 'emprcdgo'
             }
         }
         static constraints = {
@@ -48,6 +49,7 @@ class Empresa implements Serializable{
             fechaFin(blank:true, nullable:true )
             observaciones(blank:true, nullable:true )
             lugar(size: 0..63, blank:true, nullable:true)
+            codigo(size: 0..4, blank:false, nullable:false)
         }
         String toString(){
             "${this.nombre} (${this.sigla})"

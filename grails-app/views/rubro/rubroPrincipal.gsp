@@ -34,7 +34,7 @@
         Nuevo
     </a>
     <g:if test="${rubro?.aprobado != 'R'}">
-        <a href="#" class="btn btn-ajax btn-new" id="guardar">
+        <a href="#" class="btn btn-ajax btn-new btn-primary" id="guardar">
             <i class="icon-save"></i>
             Guardar
         </a>
@@ -111,13 +111,36 @@
 
                 <div class="span2" style="width: 150px;">
                     Código
-                    %{--<input type="text" name="rubro.codigo" class="span20 allCaps required input-small" value="${rubro?.codigo ? (rubro?.codigo?.contains("-") ? rubro?.codigo?.split("-")[1] : rubro?.codigo) : ''}"--}%
-                           %{--id="input_codigo" maxlength="30" minlength="2">--}%
-                    <input type="text" name="rubro.codigo" class="span20 allCaps required input-small"
-                           value="${rubro?.codigo}"
-                           id="input_codigo" maxlength="30" minlength="2">
+                %{--<input type="text" name="rubro.codigo" class="span20 allCaps required input-small" value="${rubro?.codigo ? (rubro?.codigo?.contains("-") ? rubro?.codigo?.split("-")[1] : rubro?.codigo) : ''}"--}%
+                %{--id="input_codigo" maxlength="30" minlength="2">--}%
+                %{--                    <input type="text" name="rubro.codigo" class="span20 allCaps required input-small"--}%
+                %{--                           value="${rubro?.codigo}"--}%
+                %{--                           id="input_codigo" maxlength="30" minlength="2">--}%
 
-                    <p class="help-block ui-helper-hidden"></p>
+                %{--                    <p class="help-block ui-helper-hidden"></p>--}%
+
+                    <g:if test="${rubro?.id}">
+                        <g:if test="${rubro?.codigo?.contains(empresa?.codigo?.toString()?.toUpperCase())}">
+                            <div class="input-prepend">
+                                <span class="add-on">${empresa?.codigo?.toUpperCase() + "-"}</span>
+                                <g:textField name="rubro.codigo" id="input_codigo" class="allCaps required input-small" maxlength="30" minlength="3" value="${rubro?.codigo ? (rubro?.codigo?.contains("-") ? rubro?.codigo?.split("-")[1] : rubro?.codigo) : ''}"/>
+
+                                <p class="help-block ui-helper-hidden"></p>
+                            </div>
+                        </g:if>
+                        <g:else>
+                            <input type="text" name="rubro.codigo" class="span20 allCaps required input-small" value="${rubro?.codigo ? (rubro?.codigo?.contains("-") ? rubro?.codigo?.split("-")[1] : rubro?.codigo) : ''}"
+                                   id="input_codigo" maxlength="30" minlength="3">
+                            <p class="help-block ui-helper-hidden"></p>
+                        </g:else>
+                    </g:if>
+                    <g:else>
+                        <div class="input-prepend">
+                            <span class="add-on">${empresa?.codigo?.toUpperCase() + "-"}</span>
+                            <g:textField name="rubro.codigo" id="input_codigo" class="allCaps required input-small" maxlength="30" minlength="3" value="${rubro?.codigo ? (rubro?.codigo?.contains("-") ? rubro?.codigo?.split("-")[1] : rubro?.codigo) : ''}"/>
+                            <p class="help-block ui-helper-hidden"></p>
+                        </div>
+                    </g:else>
                 </div>
 
                 <div class="span2" style="width: 130px; margin-left: 10px">
@@ -726,6 +749,28 @@
 
 <script type="text/javascript">
 
+    function validarNumDec(ev) {
+        /*
+         48-57      -> numeros
+         96-105     -> teclado numerico
+         188        -> , (coma)
+         190        -> . (punto) teclado
+         110        -> . (punto) teclado numerico
+         8          -> backspace
+         46         -> delete
+         9          -> tab
+         37         -> flecha izq
+         39         -> flecha der
+         */
+        return ((ev.keyCode >= 48 && ev.keyCode <= 57) ||
+            (ev.keyCode >= 96 && ev.keyCode <= 105) ||
+            ev.keyCode == 8 || ev.keyCode == 46 || ev.keyCode == 9 ||
+            ev.keyCode == 37 || ev.keyCode == 39);
+    }
+
+    $("#codigo").keydown(function (ev) {
+        return validarNumDec(ev)
+    });
 
     $("#btnRubro").click(function () {
         $("#busqueda").dialog("open");
@@ -2175,7 +2220,7 @@
                 data     : "codigo=" + cod + "&id=" + $("#rubro__id").val(),
                 success  : function (retorna) {
 
-                    if (retorna == "repetido") {
+                    if (retorna == "no") {
                         msg = "<br><strong>Error:</strong> el código " + cod.toUpperCase() + " está repetido"
                     }
                     if (desc.trim().length > 160 || desc.trim().length < 1) {

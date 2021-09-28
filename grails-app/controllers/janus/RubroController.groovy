@@ -116,12 +116,12 @@ class RubroController extends janus.seguridad.Shield {
 //        println "get datos items "+params
         def item = Item.get(params.id)
         def nombre = item.nombre
-       // println "nombre antes de "+item.nombre
+        // println "nombre antes de "+item.nombre
         nombre = nombre.replaceAll(/>/, / mayor que /)
         nombre = nombre.replaceAll(/</, / menor que /)
         nombre = nombre.replaceAll(/&gt;/, / mayor que /)
         nombre = nombre.replaceAll(/&lt;/, / menor que /)
-       // println "nombre despues de "+nombre
+        // println "nombre despues de "+nombre
         //println "render "+  item.id + "&" + item.codigo + "&" + nombre + "&" + item.unidad.codigo + "&" + item.rendimiento+"&"+((item.tipoLista)?item.tipoLista?.id:"0")
         render "" + item.id + "&" + item.codigo + "&" + nombre + "&" + item.unidad?.codigo?.trim() + "&" + item.rendimiento + "&" + ((item.tipoLista) ? item.tipoLista?.id : "0")+"&"+item.departamento.subgrupo.grupo.id
     }
@@ -172,7 +172,7 @@ class RubroController extends janus.seguridad.Shield {
         funcionJs += '$.ajax({type: "POST",url: "' + g.createLink(controller: 'rubro', action: 'getDatosItem') + '",'
         funcionJs += ' data: "id="+idReg,'
         funcionJs += ' success: function(msg){'
-       // funcionJs += 'console.log("desc " +msg);'
+        // funcionJs += 'console.log("desc " +msg);'
         funcionJs += 'var parts = msg.split("&");'
         funcionJs += ' $("#item_id").val(parts[0]);'
         funcionJs += ' $("#item_id").attr("tipo",parts[6]);'
@@ -181,7 +181,7 @@ class RubroController extends janus.seguridad.Shield {
         //funcionJs += 'console.log("desc "+desc);'
         funcionJs += 'desc =desc.replace(/>/g, " mayor "); '
         funcionJs += 'desc =desc.replace(/</g, " menor "); '
-       // funcionJs += 'console.log("desc "+desc);'
+        // funcionJs += 'console.log("desc "+desc);'
         funcionJs += '$("#item_desc").val(parts[2]);'
         funcionJs += '$("#item_unidad").val(parts[3]);'
         funcionJs += '$("#item_tipoLista").val(parts[5]);'
@@ -236,15 +236,15 @@ class RubroController extends janus.seguridad.Shield {
                 session.funciones = funciones
                 def anchos = [40,100,30] /*anchos para el set column view en excel (no son porcentajes)*/
                 redirect(controller: "reportes", action: "reporteBuscadorExcel", params: [listaCampos: listaCampos,
-                         listaTitulos: listaTitulos, tabla: "Item", orden: params.orden, ordenado: params.ordenado,
-                         criterios: params.criterios, operadores: params.operadores, campos: params.campos, titulo: "Rubros",
-                         anchos: anchos, extras: extras, landscape: true])
+                                                                                          listaTitulos: listaTitulos, tabla: "Item", orden: params.orden, ordenado: params.ordenado,
+                                                                                          criterios: params.criterios, operadores: params.operadores, campos: params.campos, titulo: "Rubros",
+                                                                                          anchos: anchos, extras: extras, landscape: true])
             } else {
                 def lista = buscadorService.buscar(Item, "Item", "excluyente", params, true, extras) /* Dominio, nombre del dominio , excluyente o incluyente ,params tal cual llegan de la interfaz del buscador, ignore case */
                 lista.pop()
                 render(view: '../tablaBuscador', model: [listaTitulos: listaTitulos, listaCampos: listaCampos,
-                       lista: lista, funciones: funciones, url: url, controller: "llamada", numRegistros: numRegistros,
-                       funcionJs: funcionJs])
+                                                         lista: lista, funciones: funciones, url: url, controller: "llamada", numRegistros: numRegistros,
+                                                         funcionJs: funcionJs])
             }
 
         } else {
@@ -413,7 +413,9 @@ class RubroController extends janus.seguridad.Shield {
 //        println("params " +  params)
         def persona = Persona.get(session.usuario.id)
         def empresa = persona.empresa
-        params.rubro.codigo = params.rubro.codigo.toUpperCase()
+        def existente
+
+//        params.rubro.codigo = params.rubro.codigo.toUpperCase()
         params.rubro.codigoEspecificacion = params.rubro.codigoEspecificacion.toUpperCase()
 
         def rubro
@@ -422,11 +424,19 @@ class RubroController extends janus.seguridad.Shield {
             params.remove("rubro.fecha")
             rubro.tipoItem = TipoItem.get(2)
             rubro.fechaModificacion = new Date()
+
+            if(rubro?.codigo?.contains(empresa?.codigo?.toString()?.toUpperCase())){
+                params.rubro.codigo = empresa?.codigo?.toUpperCase() + "-" + params.rubro.codigo
+            }else{
+            }
+
         } else {
             rubro = new Item(params)
             rubro.empresa = empresa
             params.rubro.fecha = new Date()
             rubro.tipoItem = TipoItem.get(2)
+            params."rubro.codigo" = empresa?.codigo?.toUpperCase() + "-" + params."rubro.codigo"
+
         }
 
         if (params.rubro.registro != "R") {
@@ -458,12 +468,36 @@ class RubroController extends janus.seguridad.Shield {
     } //save
 
     def repetido = {
-        // verifica codigo
+        println("params " + params)
+        def usuario = Persona.get(session.usuario.id)
+        def empresa = usuario.empresa
+        def existentes
+
         if (!params.id) {
-            def hayOtros = Item.findAllByCodigo(params.codigo?.toUpperCase()).size() > 0
-            render hayOtros ? "repetido" : "ok"
-        } else
-            render "ok"
+            existentes = Item.findAllByCodigoAndEmpresa(empresa?.codigo?.toUpperCase() + "-" + params.codigo?.toUpperCase(), empresa)
+            if(existentes){
+                render "no"
+            }else{
+                render "ok"
+            }
+        }else{
+            def rubro = Item.get(params.id)
+            if(rubro?.codigo?.contains(empresa?.codigo?.toString()?.toUpperCase())){
+                existentes = Item.findAllByCodigoAndEmpresaAndIdNotEqual((empresa?.codigo?.toUpperCase() + "-" + params.codigo?.toUpperCase()), empresa, rubro?.id?.toLong())
+                if(existentes){
+                    render "no"
+                }else{
+                    render "ok"
+                }
+            }else{
+                existentes = Item.findAllByCodigoAndEmpresaAndIdNotEqual(params.codigo, empresa, rubro?.id?.toLong())
+                if(existentes){
+                    render "no"
+                }else{
+                    render "ok"
+                }
+            }
+        }
     }
 
     def show_ajax() {
