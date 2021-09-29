@@ -342,7 +342,7 @@
                 <g:if test="${obra?.codigo?.contains(empresa?.codigo?.toString()?.toUpperCase())}">
                     <div class="span3 input-prepend">
                         <span class="add-on">${empresa?.codigo?.toUpperCase() + "-"}</span>
-                        <g:textField name="codigo" style="width: 180px" class="codigo allCaps required" maxlength="20" minlength="3"
+                        <g:textField name="codigo" style="width: 120px" class="codigo allCaps required" maxlength="20" minlength="3"
                                      value="${obra?.codigo ? (obra?.codigo?.contains("-") ? obra?.codigo?.split("-")[1] : obra?.codigo) : ''}" readonly="true"/>
                     </div>
                 </g:if>
@@ -357,7 +357,7 @@
                 <div class="span3 input-prepend">
                     <span class="add-on">${empresa?.codigo?.toUpperCase() + "-"}</span>
 %{--                    <g:textField name="codigo" style="width: 180px" class="allCaps required codigo" maxlength="20" minlength="3" value="${obra?.codigo ? (obra?.codigo?.contains("-") ? obra?.codigo?.split("-")[1]?.padLeft(3, '0') : obra?.codigo?.padLeft(3, '0')) : ''}"/>--}%
-                    <g:textField name="codigo" style="width: 180px" class="allCaps required codigo" maxlength="20" minlength="3" value="${cdgo ? cdgo?.padLeft(3, '0') : '001'}"/>
+                    <g:textField name="codigo" style="width: 120px" class="allCaps required codigo" maxlength="20" minlength="3" value="${cdgo ? cdgo?.toString()?.padLeft(3, '0') : '001'}"/>
                 </div>
             </g:else>
 
