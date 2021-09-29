@@ -137,7 +137,7 @@
                     <g:else>
                         <div class="input-prepend">
                             <span class="add-on">${empresa?.codigo?.toUpperCase() + "-"}</span>
-                            <g:textField name="rubro.codigo" id="input_codigo" class="allCaps required input-small" maxlength="30" minlength="3" value="${rubro?.codigo ? (rubro?.codigo?.contains("-") ? rubro?.codigo?.split("-")[1] : rubro?.codigo) : ''}"/>
+                            <g:textField name="rubro.codigo" id="input_codigo" class="allCaps required input-small" maxlength="30" minlength="3" value="${rubro?.codigo ? (rubro?.codigo?.contains("-") ? rubro?.codigo?.split("-")[1]?.padLeft(3, '0') : rubro?.codigo?.padLeft(3, '0')) : ''}"/>
                             <p class="help-block ui-helper-hidden"></p>
                         </div>
                     </g:else>
