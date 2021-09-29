@@ -456,6 +456,16 @@ class ObraController extends janus.seguridad.Shield {
         def responsableObra
         def sql = ""
 
+        def sqlCodigo = "select max(substr(obracdgo, length(emprcdgo)+2,3)::integer)+1 total from obra, empr where obracdgo ilike emprcdgo||'-%' and empr.empr__id = ${empresa?.id} and obra.empr__id = empr.empr__id;"
+        def cnC = dbConnectionService.getConnection()
+        def datos = cnC.rows(sqlCodigo)
+
+        println("sql " + sqlCodigo)
+
+        def cdgo = datos[0].total
+
+        println("cdgo " + cdgo)
+
         def fechaPrecio = new Date()
         cn.eachRow("select max(rbpcfcha) fcha from rbpc, item where rbpc.item__id = item.item__id and " +
                 "itemnmbr ilike '%cemento%port%'") { d ->
@@ -470,14 +480,6 @@ class ObraController extends janus.seguridad.Shield {
         tipoObra = TipoObra.list();
         claseObra = ClaseObra.list();
 
-//        println("grupo" + grupo)
-//        println("direccion" + direccion)
-//        println("subpresupuest" + subPresupuesto1)
-//        println("direccion" + direccion.id)
-//        println("programa" + programa)
-//        println("tipo" + tipoObra)
-//        println("clase" + claseObra)
-
         def matrizOk = false
 
         def prov = Provincia.list();
@@ -486,7 +488,7 @@ class ObraController extends janus.seguridad.Shield {
             obra = Obra.get(params.obra)
 //            cn.eachRow("select distinct sbpr__id from mfrb where obra__id = ${obra.id} order by sbpr__id".toString()) { d ->
             sql = "SELECT distinct sbpr__id FROM vlobitem WHERE obra__id = ${obra.id} order by 1"
-            println "sql: $sql"
+//            println "sql: $sql"
             cn.eachRow(sql.toString()) { d ->
                 if(d.sbpr__id == 0) {
                     sbprMF << ["0" : 'Todos los subpresupuestos']
@@ -496,8 +498,6 @@ class ObraController extends janus.seguridad.Shield {
 //                println "sbprMF: ${sbprMF}"
             }
 
-
-//            def subs = VolumenesObra.findAllByObra(obra, [sort: "orden"]).subPresupuesto.unique()
             def subs = VolumenesObra.findAllByObra(obra).subPresupuesto.unique().sort{it.id}
             def volumen = VolumenesObra.findByObra(obra)
             def formula = FormulaPolinomica.findByObra(obra)
@@ -507,7 +507,6 @@ class ObraController extends janus.seguridad.Shield {
             def verifOK = false
 
             if (verif != []) {
-
                 verifOK = true
             }
 
@@ -517,7 +516,6 @@ class ObraController extends janus.seguridad.Shield {
                 matrizOk = true
             }
             def concurso = janus.pac.Concurso.findByObra(obra)
-//            println "concursos: $concurso?.fechaLimiteEntregaOfertas"
             if (concurso) {
                 if (!concurso.fechaLimiteEntregaOfertas)
                     concurso = null
@@ -533,7 +531,7 @@ class ObraController extends janus.seguridad.Shield {
             [campos: campos, prov: prov, obra: obra, subs: subs, persona: persona, formula: formula, volumen: volumen,
              matrizOk: matrizOk, verif: verif, verifOK: verifOK, perfil: perfil, programa: programa, tipoObra: tipoObra,
              claseObra: claseObra, grupoDir: grupo, dire  : direccion, depar: departamentos, concurso: concurso,
-             personasPRSP: personasPRSP, duenoObra: duenoObra, sbprMF:sbprMF, listaPreciosC: listaPrecios]
+             personasPRSP: personasPRSP, duenoObra: duenoObra, sbprMF:sbprMF, listaPreciosC: listaPrecios, empresa: empresa]
         } else {
 
             duenoObra = 0
@@ -541,7 +539,7 @@ class ObraController extends janus.seguridad.Shield {
 
             [campos: campos, prov: prov, persona: persona, matrizOk: matrizOk, perfil: perfil, programa: programa,
              tipoObra: tipoObra, claseObra: claseObra, grupoDir: grupo, dire: direccion, depar: departamentos,
-             fcha: fechaPrecio, personasPRSP: personasPRSP, duenoObra: duenoObra, sbprMF:sbprMF, listaPreciosC: listaPrecios]
+             fcha: fechaPrecio, personasPRSP: personasPRSP, duenoObra: duenoObra, sbprMF:sbprMF, listaPreciosC: listaPrecios, empresa: empresa, cdgo: cdgo]
         }
     }
 
@@ -1232,6 +1230,7 @@ class ObraController extends janus.seguridad.Shield {
         if (params.id) {
 
             obraInstance = Obra.get(params.id)
+            def existentes
 
             if (!obraInstance) {
                 flash.clase = "alert-error"
@@ -1256,23 +1255,49 @@ class ObraController extends janus.seguridad.Shield {
                 }
             }
 
-//            println("-->" +params.departamento.id)
+//            if(obraInstance?.codigo?.contains(empresa?.codigo?.toString()?.toUpperCase())){
+//
+//            }
 
-            obraInstance.properties = params
+            def ps = false
 
-            obraInstance.departamento = params.departamento
+            if(obraInstance?.codigo?.contains(empresa?.codigo?.toString()?.toUpperCase())){
+                existentes = Obra.findAllByCodigoAndEmpresaAndIdNotEqual((empresa?.codigo?.toUpperCase() + "-" + params.codigo?.toUpperCase()), empresa, obraInstance?.id?.toLong())
+                if(existentes){
+                    ps = false
+                }else{
+                    ps = true
+                    params.codigo = empresa?.codigo?.toUpperCase() + "-" + params.codigo
+                }
+            }else{
+                existentes = Obra.findAllByCodigoAndEmpresaAndIdNotEqual(params.codigo, empresa, obraInstance?.id?.toLong())
+                if(existentes){
+                   ps = false
+                }else{
+                   ps = true
+                }
+            }
 
-//            println("-->" +params.departamento.id)
+            if(ps){
+                obraInstance.properties = params
+                obraInstance.departamento = params.departamento
+            }else{
+                flash.clase = "alert-error"
+                flash.message = " No se pudo guardar la obra,  código duplicado!"
+                redirect(action: 'registroObra')
+                return
+            }
 
         }//es edit
         else {
-            if(!Obra.findByCodigoAndEmpresa(params.codigo, empresa)){
 
+//            if(!Obra.findByCodigoAndEmpresa(params.codigo, empresa)){
+            if(!Obra.findByCodigoAndEmpresa(empresa?.codigo?.toUpperCase() + "-" + params.codigo?.toUpperCase(), empresa)){
 
                 def departamento
                 obraInstance = new Obra(params)
-
                 obraInstance.empresa = empresa
+                obraInstance.codigo = empresa?.codigo?.toUpperCase() + "-" + params.codigo
 
                 if (session.perfil.codigo == 'ADDI' || session.perfil.codigo == 'COGS') {
                     departamento = Departamento.get(persona?.departamento?.id)
@@ -1312,9 +1337,7 @@ class ObraController extends janus.seguridad.Shield {
                 obraInstance.distanciaVolumen = 30
 
                 obraInstance.indiceGastosGenerales = (obraInstance?.indiceAlquiler + obraInstance?.administracion + obraInstance?.indiceProfesionales + obraInstance?.indiceCostosIndirectosMantenimiento + obraInstance?.indiceSeguros + obraInstance?.indiceSeguridad)
-
                 obraInstance.indiceGastoObra = (obraInstance?.indiceCampo + obraInstance?.indiceCostosIndirectosCostosFinancieros + obraInstance?.indiceCostosIndirectosGarantias + obraInstance?.indiceCampamento)
-//                obraInstance.totales = (obraInstance.impreso + obraInstance.indiceUtilidad + obraInstance.indiceCostosIndirectosTimbresProvinciales + obraInstance.indiceGastosGenerales)
                 obraInstance.totales = (obraInstance.impreso + obraInstance.indiceUtilidad + obraInstance.indiceGastoObra + obraInstance.indiceGastosGenerales)
 
                 /* si pefiles administración directa o cogestion pone obratipo = 'D' */
@@ -1323,9 +1346,6 @@ class ObraController extends janus.seguridad.Shield {
                 }
                 obraInstance.coordenadas = 'S 1 45.3193 W 79 32.4346'
             }else {
-
-//                println("entro codigo no")
-
                 flash.clase = "alert-error"
                 flash.message = " No se pudo guardar la obra,  código duplicado!"
                 redirect(action: 'registroObra')

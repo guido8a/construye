@@ -88,14 +88,13 @@
 
 <div class="span12 btn-group" role="navigation" style="margin-left: 0px;width: 100%;float: left;height: 35px;">
     <button class="btn" id="lista"><i class="icon-book"></i> Lista</button>
-    %{--<button class="btn" id="listaLq"><i class="icon-book"></i> Liquidación</button>--}%
     <button class="btn" id="nuevo"><i class="icon-plus"></i> Nuevo</button>
 
     <g:if test="${persona?.departamento?.codigo != 'PRSP'}">
 
         <g:if test="${obra?.estado != 'R'}">
             <g:if test="${(obra?.responsableObra?.departamento?.direccion?.id == persona?.departamento?.direccion?.id && duenoObra == 1) || obra?.id == null}">
-                <button class="btn" id="btn-aceptar"><i class="icon-ok"></i> Grabar
+                <button class="btn btn-primary" id="btn-aceptar"><i class="fa fa-save"></i> Guardar
                 </button>
             </g:if>
         </g:if>
@@ -109,7 +108,6 @@
                     <button class="btn" id="eliminarObra"><i class="icon-remove"></i> Eliminar la Obra</button>
                 </g:if>
             </g:if>
-
         </g:if>
         <g:if test="${obra?.id != null}">
 
@@ -139,22 +137,12 @@
                 </button>
             </g:if>
         </g:if>
-    %{--<g:if test="${obra?.estado == 'R' && obra?.tipo != 'D'}">--}%
-    %{--<g:if test="${!obra?.fechaInicio}">--}%
-    %{--<button class="btn" id="btn-memoSIF"><i class="icon-file-text"></i> Memo al S.I.F.--}%
-    %{--</button>--}%
-    %{--</g:if>--}%
-    %{--<g:if test="${obra?.memoSif != "" && obra?.estadoSif != 'R'}">--}%
-    %{--<button class="btn" id="btn-aprobarSif"><i class="icon-file-text"></i> Aprobar S.I.F.--}%
-    %{--</button>--}%
-    %{--</g:if>--}%
-    %{--</g:if>--}%
     </g:if>
     <g:else>%{-- usuarurio de PRSP --}%
 
         <g:if test="${obra?.estado != 'R'}">
             <g:if test="${duenoObra == 1 || obra?.id == null}">
-                <button class="btn" id="btn-aceptar"><i class="icon-ok"></i> Grabar
+                <button class="btn btn-primary" id="btn-aceptar"><i class="fa fa-save"></i> Guardar
                 </button>
             </g:if>
         </g:if>
@@ -169,7 +157,6 @@
                 </g:if>
             </g:if>
 
-
         </g:if>
         <g:if test="${obra?.id != null}">
 
@@ -183,9 +170,7 @@
             </g:if>
 
             <g:if test="${obra?.id != null}">
-            %{--<g:if test="${duenoObra == 1 || obra?.id == null}">--}%
                 <button class="btn" id="copiarObra"><i class="icon-copy"></i> Copiar Obra</button>
-            %{--</g:if>--}%
             </g:if>
 
             <g:if test="${obra?.id != null && obra?.estado == 'R' && perfil.codigo == 'CNTR' && concurso}">
@@ -194,38 +179,13 @@
             </g:if>
         </g:if>
 
-    %{--
-            <g:if test="${obra && obra?.tipo != 'D' && obra?.estado != 'R'}">
-                <button class="btn" id="btn-setAdminDirecta"><i class="icon-ok"></i> Admin. directa
-                </button>
-            </g:if>
-    --}%
         <g:if test="${obra?.estado == 'R' && obra?.tipo == 'D'}">
             <g:if test="${!obra?.fechaInicio}">
                 <button class="btn" id="btn-adminDirecta"><i class="icon-ok"></i> Iniciar obra
                 </button>
             </g:if>
         </g:if>
-    %{--<g:if test="${obra?.estado == 'R' && obra?.tipo != 'D'}">--}%
-    %{--<g:if test="${!obra?.fechaInicio}">--}%
-    %{--<button class="btn" id="btn-memoSIF"><i class="icon-file-text"></i> Memo al S.I.F.--}%
-    %{--</button>--}%
-    %{--</g:if>--}%
-    %{--<g:if test="${obra?.memoSif != "" && obra?.estadoSif != 'R'}">--}%
-    %{--<button class="btn" id="btn-aprobarSif"><i class="icon-file-text"></i> Aprobar S.I.F.--}%
-    %{--</button>--}%
-    %{--</g:if>--}%
-    %{--</g:if>--}%
-
     </g:else>
-
-%{--
-    <g:if test="${obra?.id && (obra?.estado != 'R')}">
-        <button class="btn" id="revisarPrecios"><i class="icon-check"></i> Precios 0</button>
-        <button class="btn btn-warning" id="procesaPrecios"><i class="icon-check"></i> Procesar Precios</button>
-    </g:if>
---}%
-
 </div>
 
 <g:form class="registroObra" name="frm-registroObra" action="save">
@@ -233,12 +193,10 @@
     <fieldset class="borde" style="position: relative;float: left">
         <g:hiddenField name="id" value="${obra?.id}"/>
         <div class="span12" style="margin-top: 15px" align="center">
-
             <p class="css-vertical-text">Ingreso</p>
-
             <div class="linea" style="height: 85%;"></div>
-
         </div>
+
         <g:if test="${obra?.tipo == 'D'}">
             <g:if test="${session.perfil.codigo == 'ADDI'}">
                 <div class="span 12"
@@ -295,18 +253,13 @@
                 <div class="span3">
                     <g:if test="${obra?.id}">
                         <g:hiddenField name="departamento.id" id="departamentoObra" value="${obra?.departamento?.id}"/>
-                    %{--<g:hiddenField name="departamento.id" id="departamentoDire" value="${obra?.departamento?.direccion?.id}"/>--}%
                         <g:hiddenField name="per.id" id="per" value="${persona?.departamento?.id}"/>
-
                         <g:textField name="departamentoText" id="departamentoText" value="${obra?.departamento}"
                                      style="width: 670px; margin-left: 40px" readonly="true"
                                      title="Dirección actual del usuario"/>
                     </g:if>
                     <g:else>
-
-                    %{--<g:hiddenField name="departamento.id" id="departamentoDire" value="${persona?.departamento?.direccion?.id}"/>--}%
-                        <g:hiddenField name="departamento.id" id="departamentoObra"
-                                       value="${persona?.departamento?.id}"/>
+                        <g:hiddenField name="departamento.id" id="departamentoObra" value="${persona?.departamento?.id}"/>
                         <g:hiddenField name="per.id" id="per" value="${persona?.departamento?.id}"/>
                         <g:textField name="departamentoText" id="departamentoText" value="${persona?.departamento}"
                                      style="width: 670px; margin-left: 40px" readonly="true"
@@ -319,21 +272,15 @@
             <div class="span1" style="margin-left: 506px; font-weight: bold">ESTADO</div>
 
             <div class="span1">
-
                 <g:if test="${obra?.estado == null}">
-
                     <g:textField name="estadoNom" class="estado" value="${'N'}" disabled="true"
                                  style="width: 30px; font-weight: bold" title="Estado de la Obra"/>
                     <g:hiddenField name="estado" id="estado" class="estado" value="${'N'}"/>
-
                 </g:if>
-
                 <g:else>
-
                     <g:textField name="estadoNom" class="estado" value="${obra?.estado}" disabled="true"
                                  style="width: 30px; font-weight: bold" title="Estado de la Obra"/>
                     <g:hiddenField name="estado" id="estado" class="estado" value="${obra?.estado}"/>
-
                 </g:else>
             </div>
 
@@ -382,19 +329,41 @@
         <div class="span12" style="margin-top: 10px">
             <div class="span1">Código:</div>
 
-            <g:if test="${obra?.codigo != null}">
-                <div class="span3"><g:textField name="codigo" class="codigo required allCaps" value="${obra?.codigo}"
-                                                readonly="readonly" maxlength="20" title="Código de la Obra"/></div>
+%{--            <g:if test="${obra?.codigo != null}">--}%
+%{--                <div class="span3"><g:textField name="codigo" class="codigo required allCaps" value="${obra?.codigo}"--}%
+%{--                                                readonly="readonly" maxlength="20" title="Código de la Obra"/></div>--}%
+%{--            </g:if>--}%
+%{--            <g:else>--}%
+%{--                <div class="span3"><g:textField name="codigo" class="codigo required allCaps" value="${obra?.codigo}"--}%
+%{--                                                maxlength="20" title="Código de la Obra"/></div>--}%
+%{--            </g:else>--}%
+
+            <g:if test="${obra?.id}">
+                <g:if test="${obra?.codigo?.contains(empresa?.codigo?.toString()?.toUpperCase())}">
+                    <div class="span3 input-prepend">
+                        <span class="add-on">${empresa?.codigo?.toUpperCase() + "-"}</span>
+                        <g:textField name="codigo" style="width: 180px" class="codigo allCaps required" maxlength="20" minlength="3"
+                                     value="${obra?.codigo ? (obra?.codigo?.contains("-") ? obra?.codigo?.split("-")[1] : obra?.codigo) : ''}" readonly="true"/>
+                    </div>
+                </g:if>
+                <g:else>
+                    <div class="span3">
+                    <g:textField name="codigo" class="codigo required allCaps" value="${obra?.codigo ? (obra?.codigo?.contains("-") ? obra?.codigo?.split("-")[1] : obra?.codigo) : ''}"
+                                     readonly="true" maxlength="20" title="Código de la Obra"/>
+                    </div>
+                </g:else>
             </g:if>
             <g:else>
-                <div class="span3"><g:textField name="codigo" class="codigo required allCaps" value="${obra?.codigo}"
-                                                maxlength="20" title="Código de la Obra"/></div>
+                <div class="span3 input-prepend">
+                    <span class="add-on">${empresa?.codigo?.toUpperCase() + "-"}</span>
+%{--                    <g:textField name="codigo" style="width: 180px" class="allCaps required codigo" maxlength="20" minlength="3" value="${obra?.codigo ? (obra?.codigo?.contains("-") ? obra?.codigo?.split("-")[1]?.padLeft(3, '0') : obra?.codigo?.padLeft(3, '0')) : ''}"/>--}%
+                    <g:textField name="codigo" style="width: 180px" class="allCaps required codigo" maxlength="20" minlength="3" value="${cdgo ? cdgo?.padLeft(3, '0') : '001'}"/>
+                </div>
             </g:else>
 
             <div class="span1" style="margin-left: -20px;">Nombre</div>
 
-            <div class="span6"><g:textField name="nombre" class="nombre required"
-                                            style="margin-left: -40px; width: 700px" value="${obra?.nombre}"
+            <div class="span6"><g:textField name="nombre" class="nombre required" style="margin-left: -40px; width: 700px" value="${obra?.nombre}"
                                             maxlength="127" title="Nombre de la Obra"/></div>
         </div>
 
@@ -985,7 +954,6 @@
     </div>
 
     <div class="modal-body" id="modalBody_tipo">
-
     </div>
 
     <div class="modal-footer" id="modalFooter_tipo">
@@ -1013,7 +981,6 @@
     <div class="modal hide fade mediumModal" id="modal-matriz" style=";overflow: hidden;">
         <div class="modal-header btn-primary">
             <button type="button" class="close" data-dismiss="modal">×</button>
-
             <h3 id="modal_title_matriz">
             </h3>
         </div>
@@ -1041,15 +1008,13 @@
                     <a href="#" class="btn btn-danger" id="si">Si -> Generar Matriz</a>
                 </g:if>
                 <a href="#" class="btn btn-info" id="cancela" style="margin-left: 200px;">Cancelar</a>
-
             </div>
 
             <div id="datos_matriz" style="text-align: center">
                 <span>Seleccione el subpresupuesto:</span>
                 <g:select name="matriz_sub" from="${subs}" noSelection="['0': 'Todos los subpresupuestos']"
                           optionKey="id" optionValue="descripcion" style="margin-right: 20px"/>
-            <p>Generar con desglose de Transporte <input type="checkbox" id="si_trans" style="margin-top: -3px"
-                                                         checked="true">
+            <p>Generar con desglose de Transporte <input type="checkbox" id="si_trans" style="margin-top: -3px" checked="true">
                 <g:if test="${FormulaPolinomica.countByObra(janus.Obra.get(obra?.id)) > 0}">
                     <p>Borrar la Fórmula Polinómica<input type="checkbox" id="borra_fp" style="margin-top: -3px" checked="true">
                 </g:if>
@@ -1090,14 +1055,14 @@
     <textarea style="width: 90%;height: 80px;resize: none" id="descAdm" maxlength="250"></textarea>
     <br> <br>
     <b>Fecha de inicio:</b> <br><br>
-    <elm:datepicker id="fechaInicio"></elm:datepicker>
+    <elm:datepicker id="fechaInicio"/>
 </div>
 
 <div id="errorDialog">
     <fieldset>
         <div class="span3">
             Debe seleccionar un transporte especial válido!
-            <br>(Tab: Tranp. Especial)</br>
+            <br>(Tab: Tranp. Especial)
         </div>
     </fieldset>
 </div>
@@ -1144,7 +1109,6 @@
                 $(".contenidoBuscador").html(msg).show("slide");
             }
         });
-
     }
 
     $("#frm-registroObra").validate();
@@ -1231,9 +1195,7 @@
                     $(this).val(val);
                 }
             }
-
         }
-
     });
 
     $("#plazo").keydown(function (ev) {
@@ -1301,7 +1263,6 @@
     });
 
     function loadPersonas() {
-
         var idP
         var idDep1
         <g:if test="${persona?.departamento?.codigo == 'PRSP'}">
@@ -1351,10 +1312,8 @@
             });
     }
 
-
     $("#departamentoObra").change(function () {
-
-        var idDep = $("#departamentoObra").val()
+        var idDep = $("#departamentoObra").val();
         var idObra = ${obra?.id}
             $.ajax({
                 type: "POST",
@@ -1370,7 +1329,6 @@
                 }
             });
     });
-
 
     $(function () {
         var memoSIF = "${obra?.memoSif?:''}";
@@ -1532,7 +1490,6 @@
                             }
                         });
                     }
-
                 }
             }
         });
@@ -1648,7 +1605,6 @@
         });
 
         $("#btnGenerarFP").click(function () {
-            console.log("entro fp")
             var btn = $(this);
             var $btn = btn.clone(true);
             $.box({
@@ -1700,12 +1656,8 @@
 
         $("#ok_matiz").click(function () {
             var sp = $("#matriz_sub").val();
-//            var tr = $("#si_trans").attr("checked");
             var tr = $("#si_trans").is(':checked');
             var borrar = $("#borra_fp").is(':checked');
-            ////console.log(sp,tr)
-//                    if (sp != "-1")
-
             $("#dlgLoad").dialog("open");
 
             $.ajax({
@@ -1766,7 +1718,6 @@
         $("#lista").click(function () {
             var btnOk = $('<a href="#" data-dismiss="modal" class="btn">Cerrar</a>');
             $("#modalTitle_busqueda").html("Lista de obras");
-//        $("#modalBody").html($("#buscador_rubro").html());
             $("#modalFooter_busqueda").html("").append(btnOk);
             $(".contenidoBuscador").html("");
             $("#buscarDialog").unbind("click")
@@ -1780,7 +1731,6 @@
         $("#listaLq").click(function () {
             var btnOk = $('<a href="#" data-dismiss="modal" class="btn">Cerrar</a>');
             $("#modalTitle_busqueda").html("Lista de obras de liquidación");
-//        $("#modalBody").html($("#buscador_rubro").html());
             $("#modalFooter_busqueda").html("").append(btnOk);
             $(".contenidoBuscador").html("");
             $("#modal-busqueda").modal("show");
@@ -2080,7 +2030,6 @@
                                                     $("#spanError").html("El archivo  '" + parts[1] + "'  no ha sido encontrado");
                                                     $("#divError").show()
                                                 }
-
                                             }
                                         });
 
