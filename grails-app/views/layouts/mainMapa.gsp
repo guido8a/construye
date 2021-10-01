@@ -20,15 +20,14 @@
     %{--<script src="${resource(dir: 'js/jquery/plugins/jquery.countdown', file: 'jquery.countdown.min.js')}"></script>--}%
     <script src="${resource(dir: 'js/jquery/plugins/jquery.countdown', file: 'jquery.countdown.js')}"></script>
     <script src="${resource(dir: 'js/jquery/plugins/jquery.countdown', file: 'jquery.countdown-es.js')}"></script>
-    <script src="${resource(dir: 'js/jquery/plugins', file: 'date.js')}"></script>
-    <script src="${resource(dir: 'js/jquery/plugins/paginate/js', file: 'jquery.luz.paginate.js')}"></script>
+%{--    <script src="${resource(dir: 'js/jquery/plugins', file: 'date.js')}"></script>--}%
+%{--    <script src="${resource(dir: 'js/jquery/plugins/paginate/js', file: 'jquery.luz.paginate.js')}"></script>--}%
 
-    <script src="${resource(dir: 'js/jquery/i18n', file: 'jquery.ui.datepicker-es.js')}"></script>
-    %{--        <script src="${resource(dir: 'font-awesome-4.7.0/', file: 'jquery.ui.datepicker-es.js')}"></script>--}%
+%{--    <script src="${resource(dir: 'js/jquery/i18n', file: 'jquery.ui.datepicker-es.js')}"></script>--}%
 
     %{--Fuentes--}%
-    <link href='${resource(dir: "font/open", file: "stylesheet.css")}' rel='stylesheet' type='text/css'>
-    <link href='${resource(dir: "font/tulpen", file: "stylesheet.css")}' rel='stylesheet' type='text/css'>
+%{--    <link href='${resource(dir: "font/open", file: "stylesheet.css")}' rel='stylesheet' type='text/css'>--}%
+%{--    <link href='${resource(dir: "font/tulpen", file: "stylesheet.css")}' rel='stylesheet' type='text/css'>--}%
 
 <!-- Le styles -->
     <g:if test="${janus.Parametros.findByEmpresaLike(message(code: 'ambiente2'))}">
@@ -39,8 +38,8 @@
     </g:else>
 %{--<link href="${resource(dir: 'css/bootstrap/css', file: 'bootstrap.readable.css')}" rel="stylesheet">--}%
 
-    <link href="${resource(dir: 'fontawsome/css', file: 'font-awesome.css')}" rel="stylesheet">
-    <link href="${resource(dir: 'font-awesome-4.7.0/css', file: 'font-awesome.min.css')}" rel="stylesheet">
+%{--    <link href="${resource(dir: 'fontawsome/css', file: 'font-awesome.css')}" rel="stylesheet">--}%
+%{--    <link href="${resource(dir: 'font-awesome-4.7.0/css', file: 'font-awesome.min.css')}" rel="stylesheet">--}%
 
     <link href="${resource(dir: 'css', file: 'mobile2.css')}" rel="stylesheet">
     <script src="${resource(dir: 'js/jquery/plugins', file: 'jquery.highlight.js')}"></script>
@@ -116,18 +115,11 @@
 
     var ot = document.title;
 
-    //            function resetTimer() {
-    //                var ahora = new Date();
-    //                var fin = ahora.clone().add(20).minute();
-    //                $("#countdown").countdown('change', {
-    //                    until : fin
-    //                });
-    //                $(".countdown_amount").removeClass("highlight");
-    //                document.title = ot;
-    //            }
+
     function resetTimer() {
-        var ahora = new Date();
-        var fin = ahora.clone().add(20).minute();
+        // var ahora = new Date();
+        // var fin = ahora.clone().add(20).minute();
+        var fin = 1200;
 //                fin.add(1).second()
         $("#countdown").countdown('option', {
             until : fin
@@ -170,11 +162,11 @@
             }
         });
 
-        var ahora = new Date();
-        var fin = ahora.clone().add(20).minute();
-
+        // var ahora = new Date()
+        // var fin = ahora.clone().add(20).minute();
+        //
         $('#countdown').countdown({
-            until    : fin,
+            until    : 1200,
             format   : 'MS',
             compact  : true,
             onExpiry : validarSesion,
