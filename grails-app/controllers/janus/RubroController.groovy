@@ -75,7 +75,9 @@ class RubroController extends janus.seguridad.Shield {
         def dpto = Departamento.findAllByPermisosIlike("APU")
         def resps = Persona.findAllByDepartamentoInList(dpto)
 
-        def sql = "select max(substr(itemcdgo, length(emprcdgo)+2,3)::integer)+1 total from item, empr where itemcdgo ilike emprcdgo||'-%' and empr.empr__id = ${empresa?.id} and item.empr__id = empr.empr__id;"
+        def sql = "select max(substr(itemcdgo, length(emprcdgo)+2,3)::integer)+1 total from item, empr " +
+                "where itemcdgo ilike emprcdgo||'-%' and empr.empr__id = ${empresa?.id} and " +
+                "item.empr__id = empr.empr__id;"
         def cn = dbConnectionService.getConnection()
         def datos = cn.rows(sql)
 
