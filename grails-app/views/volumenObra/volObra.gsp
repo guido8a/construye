@@ -236,13 +236,13 @@
     </div>
 </div>
 
-<div id="borrarSPDialog">
-    <fieldset>
-        <div class="span3">
-            Está seguro que desea borrar el subpresupuesto?
-        </div>
-    </fieldset>
-</div>
+%{--<div id="borrarSPDialog" class="hide">--}%
+%{--    <fieldset>--}%
+%{--        <div class="span3">--}%
+%{--            Está seguro que desea borrar el subpresupuesto?--}%
+%{--        </div>--}%
+%{--    </fieldset>--}%
+%{--</div>--}%
 
 <div id="busqueda" style="overflow: hidden">
     <fieldset class="borde" style="border-radius: 4px">
@@ -748,7 +748,7 @@
             if (msn.length == 0) {
                 var datos = "rubro=" + rubro + "&cantidad=" + cantidad + "&orden=" + orden + "&sub=" + sub +
                     "&obra=${obra.id}" + "&cod=" + cod + "&ord=" + '1&override=' + $("#override").val() +
-                    "&dscr=" + dscr;
+                    "&dscr=" + dscr + "&";
                 if ($("#vol_id").val() * 1 > 0)
                     datos += "&id=" + $("#vol_id").val();
 
@@ -757,44 +757,89 @@
                     url : "${g.createLink(controller: 'volumenObra',action:'addItem')}",
                     data     : datos,
                     success  : function (msg) {
-                        if (msg != "error") {
-                            $("#detalle").html(msg);
-                            $("#vol_id").val("");
-                            $("#item_codigo").val("");
-                            $("#item_id").val("");
-                            $("#item_nombre").val("");
-                            $("#item_cantidad").val("");
-                            $("#item_descripcion").val("");
-                            $("#item_orden").val($("#item_orden").val() * 1 + 1);
-                            $("#override").val("0")
-                        } else {
+                        var parts = msg.split("_");
 
+                        if(parts[0] == 'er'){
                             $.box({
                                 imageClass : "box_info",
-                                text       : "El item ya existe dentro del volumen de obra. Desea incrementar la cantidad?",
+                                text       : parts[1],
                                 title      : "Alerta",
                                 iconClose  : false,
                                 dialog     : {
                                     resizable : false,
                                     draggable : false,
-                                    width     : 500,
+                                    width     : 600,
                                     buttons   : {
                                         "Aceptar" : function () {
-                                            $("#override").val("1");
-                                            $("#item_agregar").click()
-                                        },
-                                        "cancelar" : function () {
-                                            $("#vol_id").val("");
-                                            $("#item_codigo").val("");
-                                            $("#item_id").val("");
-                                            $("#item_nombre").val("");
-                                            $("#item_cantidad").val("");
-                                            $("#item_orden").val($("#item_orden").val() * 1 + 1)
+                                            limpiar();
                                         }
                                     }
                                 }
                             });
-                         }
+                        }else{
+                           if(parts[0] == 'error'){
+                               $.box({
+                                   imageClass : "box_info",
+                                   text       : "Error al agregar el volumen de obra",
+                                   title      : "Alerta",
+                                   iconClose  : false,
+                                   dialog     : {
+                                       resizable : false,
+                                       draggable : false,
+                                       width     : 600,
+                                       buttons   : {
+                                           "Aceptar" : function () {
+                                               limpiar();
+                                           }
+                                       }
+                                   }
+                               });
+                           }else{
+                               cargarTabla();
+                               limpiar();
+                           }
+                        }
+
+
+
+
+                        // if (msg != "error") {
+                        //     $("#detalle").html(msg);
+                        //     $("#vol_id").val("");
+                        //     $("#item_codigo").val("");
+                        //     $("#item_id").val("");
+                        //     $("#item_nombre").val("");
+                        //     $("#item_cantidad").val("");
+                        //     $("#item_descripcion").val("");
+                        //     $("#item_orden").val($("#item_orden").val() * 1 + 1);
+                        //     $("#override").val("0")
+                        // } else {
+                        //     $.box({
+                        //         imageClass : "box_info",
+                        //         text       : "El item ya existe dentro del volumen de obra. Desea incrementar la cantidad?",
+                        //         title      : "Alerta",
+                        //         iconClose  : false,
+                        //         dialog     : {
+                        //             resizable : false,
+                        //             draggable : false,
+                        //             width     : 500,
+                        //             buttons   : {
+                        //                 "Aceptar" : function () {
+                        //                     $("#override").val("1");
+                        //                     $("#item_agregar").click()
+                        //                 },
+                        //                 "cancelar" : function () {
+                        //                     $("#vol_id").val("");
+                        //                     $("#item_codigo").val("");
+                        //                     $("#item_id").val("");
+                        //                     $("#item_nombre").val("");
+                        //                     $("#item_cantidad").val("");
+                        //                     $("#item_orden").val($("#item_orden").val() * 1 + 1)
+                        //                 }
+                        //             }
+                        //         }
+                        //     });
+                        //  }
                     }
                 });
             } else {
@@ -815,6 +860,16 @@
                 });
             }
         });
+
+        function limpiar(){
+            $("#vol_id").val("");
+                $("#item_codigo").val("");
+                $("#item_id").val("");
+                $("#item_nombre").val("");
+                $("#item_cantidad").val("");
+                $("#item_descripcion").val("");
+                $("#item_orden").val($("#item_orden").val() * 1 + 1);
+        }
 
         $(document).ready(function () {
             $("#grupos").trigger("change");

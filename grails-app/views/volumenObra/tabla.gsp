@@ -99,7 +99,7 @@
             </td>
             <g:if test="${obra.estado!='R' && duenoObra == 1}">
                 <td style="width: 10%;text-align: center" class="col_delete">
-                    <a class="btn btn-small btn-primary editarItem" href="#" rel="tooltip" title="Editar" iden="${val.vlob__id}" data-orden="${val.vlobordn}" data-cod="${val.rbrocdgo}" item="${val}"  dscr="${val.vlobdscr}" sub="${val.sbpr__id}" cdgo="${val.item__id}" title="${val.vlobdscr}">
+                    <a class="btn btn-small btn-primary editarItem" href="#" rel="tooltip" title="Editar" iden="${val.vlob__id}" data-orden="${val.vlobordn}" data-nom="${val.rbronmbr}" data-can="${val.vlobcntd}" data-cod="${val.rbrocdgo}" item="${val}"  dscr="${val.vlobdscr}" sub="${val.sbpr__id}" cdgo="${val.item__id}" title="${val.vlobdscr}">
                         <i class="fa fa-edit"></i>
                     </a>
                     <a class="btn btn-small btn-danger borrarItem" href="#" rel="tooltip" title="Eliminar" iden="${val.vlob__id}">
@@ -372,15 +372,19 @@
         $(".col_precio").hide();
         $(".col_total").hide();
         $("#divTotal").html("");
-        $("#vol_id").val($(this).attr("id"));   /* gdo: id del registro a editar */
+        // $("#vol_id").val($(this).attr("id"));   /* gdo: id del registro a editar */
+        $("#vol_id").val($(this).attr("iden"));   /* gdo: id del registro a editar */
         $("#item_codigo").val($(this).data("cod"));
         $("#item_id").val($(this).attr("item"));
         $("#subPres").val($(this).data("idSub"));
         $("#item_descripcion").val($(this).attr("dscr"));
         $("#item_orden").val($(this).data("orden"));
+        $("#item_nombre").val($(this).data("nom"));
+        $("#item_cantidad").val($(this).data("can"));
 
-        $("#item_nombre").val($(".item_row").find(".nombre").html());
-        $("#item_cantidad").val($(".item_row").find(".cant").html().toString().trim());
+
+        // $("#item_nombre").val($(".item_row").find(".nombre").html());
+        // $("#item_cantidad").val($(".item_row").find(".cant").html().toString().trim());
         // $("#item_orden").val($(".item_row").find(".orden").html());
 
         $.ajax({

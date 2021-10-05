@@ -98,54 +98,65 @@ class VolumenObraController extends janus.seguridad.Shield {
     }
 
     def addItem() {
-//        println "addItem " + params
+        println "addItem " + params
         def obra = Obra.get(params.obra)
-//        def rubro2 = Item.get(params.rubro)
-//        def rubro = Item.get(params.id)
         def rubro = Item.findByCodigoIlike(params.cod)
 
         def sbpr = SubPresupuesto.get(params.sub)
         def volumen
         def msg = ""
-//        if (params.vlob_id)
-        if (params.id)
+
+        def existe
+
+        if (params.id) {
             volumen = VolumenesObra.get(params.id)
-        else {
+            existe = VolumenesObra.findAllByObraAndItemAndSubPresupuestoAndIdNotEqual(obra, rubro, sbpr, volumen.id)
+            println("existe " + existe)
+
+        }else {
 
             volumen = new VolumenesObra()
-//            def v=VolumenesObra.findByItemAndObra(rubro,obra)
-            def v = VolumenesObra.findAll("from VolumenesObra where obra=${obra?.id} and item=${rubro?.id} and subPresupuesto=${sbpr?.id}")
-//            println "v "+v
-            if (v.size() > 0) {
-                v = v.pop()
-                if (params.override == "1") {
-                    v.cantidad += params.cantidad.toDouble()
-                    v.save(flush: true)
-                    redirect(action: "tabla", params: [obra: obra.id, sub: v.subPresupuesto.id, ord: 1])
-                    return
-                } else {
-                    msg = "error"
-                    render msg
-                    return
-                }
+            existe = VolumenesObra.findAllByObraAndItemAndSubPresupuesto(obra, rubro, sbpr)
+
+//            def v = VolumenesObra.findAll("from VolumenesObra where obra=${obra?.id} and item=${rubro?.id} and subPresupuesto=${sbpr?.id}")
+//            if (v.size() > 0) {
+//                v = v.pop()
+//                if (params.override == "1") {
+//                    v.cantidad += params.cantidad.toDouble()
+//                    v.save(flush: true)
+//                    redirect(action: "tabla", params: [obra: obra.id, sub: v.subPresupuesto.id, ord: 1])
+//                    return
+//                } else {
+//                    msg = "error"
+//                    render msg
+//                    return
+//                }
+//            }
+
+        }
+
+
+
+        if(existe){
+            render "er_El item ${rubro?.codigo + " - " + rubro?.nombre} ya existe dentro del volumen de obra"
+        }else{
+            volumen.cantidad = params.cantidad.toDouble()
+            volumen.orden = params.orden.toInteger()
+            volumen.subPresupuesto = SubPresupuesto.get(params.sub)
+            volumen.obra = obra
+            volumen.item = rubro
+            volumen.descripcion = params.dscr
+
+            if (!volumen.save(flush: true)) {
+                println "error volumen obra " + volumen.errors
+                render "error"
+            } else {
+                preciosService.actualizaOrden(volumen, "insert")
+                render "ok"
+//                redirect(action: "tabla", params: [obra: obra.id, sub: volumen.subPresupuesto.id, ord: 1])
             }
         }
-//        println "volumn :" + volumen
 
-        volumen.cantidad = params.cantidad.toDouble()
-        volumen.orden = params.orden.toInteger()
-        volumen.subPresupuesto = SubPresupuesto.get(params.sub)
-        volumen.obra = obra
-        volumen.item = rubro
-        volumen.descripcion = params.dscr
-
-        if (!volumen.save(flush: true)) {
-            println "error volumen obra " + volumen.errors
-            render "error"
-        } else {
-            preciosService.actualizaOrden(volumen, "insert")
-            redirect(action: "tabla", params: [obra: obra.id, sub: volumen.subPresupuesto.id, ord: 1])
-        }
     }
 
     def copiarItem() {
