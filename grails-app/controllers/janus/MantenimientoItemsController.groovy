@@ -1652,6 +1652,7 @@ class MantenimientoItemsController extends Shield {
         if (params.fecha)
             params.fecha = new Date().parse("dd-MM-yyyy", params.fecha)
         params.fechaIngreso = new Date()
+        params.porcentaje = params.porcentaje.toDouble()
         vaeItems.properties = params
         if (vaeItems.save(flush: true)) {
             println "OK_"+ accion + "_" + vaeItems.id + "_" + vaeItems.porcentaje
