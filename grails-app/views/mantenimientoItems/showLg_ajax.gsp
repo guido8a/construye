@@ -2,7 +2,7 @@
 
 <div style="height: 35px; width: 100%;">
     <div class="btn-group pull-left">
-        <g:if test="${session.perfil.codigo == 'CSTO'}">
+        <g:if test="${session.perfil.codigo in ['CSTO', 'RBRO']}">
             <a href="#" class="btn btn-ajax" id="btnNew">
                 <i class="icon-money"></i>
                 Nuevo Precio

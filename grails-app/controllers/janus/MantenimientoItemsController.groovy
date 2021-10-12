@@ -214,7 +214,7 @@ class MantenimientoItemsController extends Shield {
             tree += "<a href='#' class='label_arbol'>" + desc + "</a>"
             tree += "</li>"
 
-            println "hijos: ${hijos}, \n hijosH: ${hijosH}"
+//            println "hijos: ${hijos}, \n hijosH: ${hijosH}"
         }
         tree += "</ul>"
 
@@ -316,7 +316,7 @@ class MantenimientoItemsController extends Shield {
         String tree = "", clase = "", rel = "", extra = ""
 
         tree += "<ul>"
-        println "hijos:" + hijos
+//        println "hijos:" + hijos
         hijos.each { hijo ->
             def hijosH, desc, liId
             switch (tipo) {
