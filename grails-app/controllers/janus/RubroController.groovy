@@ -74,17 +74,26 @@ class RubroController extends janus.seguridad.Shield {
         def grupoTransporte = DepartamentoItem.findAllByTransporteIsNotNull()
         def dpto = Departamento.findAllByPermisosIlike("APU")
         def resps = Persona.findAllByDepartamentoInList(dpto)
+        def datos
 
         def sql = "select max(substr(itemcdgo, length(emprcdgo)+2,3)::integer)+1 total from item, empr " +
                 "where itemcdgo ilike emprcdgo||'-%' and empr.empr__id = ${empresa?.id} and " +
                 "item.empr__id = empr.empr__id;"
-        def cn = dbConnectionService.getConnection()
-        def datos = cn.rows(sql)
+        try {
+            def cn = dbConnectionService.getConnection()
+            datos = cn.rows(sql)
+        } catch (Exception e)
+        {
+
+        }
 
 //        println("sql " + sql)
 //        println("datos " + datos[0].total)
 
-        def cdgo = datos[0].total
+        def cdgo = 1
+        if(datos) {
+            cdgo = datos[0].total
+        }
 
         def dptoUser = Persona.get(session.usuario.id).departamento
         def modifica = false
@@ -414,7 +423,7 @@ class RubroController extends janus.seguridad.Shield {
         def empresa = persona.empresa
         def existente
 
-//        params.rubro.codigo = params.rubro.codigo.toUpperCase()
+        params.rubro.codigo = params.rubro.codigo.toUpperCase()
         params.rubro.codigoEspecificacion = params.rubro.codigoEspecificacion.toUpperCase()
 
         def rubro
@@ -424,9 +433,11 @@ class RubroController extends janus.seguridad.Shield {
             rubro.tipoItem = TipoItem.get(2)
             rubro.fechaModificacion = new Date()
 
+/*
             if(rubro?.codigo?.contains(empresa?.codigo?.toString()?.toUpperCase())){
                 params.rubro.codigo = empresa?.codigo?.toUpperCase() + "-" + params.rubro.codigo
             }
+*/
 
         } else {
             rubro = new Item(params)

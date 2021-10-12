@@ -120,19 +120,20 @@
                 %{--                    <p class="help-block ui-helper-hidden"></p>--}%
 
                     <g:if test="${rubro?.id}">
-                        <g:if test="${rubro?.codigo?.contains(empresa?.codigo?.toString()?.toUpperCase())}">
-                            <div class="input-prepend">
-                                <span class="add-on">${empresa?.codigo?.toUpperCase() + "-"}</span>
-                                <g:textField name="rubro.codigo" id="input_codigo" class="allCaps required input-small" maxlength="30" minlength="3" value="${rubro?.codigo ? (rubro?.codigo?.contains("-") ? rubro?.codigo?.split("-")[1] : rubro?.codigo) : ''}"/>
-
-                                <p class="help-block ui-helper-hidden"></p>
-                            </div>
-                        </g:if>
-                        <g:else>
-                            <input type="text" name="rubro.codigo" class="span20 allCaps required input-small" value="${rubro?.codigo ? (rubro?.codigo?.contains("-") ? rubro?.codigo?.split("-")[1] : rubro?.codigo) : ''}"
+                        %{--<g:if test="${rubro?.codigo?.contains(empresa?.codigo?.toString()?.toUpperCase())}">--}%
+                            %{--<div class="input-prepend">--}%
+                                %{--<span class="add-on">${empresa?.codigo?.toUpperCase() + "-"}</span>--}%
+                                %{--<g:textField name="rubro.codigo" id="input_codigo" class="allCaps required input-small" maxlength="30" minlength="3" value="${rubro?.codigo ? (rubro?.codigo?.contains("-") ? rubro?.codigo?.split("-")[1] : rubro?.codigo) : ''}"/>--}%
+%{----}%
+                                %{--<p class="help-block ui-helper-hidden"></p>--}%
+                            %{--</div>--}%
+                        %{--</g:if>--}%
+                        %{--<g:else>--}%
+                            %{--<input type="text" name="rubro.codigo" class="span20 allCaps required input-small" value="${rubro?.codigo ? (rubro?.codigo?.contains("-") ? rubro?.codigo?.split("-")[1] : rubro?.codigo) : ''}"--}%
+                            <input type="text" name="rubro.codigo" class="span20 allCaps required input-small" value="${rubro?.codigo}"
                                    id="input_codigo" maxlength="30" minlength="3">
                             <p class="help-block ui-helper-hidden"></p>
-                        </g:else>
+                        %{--</g:else>--}%
                     </g:if>
                     <g:else>
                         <div class="input-prepend">
