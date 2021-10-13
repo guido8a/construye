@@ -247,7 +247,7 @@
 <div id="busqueda" style="overflow: hidden">
     <fieldset class="borde" style="border-radius: 4px">
         <div class="row-fluid" style="margin-left: 20px">
-            <div class="span2">Grupo</div>
+            %{--<div class="span2">Grupo</div>--}%
 
             <div class="span2">Buscar Por</div>
 
@@ -257,9 +257,11 @@
         </div>
 
         <div class="row-fluid" style="margin-left: 20px">
+%{--
             <div class="span2">
                 <g:select name="buscarGrupo_name"  id="buscarGrupo" from="['1': 'Materiales', '2': 'Mano de Obra', '3': 'Equipos']"
                           style="width: 100%" optionKey="key" optionValue="value"/></div>
+--}%
 
             <div class="span2"><g:select name="buscarPor" class="buscarPor" from="${[1: 'Nombre', 2: 'Código']}"
                                          style="width: 100%" optionKey="key"
@@ -305,7 +307,7 @@
         width: 1000,
         height: 600,
         position: 'center',
-        title: 'Items'
+        title: 'Rubros Aprobados para presupuesto'
     });
 
     $("#btn-consultar").click(function () {
