@@ -9,7 +9,7 @@ class Retazo {
     Item item
     double cantidad
     Date fecha
-    String estado
+    String estado = 'A'
     Date fechaFin
 
     static auditable = true
