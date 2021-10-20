@@ -10,6 +10,7 @@ class Retazo {
     double cantidad
     Date fecha
     String estado
+    Date fechaFin
 
     static auditable = true
     static mapping = {
@@ -25,12 +26,14 @@ class Retazo {
             fecha column: 'rtzofcha'
             cantidad column: 'rtzocntd'
             estado column: 'rtzoetdo'
+            fechaFin column: 'rtzofcfn'
         }
     }
     static constraints = {
         bodega(blank: false, nullable: false, attributes: [title: 'bodega'])
         item(blank: false, nullable: false, attributes: [title: 'item'])
         fecha(blank: false, nullable: false, attributes: [title: 'fecha'])
+        fechaFin(blank: true, nullable: true, attributes: [title: 'fecha fin'])
         cantidad(blank: false, nullable: false, attributes: [title: 'cantidad'])
         estado(blank: false, nullable: false, attributes: [title: 'estado'])
     }
