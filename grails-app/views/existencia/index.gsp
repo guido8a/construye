@@ -73,8 +73,8 @@
 
             <div class="span2" style="margin-left: 20px">
                 <button class="btn btn-info" id="btn-consultar"><i
-                    class="icon-check"></i> Consultar
-            </button>
+                        class="icon-check"></i> Consultar
+                </button>
                 <a href="#" class="btn btn-ajax btn-primary" id="imprimir" title="Imprimir Existencias">
                     <i class="icon-print"></i>
                 </a>
@@ -89,12 +89,12 @@
             <tr>
                 <th class="alinear" style="width: 10%">Código</th>
                 <th class="alinear" style="width: 42%">Item</th>
-                <th class="alinear" style="width: 8%">Unidad</th>
+                <th class="alinear" style="width: 7%">Unidad</th>
                 <th class="alinear" style="width: 10%">Fecha</th>
                 <th class="alinear" style="width: 10%">Existencias</th>
-                <th class="alinear" style="width: 10%">P. Unitario</th>
-                <th class="alinear" style="width: 10%">Valor</th>
-                %{--<th class="alinear" style="width: 10%">Cargo</th>--}%
+                <th class="alinear" style="width: 8%">P. Unitario</th>
+                <th class="alinear" style="width: 8%">Valor</th>
+                <th class="alinear" style="width: 5%"></th>
             </tr>
             </thead>
             <tbody>
@@ -104,14 +104,11 @@
         <div class="alert alert-danger hidden" id="mensaje" style="text-align: center">
         </div>
 
-        <div id="divTabla" style="height: 460px; overflow-y:auto; overflow-x: auto;">
+        <div id="divTabla" style="height: 460px; overflow-y:auto; overflow-x: auto; margin-top: -20px">
         </div>
-
 
     </fieldset>
 </div>
-
-
 
 
 <div><strong>Nota</strong>: Si existen muchos registros que coinciden con el criterio de búsqueda, se retorna
@@ -136,9 +133,6 @@ como máximo 30
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
 </div>
-
-
-
 
 %{--Dialogo solicitudes--}%
 <div class="modal fade col-md-12 col-xs-12" id="solicitud" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
@@ -181,7 +175,21 @@ como máximo 30
     </div>
 </div>
 
+<div class="modal hide fade" id="modal-showProveedor" style="width: 600px;">
+    <div class="modal-header" id="modalHeaderShow">
+        <button type="button" class="close darker" data-dismiss="modal">
+            <i class="icon-remove-circle"></i>
+        </button>
 
+        <h3 id="modalTitleShow"></h3>
+    </div>
+
+    <div class="modal-body" id="modalBodyShow">
+    </div>
+
+    <div class="modal-footer" id="modalFooterShow">
+    </div>
+</div>
 
 <script type="text/javascript">
 
@@ -211,7 +219,6 @@ como máximo 30
                 }
             }
         });
-
     });
 
     $(function () {
@@ -224,13 +231,8 @@ como máximo 30
     busqueda();
     </g:if>
     <g:else>
-    $("#mensaje").removeClass('hidden').append("No existen existencias");
+    $("#mensaje").removeClass('hidden').append("No se han encontrado existencias");
     </g:else>
-
-
-    $("#condominioId").change(function () {
-        cargarBusqueda();
-    });
 
     $("input").keyup(function (ev) {
         if (ev.keyCode == 13) {
@@ -238,164 +240,109 @@ como máximo 30
         }
     });
 
-    function createContextMenu(node) {
-        var $tr = $(node);
-        var items = {
-            header: {
-                label: "Acciones",
-                header: true
-            }
-        };
+    %{--function createContextMenu(node) {--}%
+    %{--    var $tr = $(node);--}%
+    %{--    var items = {--}%
+    %{--        header: {--}%
+    %{--            label: "Acciones",--}%
+    %{--            header: true--}%
+    %{--        }--}%
+    %{--    };--}%
 
-        var id = $tr.data("id");
-        var deuda = $tr.data("deuda");
-        var ingr = $tr.data("ingr");
-        var codigo = $tr.data("p");
+    %{--    var id = $tr.data("id");--}%
+    %{--    var deuda = $tr.data("deuda");--}%
+    %{--    var ingr = $tr.data("ingr");--}%
+    %{--    var codigo = $tr.data("p");--}%
 
-        var perfil = {
-            label: " Asignar Perfil",
-            icon: "fa fa-user-o",
-            action : function ($element) {
-                var id = $element.data("id");
-                asignarPerfil(id);
-            }
-        };
+    %{--    var perfil = {--}%
+    %{--        label: " Asignar Perfil",--}%
+    %{--        icon: "fa fa-user-o",--}%
+    %{--        action : function ($element) {--}%
+    %{--            var id = $element.data("id");--}%
+    %{--            asignarPerfil(id);--}%
+    %{--        }--}%
+    %{--    };--}%
 
-        var editar = {
-            label: " Editar Persona",
-            icon: "fa fa-id-card-o",
-            %{--action: function () {--}%
-            %{--location.href = '${createLink(controller: "proceso", action: "nuevoProceso")}?id=' + id;--}%
-            %{--}--}%
-            action : function ($element) {
-                var id = $element.data("id");
-                createEditRow(id);
-            }
-        };
+    %{--    var editar = {--}%
+    %{--        label: " Editar Persona",--}%
+    %{--        icon: "fa fa-id-card-o",--}%
+    %{--        action : function ($element) {--}%
+    %{--            var id = $element.data("id");--}%
+    %{--            createEditRow(id);--}%
+    %{--        }--}%
+    %{--    };--}%
 
-        var alicuota = {
-            label: "Alícuota",
-            icon: "fa fa-money",
-            action : function ($element) {
-                var id = $element.data("id");
-//                alicuotaEdit(id);
-                tablaAlicuotas(id)
-            }
-        };
+    %{--    var alicuota = {--}%
+    %{--        label: "Alícuota",--}%
+    %{--        icon: "fa fa-money",--}%
+    %{--        action : function ($element) {--}%
+    %{--            var id = $element.data("id");--}%
+    %{--            tablaAlicuotas(id)--}%
+    %{--        }--}%
+    %{--    };--}%
 
-        var ingresos = {
-            label: "Registro de Pagos",
-            icon: "fa fa-money",
-//            separator_before : true,
-            action : function ($element) {
-                var id = $element.data("id");
-                pagoAlicuota(id);
-            }
-        };
+    %{--    var ingresos = {--}%
+    %{--        label: "Registro de Pagos",--}%
+    %{--        icon: "fa fa-money",--}%
+    %{--        action : function ($element) {--}%
+    %{--            var id = $element.data("id");--}%
+    %{--            pagoAlicuota(id);--}%
+    %{--        }--}%
+    %{--    };--}%
 
-        var certificado = {
-            label: "Certificado Expensas",
-            icon: "fa fa-print",
-//            separator_before : true,
-            action : function ($element) {
-                var id = $element.data("id");
-//                imprimirExpensas(id);
-                location.href='${createLink(controller: 'reportes', action: 'expensas')}?id=' + id;
-            }
-        };
+    %{--    var certificado = {--}%
+    %{--        label: "Certificado Expensas",--}%
+    %{--        icon: "fa fa-print",--}%
+    %{--        action : function ($element) {--}%
+    %{--            var id = $element.data("id");--}%
+    %{--            location.href='${createLink(controller: 'reportes', action: 'expensas')}?id=' + id;--}%
+    %{--        }--}%
+    %{--    };--}%
 
-        var propiedades = {
-            label: "Propiedades",
-            icon: "fa fa-home",
-            separator_before : true,
-            action : function ($element) {
-                var id = $element.data("id");
-//                imprimirExpensas(id);
-                location.href='${createLink(controller: 'propiedad', action: 'list')}?id=' + id;
-            }
-        };
+    %{--    var propiedades = {--}%
+    %{--        label: "Propiedades",--}%
+    %{--        icon: "fa fa-home",--}%
+    %{--        separator_before : true,--}%
+    %{--        action : function ($element) {--}%
+    %{--            var id = $element.data("id");--}%
+    %{--            location.href='${createLink(controller: 'propiedad', action: 'list')}?id=' + id;--}%
+    %{--        }--}%
+    %{--    };--}%
 
-        var detalle = {
-            label: "Detalle Pagos",
-            icon: "fa fa-print",
-            separator_before : true,
-            action : function ($element) {
-                var id = $element.data("id");
-                cargarFechas(id);
-            }
-        };
+    %{--    var detalle = {--}%
+    %{--        label: "Detalle Pagos",--}%
+    %{--        icon: "fa fa-print",--}%
+    %{--        separator_before : true,--}%
+    %{--        action : function ($element) {--}%
+    %{--            var id = $element.data("id");--}%
+    %{--            cargarFechas(id);--}%
+    %{--        }--}%
+    %{--    };--}%
 
-        var solicitudPago = {
-            label: "Solicitud de Pago",
-            icon: "fa fa-print",
-            separator_before : true,
-            action : function ($element) {
-                var id = $element.data("id");
-                seleccionarAlicuotas(id);
-            }
-        };
+    %{--    var solicitudPago = {--}%
+    %{--        label: "Solicitud de Pago",--}%
+    %{--        icon: "fa fa-print",--}%
+    %{--        separator_before : true,--}%
+    %{--        action : function ($element) {--}%
+    %{--            var id = $element.data("id");--}%
+    %{--            seleccionarAlicuotas(id);--}%
+    %{--        }--}%
+    %{--    };--}%
 
-        var solicitudMonitorio = {
-            label: "Solicitud de Monitorio",
-            icon: "fa fa-print",
-            separator_before : true,
-            action : function ($element) {
-                var id = $element.data("id");
-//                cargarFechas(id);
-            }
-        };
+    %{--    var solicitudMonitorio = {--}%
+    %{--        label: "Solicitud de Monitorio",--}%
+    %{--        icon: "fa fa-print",--}%
+    %{--        separator_before : true,--}%
+    %{--        action : function ($element) {--}%
+    %{--            var id = $element.data("id");--}%
+    %{--        }--}%
+    %{--    };--}%
 
-//        items.editar = editar;
-//        items.perfil = perfil;
-//        items.alicuota = alicuota;
-//        items.propiedad = propiedades;
-
-        // var administrar = {
-        //     label: "Administrar",
-        //     icon: "fa fa-pencil",
-        //     separator_before : true,
-        //     submenu: {
-        //         editar,
-        //         perfil,
-        //         alicuota,
-        //         propiedades
-        //     }
-        // };
-
-//        items.solicitudes = {
-//            label: "Solicitudes",
-//            icon: "fa fa-clipboard",
-//            separator_before : true,
-//            submenu: {
-//                solicitudPago,
-//                solicitudMonitorio
-//            }
-//        };
-
-        %{--console.log('perfil', '${session.perfil.codigo}');--}%
-
-        %{--if('${session.perfil.codigo}' == 'ADC'){--}%
-        %{--    if(ingr>0){--}%
-        %{--        items.pagar = ingresos;--}%
-        %{--    }--}%
-        %{--    items.administrar = administrar;--}%
-        %{--    items.detalle = detalle;--}%
-        %{--    if(deuda <= 0 && codigo == 'P'){--}%
-        %{--        items.certificado = certificado;--}%
-        %{--    }--}%
-        %{--} else {--}%
-        %{--    items.detalle = detalle;--}%
-        %{--}--}%
-
-        return items
-    }
+    %{--    return items--}%
+    %{--}--}%
 
     $("#btnLimpiarBusqueda").click(function () {
         $(".fechaD, .fechaH, #criterio_con").val('');
-    });
-
-    $("#nuevo").click(function () {
-        createEditRow(null);
     });
 
     $("#buscador_con").change(function(){
@@ -408,9 +355,6 @@ como máximo 30
     });
 
 
-
-
-
     $("#btn-consultar").click(function () {
         busqueda();
     });
@@ -419,9 +363,9 @@ como máximo 30
         var buscarPor = $("#buscarPor").val();
         var criterio = $(".criterio").val();
         var ordenar = $("#ordenar").val();
-        var grupo = $("#buscarGrupo").val();
-        var bdga = $("#bodega").val();
-        var obra = $("#obra__id").val()
+        var grupo = $("#buscarGrupo option:selected").val();
+        var bdga = $("#bodega option:selected").val();
+        var obra = $("#obra__id").val();
         $.ajax({
             type: "POST",
             url: "${createLink(controller: 'existencia', action:'listaExst')}",
@@ -438,9 +382,6 @@ como máximo 30
             }
         });
     }
-
-
-
 
     function cargarFechas (id) {
         $.ajax({
@@ -489,265 +430,12 @@ como máximo 30
             $sel.append($opt);
         }
         $("#selOpt").html($sel);
-    };
+    }
 
     /* inicializa el select de oprd con la primea opción de busacdor */
     $(document).ready(function() {
         $("#buscador_con").change();
     });
-
-    function createEditRow(id) {
-        var title = id ? "Editar" : "Nueva";
-        var data = id ? { id: id } : {};
-        $.ajax({
-            type    : "POST",
-            url     : "${createLink(controller:'persona', action:'form_ajax')}",
-            data    : data,
-            success : function (msg) {
-                var b = bootbox.dialog({
-                    id      : "dlgCreateEdit",
-                    title   : title + " Persona",
-                    class   : "long",
-//                    size   :  'large',
-                    message : msg,
-                    buttons : {
-                        cancelar : {
-                            label     : "Cancelar",
-                            className : "btn-primary",
-                            callback  : function () {
-                            }
-                        },
-                        guardar  : {
-                            id        : "btnSave",
-                            label     : "<i class='fa fa-save'></i> Guardar",
-                            className : "btn-success",
-                            callback  : function () {
-                                return submitFormPersona();
-                            } //callback
-                        } //guardar
-                    } //buttons
-                }); //dialog
-                setTimeout(function () {
-                    b.find(".form-control").first().focus()
-                }, 500);
-            } //success
-        }); //ajax
-    } //createEdit
-
-    function submitFormPersona() {
-        var $form = $("#frmPersona");
-        var $btn = $("#dlgCreateEdit").find("#btnSave");
-        if ($form.valid()) {
-            $btn.replaceWith(spinner);
-            openLoader("Guardando Persona");
-            $.ajax({
-                type    : "POST",
-                url     : $form.attr("action"),
-                data    : $form.serialize(),
-                success : function (msg) {
-                    if(msg == 'ok'){
-                        log("Persona guardada correctamente","success");
-                        setTimeout(function() {
-                            spinner.replaceWith($btn);
-                            closeLoader();
-                            cargarBusqueda();
-                        }, 100);
-                    }else{
-                        log("Error al guardar la información de persona","error")
-                        closeLoader();
-                    }
-                }
-            });
-        } else {
-            return false;
-        } //else
-    }
-
-    function asignarPerfil (id) {
-        $.ajax({
-            type    : "POST",
-            url     : "${createLink(controller:'persona', action:'perfil_ajax')}",
-            data    : {
-                id: id
-            },
-            success : function (msg) {
-                var b = bootbox.dialog({
-                    id      : "dlgAsignarPerfil",
-                    title   : "Asignar Perfil",
-//                    class   : "modal-lg",
-                    message : msg,
-                    buttons : {
-                        cancelar : {
-                            label     : "<i class='fa fa-times'></i> Cerrar",
-                            className : "btn-primary",
-                            callback  : function () {
-                            }
-                        }
-                    } //buttons
-                }); //dialog
-                setTimeout(function () {
-                    b.find(".form-control").first().focus()
-                }, 100);
-            } //success
-        }); //ajax
-    }
-
-    function alicuotaEdit (id) {
-        $.ajax({
-            type    : "POST",
-            url     : "${createLink(controller:'alicuota', action:'form_ajax')}",
-            data    : {
-                id: id
-            },
-            success : function (msg) {
-                var b = bootbox.dialog({
-                    id      : "dlgAsignarPerfilxx",
-                    title   : "Alícuota",
-//                    class   : "modal-lg",
-                    message : msg,
-                    buttons : {
-                        cancelar : {
-                            label     : "<i class='fa fa-times'></i> Cerrar",
-                            className : "btn-primary",
-                            callback  : function () {
-                            }
-                        },
-                        guardar  : {
-                            id        : "btnSave",
-                            label     : "<i class='fa fa-save'></i> Guardar",
-                            className : "btn-success",
-                            callback  : function () {
-                                return submitFormAlicuota();
-                            } //callback
-                        }
-                    } //buttons
-                }); //dialog
-                setTimeout(function () {
-                    b.find(".form-control").first().focus()
-                }, 100);
-            } //success
-        }); //ajax
-    }
-
-    function submitFormAlicuota() {
-        var $form = $("#frmAlicuota");
-        var $btn = $("#dlgCreateEdit").find("#btnSave");
-        if ($form.valid()) {
-            $btn.replaceWith(spinner);
-            openLoader("Guardando Alicuota");
-            $.ajax({
-                type    : "POST",
-                url     : $form.attr("action"),
-                data    : $form.serialize(),
-                success : function (msg) {
-                    var parts = msg.split("*");
-                    log(parts[1], parts[0] == "SUCCESS" ? "success" : "error"); // log(msg, type, title, hide)
-                    setTimeout(function() {
-                        if (parts[0] == "SUCCESS") {
-                            spinner.replaceWith($btn);
-                            closeLoader();
-                            cargarBusqueda();
-                            return false;
-
-//                            location.reload(true);
-                        } else {
-                            spinner.replaceWith($btn);
-                            return false;
-                        }
-                    }, 100);
-                }
-            });
-        } else {
-            return false;
-        } //else
-    }
-
-    %{--$("#").click(function(){--}%
-    %{--url = "${g.createLink(controller:'reportes2' , action: 'retenciones')}?cont=" + cont + "Wemp=${session.empresa.id}" + "Wdesde=" + fechaDesde + "Whasta=" + fechaHasta;--}%
-    %{--location.href = "${g.createLink(action: 'pdfLink',controller: 'pdf')}?url=" + url + "&filename=retenciones.pdf"--}%
-    %{--});--}%
-
-    function pagoAlicuota (id) {
-        var url = "${createLink(controller:'ingreso', action:'pendiente')}";
-        location.href = url + "/?id=" + id;
-    }
-
-
-
-    function tablaAlicuotas (id) {
-        $.ajax({
-            type    : "POST",
-            url     : "${createLink(controller:'alicuota', action:'tablaAlicuotas_ajax')}",
-            data    : {
-                id: id
-            },
-            success : function (msg) {
-                var b = bootbox.dialog({
-                    id      : "dlgTablaAlicuotas",
-                    title   : "Tabla de Alícuotas",
-                    message : msg,
-                    buttons : {
-                        cancelar : {
-                            label     : "<i class='fa fa-times'></i> Cerrar",
-                            className : "btn-primary",
-                            callback  : function () {
-                            }
-                        }
-                    } //buttons
-                }); //dialog
-                setTimeout(function () {
-                    b.find(".form-control").first().focus()
-                }, 100);
-            } //success
-        }); //ajax
-    }
-
-    function imprimirExpensas (id) {
-        location.href = "${g.createLink(controller:'reportes', action: 'certificadoExpensas')}?id=" + id
-    }
-
-    function seleccionarAlicuotas (id) {
-        $.ajax({
-            type    : "POST",
-            url     : "${createLink(controller:'reportes', action:'alicuotas_ajax')}",
-            data    : {
-                id: id
-            },
-            success : function (msg) {
-                var b = bootbox.dialog({
-                    id      : "dlgSeleccionarAlicuotas",
-                    title   : "Seleccionar Alícuotas",
-//                    class   : "modal-lg",
-                    message : msg,
-                    buttons : {
-                        cancelar : {
-                            label     : "<i class='fa fa-times'></i> Cerrar",
-                            className : "btn-primary",
-                            callback  : function () {
-                            }
-                        },
-                        aceptar : {
-                            label     : "<i class='fa fa-print'></i> Imprimir",
-                            className : "btn-success",
-                            callback  : function () {
-                                openLoader("Espere...");
-                                var vlor = $("#valorHasta").val();
-                                %{--location.href = "${g.createLink(controller: 'reportes', action: 'imprimirSolicitudes')}?vlor=" + vlor;--}%
-                                location.href = "${g.createLink(controller: 'reportes', action: 'reporteSolicitudPago')}?vlor=" + vlor + "&id=" + id;
-                                closeLoader();
-                            }
-                        }
-                    } //buttons
-                }); //dialog
-                setTimeout(function () {
-                    b.find(".form-control").first().focus()
-                }, 100);
-            } //success
-        }); //ajax
-    }
-
-
-
 
 </script>
 

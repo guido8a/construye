@@ -1,5 +1,6 @@
 package construye
 
+import janus.Item
 import janus.construye.Bodega
 
 class ExistenciaController {
@@ -13,7 +14,7 @@ class ExistenciaController {
     }
 
     def listaExst() {
-        println "listaExst" + params
+//        println "listaExst" + params
         def listaItems = ['itemnmbr', 'itemcdgo']
         def datos;
         def select = "select * from rp_existencias(${params.grupo}, ${params.bdga}) "
@@ -24,12 +25,27 @@ class ExistenciaController {
         txwh += " and $bsca ilike '%${params.criterio}%' "
 
         sqlTx = "${select} ${txwh} order by ${ordn} limit 100 ".toString()
-        println "sql: $sqlTx"
+//        println "sql: $sqlTx"
 
         def cn = dbConnectionService.getConnection()
         datos = cn.rows(sqlTx)
 //        println "data: ${datos[0]}"
-        [data: datos]
+        [data: datos, grupo: params.grupo, bodega: params.bdga]
+    }
+
+    def retazo(){
+        println("params " + params)
+        def item = Item.get(params.id)
+        def bodega = Bodega.get(params.bdga.toInteger())
+        def select = "select * from rp_existencias(${params.grp.toInteger()}, ${params.bdga.toInteger()}) where item__id = ${item?.id}"
+        def cn = dbConnectionService.getConnection()
+        def datos = cn.rows(select)
+
+        println("datos " + datos)
+
+        def retazos = Retazo.findAllByItem(item)
+
+        return[retazos: retazos, datos: datos[0], bodega: bodega]
     }
 
 
