@@ -34,18 +34,18 @@ class ExistenciaController {
     }
 
     def retazo(){
-        println("params " + params)
+//        println("params " + params)
         def item = Item.get(params.id)
         def bodega = Bodega.get(params.bdga.toInteger())
         def select = "select * from rp_existencias(${params.grp.toInteger()}, ${params.bdga.toInteger()}) where item__id = ${item?.id}"
         def cn = dbConnectionService.getConnection()
         def datos = cn.rows(select)
 
-        println("datos " + datos)
+//        println("datos " + datos[0])
 
-        def retazos = Retazo.findAllByItem(item)
+        def retazos = Retazo.findAllByItemAndBodegaAndEstado(item, bodega, 'A').sort{it.fecha}
 
-        return[retazos: retazos, datos: datos[0], bodega: bodega]
+        return[retazos: retazos, datos: datos[0], bodega: bodega, item: item]
     }
 
 

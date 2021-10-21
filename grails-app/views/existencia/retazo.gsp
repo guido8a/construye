@@ -50,8 +50,8 @@
     <table class="table table-bordered table-striped table-condensed table-hover">
         <thead>
         <tr>
-            <th style="width: 25%">Bodega</th>
-            <th style="width: 35%">Item</th>
+            <th style="width: 20%">Bodega</th>
+            <th style="width: 40%">Item</th>
             <th style="width:  9%">Cantidad</th>
             <th style="width: 10%">Fecha</th>
             <th style="width: 10%">Estado</th>
@@ -62,14 +62,14 @@
         <tbody>
         <g:each in="${retazos}" status="i" var="retazo">
             <tr>
-                <td style="width: 10%">${bodega?.nombre}</td>
-                <td style="width: 10%">${retazo?.item?.codigo + " - " + retazo?.item?.nombre}</td>
-                <td style="width: 30%">${retazo?.cantidad}</td>
-                <td style="width: 20%">${retazo?.fecha?.format("dd-MM-yyyy")}</td>
-                <td style="width: 20%">${retazo?.estado}</td>
-                <td style="width: 10%">
-                    <a class="btn btn-small btn-edit btn-ajax" href="#" rel="tooltip" title="Cortar" data-id="${retazo.id}">
-                        <i class="fa fa-scissors"></i>
+                <td style="width: 20%">${bodega?.descripcion}</td>
+                <td style="width: 40%">${retazo?.item?.codigo + " - " + retazo?.item?.nombre}</td>
+                <td style="width: 9%; text-align: center">${retazo?.cantidad}</td>
+                <td style="width: 10%; text-align: center">${retazo?.fecha?.format("dd-MM-yyyy")}</td>
+                <td style="width: 10%; text-align: center">${retazo?.estado == 'A' ? 'Activo' : 'Usado'}</td>
+                <td style="width: 11%">
+                    <a class="btn btn-small btn-primary btn-ajax btnBaja" href="#" rel="tooltip" title="Dar de baja al retazo" data-id="${retazo.id}">
+                        <i class="fa fa-scissors"></i> Dar de baja
                     </a>
                 </td>
             </tr>
@@ -78,7 +78,7 @@
     </table>
 </div>
 
-<div class="modal hide fade" id="modal-Proveedor" style="width: 930px;">
+<div class="modal hide fade" id="modal-Proveedor" style="width: 550px;">
     <div class="modal-header" id="modalHeader">
         <button type="button" class="close darker" data-dismiss="modal">
             <i class="icon-remove-circle"></i>
@@ -94,27 +94,78 @@
     </div>
 </div>
 
+<div class="modal hide fade" id="modal-Dar" style="width: 550px;">
+    <div class="modal-header" id="modalHeaderDar">
+        <button type="button" class="close darker" data-dismiss="modal">
+            <i class="icon-remove-circle"></i>
+        </button>
+
+        <h3 id="modalTitleDar"></h3>
+    </div>
+
+    <div class="modal-body" id="modalBodyDar">
+    </div>
+
+    <div class="modal-footer" id="modalFooterDar">
+    </div>
+</div>
+
+
 
 <script type="text/javascript">
-    var url = "${resource(dir:'images', file:'spinner_24.gif')}";
-    var spinner = $("<img style='margin-left:15px;' src='" + url + "' alt='Cargando...'/>");
+    %{--var url = "${resource(dir:'images', file:'spinner_24.gif')}";--}%
+    // var spinner = $("<img style='margin-left:15px;' src='" + url + "' alt='Cargando...'/>");
 
-
-    function guardarProveedor(){
-        if($("#frmSave-Proveedor").valid()){
+    function guardarRetazo(){
+        if($("#frmRetazo").valid()){
             $("#dlgLoad").dialog("open");
             $.ajax({
                 type: 'POST',
-                url: '${createLink(controller: 'proveedor', action: 'saveProveedor_ajax')}',
-                data: $("#frmSave-Proveedor").serialize(),
+                url: '${createLink(controller: 'retazo', action: 'saveRetazo_ajax')}',
+                data: $("#frmRetazo").serialize(),
                 success: function(msg){
                     $("#dlgLoad").dialog("close");
                     $("#modal-Proveedor").modal("hide");
-                    if(msg=='ok'){
-                        caja("Proveedor guardado correctamente","Alerta")
-                        cargarTablaProveedores($(".buscar").val(), $("#criterio").val());
+                    var parts = msg.split("_");
+                    if(parts[0]=='ok'){
+                        caja("Retazo guardado correctamente","Alerta");
+                        setTimeout(function () {
+                            location.reload(true)
+                        }, 800);
                     }else{
-                        caja("Error al guardar el proveedor","Error")
+                        if(parts[0] == 'er'){
+                            caja(parts[1],"Error")
+                        }else{
+                            caja("Error al guardar el retazo","Error")
+                        }
+                    }
+                }
+            });
+        }
+    }
+
+    function guardarBajaRetazo(){
+        if($("#frmBaja").valid()){
+            $("#dlgLoad").dialog("open");
+            $.ajax({
+                type: 'POST',
+                url: '${createLink(controller: 'retazo', action: 'saveBaja_ajax')}',
+                data: $("#frmBaja").serialize(),
+                success: function(msg){
+                    $("#dlgLoad").dialog("close");
+                    $("#modal-Dar").modal("hide");
+                    var parts = msg.split("_");
+                    if(parts[0]=='ok'){
+                        caja("Guardado correctamente","Alerta");
+                        setTimeout(function () {
+                            location.reload(true)
+                        }, 800);
+                    }else{
+                        if(parts[0] == 'er'){
+                            caja(parts[1],"Error")
+                        }else{
+                            caja("Error al guardar el retazo","Error")
+                        }
                     }
                 }
             });
@@ -130,6 +181,7 @@
             dialog: {
                 resizable: false,
                 draggable: false,
+                width: 350,
                 buttons: {
                     "Aceptar": function () {
                     }
@@ -138,21 +190,8 @@
         });
     }
 
-    function borrarProveedor(id){
-        $.ajax({
-            type: 'POST',
-            url: '${createLink(controller: 'proveedor', action: 'borrarProveedor_ajax')}',
-            data:{
-                id: id
-            },
-            success: function(msg){
-                cargarTablaProveedores($(".buscar").val(), $("#criterio").val());
-                caja("Borrado correctamente", "Alerta")
-            }
-        })
-    }
 
-    $("#frmSave-Proveedor").validate({
+    $("#frmRetazo").validate({
         errorPlacement : function (error, element) {
             element.parent().find(".help-block").html(error).show();
         },
@@ -169,30 +208,56 @@
 
     $(function () {
 
-        // cargarTablaProveedores($(".buscar").val(), $("#criterio").val());
-
         $(".btn-new").click(function () {
             $.ajax({
                 type    : "POST",
                 url     : "${createLink(controller: 'retazo', action:'form_ajax')}",
+                data:{
+                    bodega: '${bodega?.id}',
+                    item: '${item?.id}',
+                    existencias: '${datos.exstcntd}'
+                },
                 success : function (msg) {
                     var btnOk = $('<a href="#" data-dismiss="modal" class="btn">Cancelar</a>');
                     var btnSave = $('<a href="#"  class="btn btn-success"><i class="icon-save"></i> Guardar</a>');
 
                     btnSave.click(function () {
-                        guardarProveedor();
+                        guardarRetazo();
                     });
 
                     $("#modalHeader").removeClass("btn-edit btn-show btn-delete");
-                    $("#modalTitle").html("Crear Proveedor");
+                    $("#modalTitle").html("Crear Retazo");
                     $("#modalBody").html(msg);
                     $("#modalFooter").html("").append(btnOk).append(btnSave);
                     $("#modal-Proveedor").modal("show");
                 }
             });
-            // return false;
-            %{--location.href="${g.createLink(action: 'form')}"--}%
         }); //click btn new
+
+        $(".btnBaja").click(function () {
+            var id = $(this).data("id");
+            $.ajax({
+                type    : "POST",
+                url     : "${createLink(controller: 'retazo', action:'baja_ajax')}",
+                data:{
+                  id: id
+                },
+                success : function (msg) {
+                    var btnOk = $('<a href="#" data-dismiss="modal" class="btn">Cancelar</a>');
+                    var btnSave = $('<a href="#"  class="btn btn-success"><i class="icon-save"></i> Guardar</a>');
+
+                    btnSave.click(function () {
+                        guardarBajaRetazo();
+                    });
+
+                    $("#modalHeaderDar").removeClass("btn-edit btn-show btn-delete");
+                    $("#modalTitleDar").html("Dar de baja Retazo");
+                    $("#modalBodyDar").html(msg);
+                    $("#modalFooterDar").html("").append(btnOk).append(btnSave);
+                    $("#modal-Dar").modal("show");
+                }
+            });
+        })
 
 
     });
