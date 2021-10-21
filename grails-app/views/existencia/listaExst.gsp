@@ -32,7 +32,7 @@
                 <td style="width: 8%">${dt.exstpcun}</td>
                 <td style="width: 8%">${dt.exstvlor}</td>
                 <td style="width: 5%; text-align: center">
-                    <a href="#" class="btn btn-primary btn-small btnRetazo" data-id="${dt?.item__id}">
+                    <a href="#" class="btn btn-primary btn-small btnRetazo" data-id="${dt?.item__id}" title="Generar Retazo del Item">
                         <i class="fa fa-puzzle-piece"></i>
                     </a>
                 </td>
