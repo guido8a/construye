@@ -91,6 +91,7 @@ class RetazoController  {
     def saveBaja_ajax(){
         def retazo = Retazo.get(params.id)
         def derivado
+        def fecha = new Date()
 
         def d1 =  g.formatNumber(number:retazo.cantidad, minFractionDigits: 2, maxFractionDigits: 2, format: "##,##0", locale: "ec")
 
@@ -109,14 +110,16 @@ class RetazoController  {
                     derivado.bodega = retazo.bodega
                     derivado.item = retazo.item
                     derivado.cantidad = (d1?.toDouble() - params.cantidad?.toDouble())
-                    derivado.fecha = new Date()
+//                    derivado.fecha = new Date()
+                    derivado.fecha = fecha
 
                     if(!derivado.save(flush:true)){
                         println("error al crear el retazo derivado " + retazo.errors)
                         render "no"
                     }else{
                         retazo.estado = 'N'
-                        retazo.fechaFin = new Date()
+//                        retazo.fechaFin = new Date()
+                        retazo.fechaFin = fecha
                         retazo.save(flush: true)
                         render "ok"
                     }
