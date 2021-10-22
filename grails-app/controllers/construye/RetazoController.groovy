@@ -107,10 +107,10 @@ class RetazoController  {
                     render "ok"
                 }else{
                     derivado = new Retazo()
+                    derivado.padre = retazo
                     derivado.bodega = retazo.bodega
                     derivado.item = retazo.item
                     derivado.cantidad = (d1?.toDouble() - params.cantidad?.toDouble())
-//                    derivado.fecha = new Date()
                     derivado.fecha = fecha
 
                     if(!derivado.save(flush:true)){
@@ -118,7 +118,6 @@ class RetazoController  {
                         render "no"
                     }else{
                         retazo.estado = 'N'
-//                        retazo.fechaFin = new Date()
                         retazo.fechaFin = fecha
                         retazo.save(flush: true)
                         render "ok"

@@ -5,6 +5,7 @@ import janus.construye.Bodega
 
 class Retazo {
 
+    Retazo padre
     Bodega bodega
     Item item
     double cantidad
@@ -21,6 +22,7 @@ class Retazo {
         version false
         columns {
             id column: 'rtzo__id'
+            padre column: 'rtzopdre'
             bodega column: 'bdga__id'
             item column: 'item__id'
             fecha column: 'rtzofcha'
@@ -30,6 +32,7 @@ class Retazo {
         }
     }
     static constraints = {
+        padre(blank: true, nullable: true, attributes: [title: 'padre'])
         bodega(blank: false, nullable: false, attributes: [title: 'bodega'])
         item(blank: false, nullable: false, attributes: [title: 'item'])
         fecha(blank: false, nullable: false, attributes: [title: 'fecha'])
