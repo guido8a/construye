@@ -32,7 +32,7 @@
                 </td>
                 <td style="width: 8%; text-align: right">${dt.exstpcun}</td>
                 <td style="width: 8%; text-align: right">${dt.exstvlor}</td>
-                <td style="width: 4%; text-align: center">${construye.Retazo.findAllByItemAndBodegaAndEstado(janus.Item.get(dt.item__id), janus.construye.Bodega.get(params.bdga), 'A').size()}</td>
+                <td style="width: 4%; text-align: center; font-weight: bold">${construye.Retazo.findAllByItemAndBodegaAndEstado(janus.Item.get(dt.item__id), janus.construye.Bodega.get(params.bdga), 'A').size()}</td>
                 <td style="width: 5%; text-align: center">
                     <a href="#" class="btn btn-primary btn-small btnRetazo" data-id="${dt?.item__id}" title="Generar Retazo del Item">
                         <i class="fa fa-puzzle-piece"></i>
