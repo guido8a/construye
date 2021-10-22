@@ -1,3 +1,4 @@
+<%@ page import="janus.construye.Bodega; janus.Item" %>
 %{--
 <table class="table table-bordered table-striped table-hover table-condensed" id="tabla">
 
@@ -23,14 +24,15 @@
         <g:each in="${data}" var="dt" status="i">
             <tr>
                 <td style="width: 10%">${dt.itemcdgo}</td>
-                <td style="width: 42%">${dt.itemnmbr}</td>
-                <td style="width: 7%">${dt.unddcdgo}</td>
+                <td style="width: 41%">${dt.itemnmbr}</td>
+                <td style="width: 5%">${dt.unddcdgo}</td>
                 <td style="width: 10%">${dt.krdxfcha?.format('dd-MMM-yyyy HH:mm')}</td>
-                <td style="width: 10%">
+                <td style="width: 9%; text-align: center">
                     <g:formatNumber number="${dt.exstcntd}" format="##,#####0" minFractionDigits="2" maxFractionDigits="2" locale="ec"/>
                 </td>
-                <td style="width: 8%">${dt.exstpcun}</td>
-                <td style="width: 8%">${dt.exstvlor}</td>
+                <td style="width: 8%; text-align: right">${dt.exstpcun}</td>
+                <td style="width: 8%; text-align: right">${dt.exstvlor}</td>
+                <td style="width: 4%; text-align: center">${construye.Retazo.findAllByItemAndBodegaAndEstado(janus.Item.get(dt.item__id), janus.construye.Bodega.get(params.bdga), 'A').size()}</td>
                 <td style="width: 5%; text-align: center">
                     <a href="#" class="btn btn-primary btn-small btnRetazo" data-id="${dt?.item__id}" title="Generar Retazo del Item">
                         <i class="fa fa-puzzle-piece"></i>

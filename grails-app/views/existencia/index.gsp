@@ -89,11 +89,12 @@
             <tr>
                 <th class="alinear" style="width: 10%">Código</th>
                 <th class="alinear" style="width: 42%">Item</th>
-                <th class="alinear" style="width: 7%">Unidad</th>
+                <th class="alinear" style="width: 5%">Unidad</th>
                 <th class="alinear" style="width: 10%">Fecha</th>
                 <th class="alinear" style="width: 10%">Existencias</th>
                 <th class="alinear" style="width: 8%">P. Unitario</th>
                 <th class="alinear" style="width: 8%">Valor</th>
+                <th class="alinear" style="width: 2%">Retazo</th>
                 <th class="alinear" style="width: 5%"></th>
             </tr>
             </thead>
