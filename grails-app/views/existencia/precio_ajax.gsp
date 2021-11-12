@@ -6,19 +6,28 @@
 --%>
 <g:hiddenField name="idKardex" value="${kardex?.id}"/>
 
-<div class="span5">
-    <label><strong>Producto:</strong> ${kardex?.item?.nombre}</label>
-</div>
 
 
-<div class="span1">
-    <label><strong>Precio Unitario:</strong></label>
+
+<div class="row" style="overflow-x: hidden">
+
+    <div class="span1">
+        <label><strong>Producto:</strong></label>
+    </div>
+    <div class="span5" style="margin-bottom: 10px">
+        <label> ${kardex?.item?.nombre}</label>
+    </div>
+
+    <div class="span2">
+        <label><strong>Precio Unitario:</strong></label>
+    </div>
+    <div class="span4" style="margin-left: -50px">
+        <g:textField name="precioNuevo"  title="Precio unitario del item"
+                     value="${g.formatNumber(number: kardex?.precioUnitario, maxFractionDigits: 4, minFractionDigits: 4,
+                             format: '##,##0', locale: 'ec')}"/>
+    </div>
 </div>
-<div class="span4">
-    <g:textField name="precioNuevo"  title="Precio unitario del item"
-                 value="${g.formatNumber(number: kardex?.precioUnitario, maxFractionDigits: 4, minFractionDigits: 4,
-                         format: '##,##0', locale: 'ec')}"/>
-</div>
+
 
 
 <script type="text/javascript">
