@@ -54,7 +54,7 @@ class ExistenciaController {
     }
 
     def guardarPrecio_ajax(){
-        println("---> " + params)
+//        println("---> " + params)
         def kardex = Kardex.get(params.id)
 
         kardex.precioUnitario = params.precio.toDouble()

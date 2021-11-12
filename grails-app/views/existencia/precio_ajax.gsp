@@ -6,8 +6,13 @@
 --%>
 <g:hiddenField name="idKardex" value="${kardex?.id}"/>
 
+<div class="span5">
+    <label><strong>Producto:</strong> ${kardex?.item?.nombre}</label>
+</div>
+
+
 <div class="span1">
-    <label>Precio Unitario: </label>
+    <label><strong>Precio Unitario:</strong></label>
 </div>
 <div class="span4">
     <g:textField name="precioNuevo"  title="Precio unitario del item"

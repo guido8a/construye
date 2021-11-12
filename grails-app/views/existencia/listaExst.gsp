@@ -39,7 +39,7 @@
                         <i class="fa fa-puzzle-piece"></i>
                     </a>
                     <g:if test="${dt?.exstpcun == 0.0001}">
-                        <a href="#" class="btn btn-primary btn-small btnCambiar" data-id="${dt?.item__id}"
+                        <a href="#" class="btn btn-success btn-small btnCambiar" data-id="${dt?.item__id}"
                            data-krdx="${dt?.krdx__id}" title="Cambiar el precio unitario del Item">
                             <i class="fa fa-dollar"></i>
                         </a>
@@ -110,51 +110,70 @@
     $(".btnCambiarPrecio").click(function () {
         var precio = $("#precioNuevo").val();
         var id = $("#idKardex").val();
-        $.ajax({
-            type    : "POST",
-            url     : "${createLink(controller: 'existencia', action:'guardarPrecio_ajax')}",
-            data    : {
-                 id : id,
-                 precio: precio
-            },
-            success : function (msg) {
-                if(msg == 'ok'){
-                    $.box({
-                        imageClass: "box_info",
-                        text: "Precio unitario cambiado correctamente",
-                        title: "Precio cambiado",
-                        iconClose: false,
-                        dialog: {
-                            resizable: false,
-                            draggable: false,
-                            buttons: {
-                                "Aceptar": function () {
-                                    $("#dlgLoad").dialog("open");
-                                    busqueda();
-                                }
-                            },
-                            width: 400
-                        }
-                    });
-                }else{
-                    $.box({
-                        imageClass: "box_info",
-                        text: "Error al cambiar el precio unitario",
-                        title: "Error",
-                        iconClose: false,
-                        dialog: {
-                            resizable: false,
-                            draggable: false,
-                            buttons: {
-                                "Aceptar": function () {
-                                }
-                            },
-                            width: 400
-                        }
-                    });
+
+        if(precio > 0.0001){
+            $.ajax({
+                type    : "POST",
+                url     : "${createLink(controller: 'existencia', action:'guardarPrecio_ajax')}",
+                data    : {
+                    id : id,
+                    precio: precio
+                },
+                success : function (msg) {
+                    if(msg == 'ok'){
+                        $.box({
+                            imageClass: "box_info",
+                            text: "Precio unitario cambiado correctamente",
+                            title: "Precio cambiado",
+                            iconClose: false,
+                            dialog: {
+                                resizable: false,
+                                draggable: false,
+                                buttons: {
+                                    "Aceptar": function () {
+                                        $("#dlgLoad").dialog("open");
+                                        busqueda();
+                                    }
+                                },
+                                width: 400
+                            }
+                        });
+                    }else{
+                        $.box({
+                            imageClass: "box_info",
+                            text: "Error al cambiar el precio unitario",
+                            title: "Error",
+                            iconClose: false,
+                            dialog: {
+                                resizable: false,
+                                draggable: false,
+                                buttons: {
+                                    "Aceptar": function () {
+                                    }
+                                },
+                                width: 400
+                            }
+                        });
+                    }
                 }
-            }
-        });
+            });
+        }else{
+            $.box({
+                imageClass: "box_info",
+                text: "Ingrese un valor mayor a 0",
+                title: "Error",
+                iconClose: false,
+                dialog: {
+                    resizable: false,
+                    draggable: false,
+                    buttons: {
+                        "Aceptar": function () {
+                        }
+                    },
+                    width: 400
+                }
+            });
+        }
     });
 
     %{--$(".btnRetazo").click(function () {--}%
