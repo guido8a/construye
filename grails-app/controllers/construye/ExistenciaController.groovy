@@ -48,5 +48,25 @@ class ExistenciaController {
         return[retazos: retazos, datos: datos[0], bodega: bodega, item: item]
     }
 
+    def precio_ajax(){
+        def kardex = Kardex.get(params.id)
+        return[kardex:kardex]
+    }
+
+    def guardarPrecio_ajax(){
+        println("---> " + params)
+        def kardex = Kardex.get(params.id)
+
+        kardex.precioUnitario = params.precio.toDouble()
+        kardex.precioCosto = params.precio.toDouble()
+
+        if(!kardex.save(flush:true)){
+            println("error al guardar el precio unitario en kardex " + kardex.errors)
+            render "no"
+        }else{
+            render "ok"
+        }
+    }
+
 
 }

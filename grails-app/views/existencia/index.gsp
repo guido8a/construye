@@ -88,14 +88,14 @@
             <thead>
             <tr>
                 <th class="alinear" style="width: 10%">Código</th>
-                <th class="alinear" style="width: 42%">Item</th>
+                <th class="alinear" style="width: 39%">Item</th>
                 <th class="alinear" style="width: 5%">Unidad</th>
                 <th class="alinear" style="width: 10%">Fecha</th>
-                <th class="alinear" style="width: 10%">Existencias</th>
+                <th class="alinear" style="width: 7%">Existencias</th>
                 <th class="alinear" style="width: 8%">P. Unitario</th>
                 <th class="alinear" style="width: 8%">Valor</th>
                 <th class="alinear" style="width: 2%">Retazos</th>
-                <th class="alinear" style="width: 5%"></th>
+                <th class="alinear" style="width: 11%"></th>
             </tr>
             </thead>
             <tbody>
@@ -136,45 +136,45 @@ como máximo 30
 </div>
 
 %{--Dialogo solicitudes--}%
-<div class="modal fade col-md-12 col-xs-12" id="solicitud" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                <h4 class="modal-title" id="modalsolicitud">Generar cartas solicitando pagos</h4>
-            </div>
+%{--<div class="modal fade col-md-12 col-xs-12" id="solicitud" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">--}%
+%{--    <div class="modal-dialog">--}%
+%{--        <div class="modal-content">--}%
+%{--            <div class="modal-header">--}%
+%{--                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>--}%
+%{--                <h4 class="modal-title" id="modalsolicitud">Generar cartas solicitando pagos</h4>--}%
+%{--            </div>--}%
 
-            <div class="modal-body" id="bodysolicitud">
-                <div class="modal-body">
-                    <div class="row">
-                        <div class="col-md-1 col-xs-1">
-                        </div>
-                        <div class="col-md-3 col-xs-3">
-                            <label>Generar para deudas con </label>
-                        </div>
-                        <div class="col-md-7 col-xs-7">
-                            <g:select from="${['1':'Valores superiores a 1 alícuota',
-                                               '2':'Valores superiores a 2 alícuotas',
-                                               '3':'Valores superiores a 3 alícuotas']}"
-                                      optionValue="value" optionKey="key" name="mesesHasta_name"
-                                      id="valorHasta" class="form-control"/>
-                        </div>
-                        <div class="col-md-1 col-xs-1">
-                        </div>
+%{--            <div class="modal-body" id="bodysolicitud">--}%
+%{--                <div class="modal-body">--}%
+%{--                    <div class="row">--}%
+%{--                        <div class="col-md-1 col-xs-1">--}%
+%{--                        </div>--}%
+%{--                        <div class="col-md-3 col-xs-3">--}%
+%{--                            <label>Generar para deudas con </label>--}%
+%{--                        </div>--}%
+%{--                        <div class="col-md-7 col-xs-7">--}%
+%{--                            <g:select from="${['1':'Valores superiores a 1 alícuota',--}%
+%{--                                               '2':'Valores superiores a 2 alícuotas',--}%
+%{--                                               '3':'Valores superiores a 3 alícuotas']}"--}%
+%{--                                      optionValue="value" optionKey="key" name="mesesHasta_name"--}%
+%{--                                      id="valorHasta" class="form-control"/>--}%
+%{--                        </div>--}%
+%{--                        <div class="col-md-1 col-xs-1">--}%
+%{--                        </div>--}%
 
-                    </div>
-                </div>
-            </div>
+%{--                    </div>--}%
+%{--                </div>--}%
+%{--            </div>--}%
 
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-times"></i> Cancelar
-                </button>
-                <button type="button" class="btn btnSolicitud btn-success" data-dismiss="modal"><i class="fa fa-print"></i> Aceptar
-                </button>
-            </div>
-        </div>
-    </div>
-</div>
+%{--            <div class="modal-footer">--}%
+%{--                <button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-times"></i> Cancelar--}%
+%{--                </button>--}%
+%{--                <button type="button" class="btn btnSolicitud btn-success" data-dismiss="modal"><i class="fa fa-print"></i> Aceptar--}%
+%{--                </button>--}%
+%{--            </div>--}%
+%{--        </div>--}%
+%{--    </div>--}%
+%{--</div>--}%
 
 <div class="modal hide fade" id="modal-showProveedor" style="width: 600px;">
     <div class="modal-header" id="modalHeaderShow">
@@ -357,6 +357,7 @@ como máximo 30
 
 
     $("#btn-consultar").click(function () {
+        $("#dlgLoad").dialog("open");
         busqueda();
     });
 
@@ -379,48 +380,49 @@ como máximo 30
                 obra: obra
             },
             success: function (msg) {
+                $("#dlgLoad").dialog("close");
                 $("#divTabla").html(msg);
             }
         });
     }
 
-    function cargarFechas (id) {
-        $.ajax({
-            type    : "POST",
-            url     : "${createLink(controller:'reportes', action:'fechasDetalle_ajax')}",
-            data    : {
-                id: id
-            },
-            success : function (msg) {
-                var b = bootbox.dialog({
-                    id      : "dlgFechasDetalle",
-                    title   : "Período para el detalle de Pagos",
-//                    class   : "modal-lg",
-                    message : msg,
-                    buttons : {
-                        cancelar : {
-                            label     : "<i class='fa fa-times'></i> Cerrar",
-                            className : "btn-primary",
-                            callback  : function () {
-                            }
-                        },
-                        aceptar : {
-                            label     : "<i class='fa fa-print'></i> Imprimir",
-                            className : "btn-success",
-                            callback  : function () {
-                                var hasta = $("#fechaHastaDet").val();
-                                var desde = $("#fechaDesdeDet").val();
-                                location.href='${createLink(controller: 'reportes', action: 'reporteDetallePagos')}?id=' + id + "&desde=" + desde + "&hasta=" + hasta ;
-                            }
-                        }
-                    } //buttons
-                }); //dialog
-                setTimeout(function () {
-                    b.find(".form-control").first().focus()
-                }, 100);
-            } //success
-        }); //ajax
-    }
+%{--    function cargarFechas (id) {--}%
+%{--        $.ajax({--}%
+%{--            type    : "POST",--}%
+%{--            url     : "${createLink(controller:'reportes', action:'fechasDetalle_ajax')}",--}%
+%{--            data    : {--}%
+%{--                id: id--}%
+%{--            },--}%
+%{--            success : function (msg) {--}%
+%{--                var b = bootbox.dialog({--}%
+%{--                    id      : "dlgFechasDetalle",--}%
+%{--                    title   : "Período para el detalle de Pagos",--}%
+%{--//                    class   : "modal-lg",--}%
+%{--                    message : msg,--}%
+%{--                    buttons : {--}%
+%{--                        cancelar : {--}%
+%{--                            label     : "<i class='fa fa-times'></i> Cerrar",--}%
+%{--                            className : "btn-primary",--}%
+%{--                            callback  : function () {--}%
+%{--                            }--}%
+%{--                        },--}%
+%{--                        aceptar : {--}%
+%{--                            label     : "<i class='fa fa-print'></i> Imprimir",--}%
+%{--                            className : "btn-success",--}%
+%{--                            callback  : function () {--}%
+%{--                                var hasta = $("#fechaHastaDet").val();--}%
+%{--                                var desde = $("#fechaDesdeDet").val();--}%
+%{--                                location.href='${createLink(controller: 'reportes', action: 'reporteDetallePagos')}?id=' + id + "&desde=" + desde + "&hasta=" + hasta ;--}%
+%{--                            }--}%
+%{--                        }--}%
+%{--                    } //buttons--}%
+%{--                }); //dialog--}%
+%{--                setTimeout(function () {--}%
+%{--                    b.find(".form-control").first().focus()--}%
+%{--                }, 100);--}%
+%{--            } //success--}%
+%{--        }); //ajax--}%
+%{--    }--}%
 
 
     function poneOperadores (opcn) {

@@ -17,6 +17,7 @@ class Kardex {
     Date fecha
     double existencias
     String tipo
+    double precioCosto
 
     static mapping = {
         table 'krdx'
@@ -36,6 +37,7 @@ class Kardex {
             fecha column: 'krdxfcha'
             existencias column: 'krdxexst'
             tipo column: 'krdxtipo'
+            precioCosto column: 'krdxpccs'
         }
     }
     static constraints = {
@@ -46,6 +48,7 @@ class Kardex {
         bodega(blank: false, nullable: false, attributes: [title: 'Bodega'])
         cantidad(blank: false, nullable: false)
         precioUnitario(blank: false, nullable: false)
+        precioCosto(blank: true, nullable: true)
         existencias(blank: false, nullable: false)
         tipo(blank: false, nullable: false)
     }

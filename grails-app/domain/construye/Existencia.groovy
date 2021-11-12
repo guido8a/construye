@@ -11,6 +11,7 @@ class Existencia {
     Date fecha
     double inicial
     double precioUnitario
+    double precioCosto
 
     static auditable = true
     static mapping = {
@@ -26,6 +27,7 @@ class Existencia {
             cantidad column: 'exstfcha'
             inicial column: 'exst_ini'
             precioUnitario column: 'exstpcun'
+            precioCosto column: 'exstpccs'
         }
     }
     static constraints = {
@@ -35,5 +37,6 @@ class Existencia {
         fecha(blank: true, nullable: true, attributes: [title: 'fecha'])
         inicial(blank: false, nullable: false, attributes: [title: 'inicial'])
         precioUnitario(blank: true, nullable: true, attributes: [title: 'precio unitario'])
+        precioCosto(blank: true, nullable: true, attributes: [title: 'precio unitario'])
     }
 }
