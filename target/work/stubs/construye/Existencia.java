@@ -28,6 +28,8 @@ public  double getInicial() { return (double)0;}
 public  void setInicial(double value) { }
 public  double getPrecioUnitario() { return (double)0;}
 public  void setPrecioUnitario(double value) { }
+public  double getPrecioCosto() { return (double)0;}
+public  void setPrecioCosto(double value) { }
 public static  java.lang.Object getAuditable() { return null;}
 public static  void setAuditable(java.lang.Object value) { }
 public static  java.lang.Object getMapping() { return null;}

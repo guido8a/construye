@@ -360,6 +360,12 @@ class InicioController extends janus.seguridad.Shield {
             }
             println "undd__id: $undd  --> ${undd ?: 22}"
 
+            cn.eachRow("select max(substr(itemcdgo,6,3)::integer)+1 cnta " +
+                    "from item where itemcdgo ilike 'EXST-%'".toString()) { d ->
+                cnta = d.cnta ?: 1
+            }
+            println "cuenta: ${cnta}"
+
             cdgo = rgst[1].toString().trim()
             if (cdgo.toString().size() > 0) {
                 cn.eachRow("select item__id from item where itemcdgo = '${cdgo}'".toString()) { d ->
@@ -369,13 +375,12 @@ class InicioController extends janus.seguridad.Shield {
                 //insertar el item
                 sql1 = "insert into item(item__id, undd__id, tpit__id, dprt__id, itemcdgo, itemnmbr," +
                         "itempeso, itemtrps, itemtrvl, itemrndm, tpls__id) " +
-                        "values (default, ${undd}, 1, 265, 'EXST-${completa(cnta.toString())}', '${rgst[2].toString().trim()}', " +
+                        "values (default, ${undd}, 1, 469, 'EXST-${completa(cnta.toString())}', '${rgst[2].toString().trim()}', " +
                         "0,0,0,0, 1) returning item__id"
                 try {
                     cn.eachRow(sql1.toString()) { d ->
                         if (d.item__id > 0) items++
                         id = d.item__id
-                        cnta++
                     }
                 } catch (Exception ex) {
                     repetidos++
@@ -383,12 +388,19 @@ class InicioController extends janus.seguridad.Shield {
                 }
 
             }
-            println "item__id: $id"
+            if (!rgst[4]) {
+                pcun = null
+                cn.eachRow("select rbpcpcun from rbpc where item__id = ${id} and rbpcfcha = " +
+                        "(select max(rbpcfcha) from rbpc pc where pc.item__id = rbpc.item__id)".toString()) { d ->
+                    pcun = d.rbpcpcun
+                }
+            }
+            pcun = rgst[4] ? rgst[4] : pcun?:0.0001
+
+            println "item__id: $id, pcun: $pcun"
             println "sqlitem: $sql1"
 
-            pcun = rgst[4] ?: 0.00001
-            pcun = pcun.toDouble()
-            sbtt = pcun * rgst[6].toDouble()
+            sbtt = pcun.toDouble() * rgst[6].toDouble()
             sql = "insert into dtad(dtad__id, adqc__id, item__id, dtadcntd, dtadpcun, dtadsbtt) " +
                     "values (default, 0, ${id}, ${rgst[6]}, ${pcun}, ${sbtt}) returning dtad__id"
             println "--> $sql"

@@ -25,7 +25,7 @@ class ExistenciaController {
         txwh += " and $bsca ilike '%${params.criterio}%' "
 
         sqlTx = "${select} ${txwh} order by ${ordn} limit 100 ".toString()
-//        println "sql: $sqlTx"
+        println "sql: $sqlTx"
 
         def cn = dbConnectionService.getConnection()
         datos = cn.rows(sqlTx)

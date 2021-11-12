@@ -14,15 +14,15 @@
     <div class="span1">
         <label><strong>Producto:</strong></label>
     </div>
-    <div class="span5" style="margin-bottom: 10px">
+    <div class="span4" style="margin-bottom: 10px">
         <label> ${kardex?.item?.nombre}</label>
     </div>
 
     <div class="span2">
         <label><strong>Precio Unitario:</strong></label>
     </div>
-    <div class="span4" style="margin-left: -50px">
-        <g:textField name="precioNuevo"  title="Precio unitario del item"
+    <div class="span1" style="margin-left: -50px">
+        <g:textField name="precioNuevo"  title="Precio unitario del item"  style="width: 100px"
                      value="${g.formatNumber(number: kardex?.precioUnitario, maxFractionDigits: 4, minFractionDigits: 4,
                              format: '##,##0', locale: 'ec')}"/>
     </div>
