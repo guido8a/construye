@@ -319,7 +319,7 @@ class InicioController extends janus.seguridad.Shield {
             procesa = 100000000000
         }
 
-        def arch = new File('/home/guido/proyectos/venta-servicios/data/existencias.csv')
+        def arch = new File('/home/guido/proyectos/venta-servicios/data/existencias_cngz.csv')
         def cuenta = 0
         def line
         arch.withReader { reader ->
@@ -349,22 +349,57 @@ class InicioController extends janus.seguridad.Shield {
         def repetidos = 0
         def cn = dbConnectionService.getConnection()
         def item = 0, sbtt = 0
-        def sql = ""
-        def id = 0
+        def sql = "", sql1
+        def id = 0, cdgo = '', pcun = 0, undd = 0, cnta = 1, items = 0
 
         println "\n inicia cargado de exst para $rgst"
-        if (rgst[6].toString().size() > 0) {
-            sbtt = rgst[4].toDouble() * rgst[6].toDouble()
+        if (rgst[6].toString().size() > 0) {  //existencias > 0
+            cdgo = rgst[3].toString().trim()
+            cn.eachRow("select undd__id from undd where unddcdgo = '${cdgo}'".toString()) { d ->
+                undd = d.undd__id ?: 0
+            }
+            println "undd__id: $undd  --> ${undd ?: 22}"
+
+            cdgo = rgst[1].toString().trim()
+            if (cdgo.toString().size() > 0) {
+                cn.eachRow("select item__id from item where itemcdgo = '${cdgo}'".toString()) { d ->
+                    id = d.item__id ?: 0
+                }
+            } else {
+                //insertar el item
+                sql1 = "insert into item(item__id, undd__id, tpit__id, dprt__id, itemcdgo, itemnmbr," +
+                        "itempeso, itemtrps, itemtrvl, itemrndm, tpls__id) " +
+                        "values (default, ${undd}, 1, 265, 'EXST-${completa(cnta.toString())}', '${rgst[2].toString().trim()}', " +
+                        "0,0,0,0, 1) returning item__id"
+                try {
+                    cn.eachRow(sql1.toString()) { d ->
+                        if (d.item__id > 0) items++
+                        id = d.item__id
+                        cnta++
+                    }
+                } catch (Exception ex) {
+                    repetidos++
+                    println "Error dtad ${rgst[0]}"
+                }
+
+            }
+            println "item__id: $id"
+            println "sqlitem: $sql1"
+
+            pcun = rgst[4] ?: 0.00001
+            pcun = pcun.toDouble()
+            sbtt = pcun * rgst[6].toDouble()
             sql = "insert into dtad(dtad__id, adqc__id, item__id, dtadcntd, dtadpcun, dtadsbtt) " +
-                    "values (default, 0, ${rgst[0]}, ${rgst[6]}, ${rgst[4]}, ${sbtt}) returning dtad__id"
+                    "values (default, 0, ${id}, ${rgst[6]}, ${pcun}, ${sbtt}) returning dtad__id"
             println "--> $sql"
+
             try {
                 cn.eachRow(sql.toString()) { d ->
-                    if(d.dtad__id >0) insertados++
+                    if (d.dtad__id > 0) insertados++
                 }
             } catch (Exception ex) {
                 repetidos++
-                println "Error dtad ${rgst[0]}"      
+                println "Error dtad ${rgst[0]}"
             }
         }
         return [errores: errores, insertados: insertados, repetidos: repetidos]
