@@ -260,8 +260,10 @@
                 <thead>
                 <tr>
                     <th style="width: 8%">Código</th>
-                    <th style="width: 52%">Descripción</th>
+                    <th style="width: 46%">Descripción</th>
                     <th style="width: 6%">Unidad</th>
+                    <th style="width: 8%">Presupuestado</th>
+                    <th style="width: 8%">Usado</th>
                     <th style="width: 8%">Cantidad</th>
                     <th class="col_rend" style="width: 8%">C. Unitario</th>
                     <th class="col_rend" style="width: 10%">C. Total</th>
@@ -274,8 +276,10 @@
                     <tr class="item_row " id="${item.id}">
                         <td class="col_hora" style="text-align: left">${item.composicion.item.codigo}</td>
                         <td class="col_hora" style="text-align: left">${item.composicion.item.nombre}</td>
-                        <td class="col_rend rend" style="width: 50px;text-align: center">
-                            ${item.composicion.item.unidad}
+                        <td class="col_rend rend" style="width: 50px;text-align: center">${item.composicion.item.unidad}</td>
+                        <td style="text-align: right" class="cant">
+                            <g:formatNumber number="${item.composicion.cantidad}" format="##,###0" minFractionDigits="2"
+                                            maxFractionDigits="2" locale="ec"/>
                         </td>
                         <td style="text-align: right" class="cant">
                             <g:formatNumber number="${item.cantidad}" format="##,###0" minFractionDigits="2"

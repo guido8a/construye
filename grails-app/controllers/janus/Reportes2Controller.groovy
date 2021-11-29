@@ -1999,41 +1999,52 @@ class Reportes2Controller {
                 "LEFT JOIN grpo g ON s.grpo__id = g.grpo__id AND g.grpo__id IN"
 */
 
-        def sql = "SELECT i.itemcdgo codigo, i.itemnmbr item, u.unddcdgo unidad, sum(v.voitcntd) cantidad, \n" +
-                "v.voitpcun punitario, v.voittrnp transporte, v.voitpcun + v.voittrnp  costo, \n" +
-                "sum((v.voitpcun + v.voittrnp) * v.voitcntd)  total, g.grpodscr grupo, g.grpo__id grid \n" +
-                "FROM vlobitem v INNER JOIN item i ON v.item__id = i.item__id\n" +
-                "INNER JOIN undd u ON i.undd__id = u.undd__id\n" +
-                "INNER JOIN dprt d ON i.dprt__id = d.dprt__id\n" +
-                "INNER JOIN sbgr s ON d.sbgr__id = s.sbgr__id\n" +
-                "INNER JOIN grpo g ON s.grpo__id = g.grpo__id AND g.grpo__id IN (${params.tipo}) \n" +
-                "WHERE v.obra__id = ${params.id} and v.voitcntd >0 \n" + wsp +
-                "group by i.itemcdgo, i.itemnmbr, u.unddcdgo, v.voitpcun, v.voittrnp, v.voitpcun, \n" +
+//        def sql = "SELECT i.itemcdgo codigo, i.itemnmbr item, u.unddcdgo unidad, sum(v.voitcntd) cantidad, \n" +
+//                "v.voitpcun punitario, v.voittrnp transporte, v.voitpcun + v.voittrnp  costo, \n" +
+//                "sum((v.voitpcun + v.voittrnp) * v.voitcntd)  total, g.grpodscr grupo, g.grpo__id grid \n" +
+//                "FROM vlobitem v INNER JOIN item i ON v.item__id = i.item__id\n" +
+//                "INNER JOIN undd u ON i.undd__id = u.undd__id\n" +
+//                "INNER JOIN dprt d ON i.dprt__id = d.dprt__id\n" +
+//                "INNER JOIN sbgr s ON d.sbgr__id = s.sbgr__id\n" +
+//                "INNER JOIN grpo g ON s.grpo__id = g.grpo__id AND g.grpo__id IN (${params.tipo}) \n" +
+//                "WHERE v.obra__id = ${params.id} and v.voitcntd >0 \n" + wsp +
+//                "group by i.itemcdgo, i.itemnmbr, u.unddcdgo, v.voitpcun, v.voittrnp, v.voitpcun, \n" +
+//                "g.grpo__id, g.grpodscr " +
+//                "ORDER BY g.grpo__id ASC, i.itemcdgo"
+//
+        def principal = "SELECT i.itemcdgo codigo, i.itemnmbr item, u.unddcdgo unidad, sum(v.voitcntd) cantidad, " +
+                  "v.voitpcun punitario, v.voittrnp transporte, v.voitpcun + v.voittrnp  costo, " +
+                  "sum((v.voitpcun + v.voittrnp) * v.voitcntd)  total, g.grpodscr grupo, g.grpo__id grid " +
+                  "FROM vlobitem v, item i, undd u, dprt d, sbgr s, grpo g " +
+                  "WHERE v.obra__id = ${params.id} and v.voitcntd > 0 and " +
+                  "v.item__id = i.item__id and i.undd__id = u.undd__id and i.dprt__id = d.dprt__id and " +
+                  "d.sbgr__id = s.sbgr__id and s.grpo__id = g.grpo__id AND g.grpo__id IN "
+//                  "group by i.itemcdgo, i.itemnmbr, u.unddcdgo, v.voitpcun, v.voittrnp, v.voitpcun, " +
+//                  "g.grpo__id, g.grpodscr " +
+//                  "ORDER BY g.grpo__id ASC, i.itemcdgo"
+
+
+        def extra = " (1,2,3) group by i.itemcdgo, i.itemnmbr, u.unddcdgo, v.voitpcun, v.voittrnp, v.voitpcun, " +
+                  "g.grpo__id, g.grpodscr " +
+                  "ORDER BY g.grpo__id ASC, i.itemcdgo"
+
+        def extra1 = " (1) group by i.itemcdgo, i.itemnmbr, u.unddcdgo, v.voitpcun, v.voittrnp, v.voitpcun, " +
                 "g.grpo__id, g.grpodscr " +
                 "ORDER BY g.grpo__id ASC, i.itemcdgo"
 
+        def extra2 = " (2) group by i.itemcdgo, i.itemnmbr, u.unddcdgo, v.voitpcun, v.voittrnp, v.voitpcun, " +
+                "g.grpo__id, g.grpodscr " +
+                "ORDER BY g.grpo__id ASC, i.itemcdgo"
 
-//        def extra = " (${'1,2,3'})\n" +
-//                "WHERE v.obra__id = ${params.id} and v.voitcntd != 0 \n" + wsp +
-//                "ORDER BY v.sbpr__id, grid ASC, i.itemnmbr"
-//
-//        def extra1 = " (${1})\n" +
-//                "WHERE v.obra__id = ${params.id} and v.voitcntd != 0 \n" + wsp +
-//                "ORDER BY v.sbpr__id, grid ASC, i.itemnmbr"
-//
-//        def extra2 = " (${2})\n" +
-//                "WHERE v.obra__id = ${params.id} and v.voitcntd != 0 \n" + wsp +
-//                "ORDER BY v.sbpr__id, grid ASC, i.itemnmbr"
-//
-//        def extra3 = " (${3})\n" +
-//                "WHERE v.obra__id = ${params.id} and v.voitcntd != 0 \n" + wsp +
-//                "ORDER BY v.sbpr__id, grid ASC, i.itemnmbr"
-//
-//        def sql = principal + extra
-//        println "sql: $sql"
-//        def sqlMat = principal + extra1
-//        def sqlMano = principal + extra2
-//        def sqlE = principal + extra3
+        def extra3 = " (3) group by i.itemcdgo, i.itemnmbr, u.unddcdgo, v.voitpcun, v.voittrnp, v.voitpcun, " +
+                "g.grpo__id, g.grpodscr " +
+                "ORDER BY g.grpo__id ASC, i.itemcdgo"
+
+        def sql = principal + extra
+        println "sql: $sql"
+        def sqlMat = principal + extra1
+        def sqlMano = principal + extra2
+        def sqlE = principal + extra3
 
         def errores = ""
 
@@ -2055,12 +2066,12 @@ class Reportes2Controller {
         WritableSheet sheet3 = workbook.createSheet('Equipos', 2)
 
         parteComposicion(sql, sheet, obra, 0)
-//        parteComposicion(sqlMat, sheet1, obra, 1)
-        parteComposicion(sql, sheet1, obra, 1)
-//        parteComposicion(sqlMano, sheet2, obra, 2)
-        parteComposicion(sql, sheet2, obra, 2)
-//        parteComposicion(sqlE, sheet3, obra, 3)
-        parteComposicion(sql, sheet3, obra, 3)
+        parteComposicion(sqlMat, sheet1, obra, 1)
+//        parteComposicion(sql, sheet1, obra, 1)
+        parteComposicion(sqlMano, sheet2, obra, 2)
+//        parteComposicion(sql, sheet2, obra, 2)
+        parteComposicion(sqlE, sheet3, obra, 3)
+//        parteComposicion(sql, sheet3, obra, 3)
 
         workbook.write();
         workbook.close();
