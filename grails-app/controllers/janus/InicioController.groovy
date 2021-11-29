@@ -299,7 +299,11 @@ class InicioController extends janus.seguridad.Shield {
 
     def completa(tx) {
         def ln = tx.size()
-        return '0' * (3 - ln) + tx
+        if(ln < 4) {
+            return '0' * (3 - ln) + tx
+        } else {
+            return tx
+        }
     }
 
     /** carga datos de existencia CSV - utf-8 * */
@@ -348,31 +352,44 @@ class InicioController extends janus.seguridad.Shield {
         def insertados = 0
         def repetidos = 0
         def cn = dbConnectionService.getConnection()
-        def item = 0, sbtt = 0
-        def sql = "", sql1
-        def id = 0, cdgo = '', pcun = 0, undd = 0, cnta = 1, items = 0
+        def sbtt = 0
+        def sql = "", sql1, sql2
+        def id = 0, cdgo = '', dscr = '', pcun = 0, undd = 0, cnta = 1, items = 0, retazos = 0, cntd = 0.0
+        def fcha = '2021-11-27'
 
         println "\n inicia cargado de exst para $rgst"
-        if (rgst[6].toString().size() > 0) {  //existencias > 0
+        if (rgst[2].toString().size() > 0) {  //existencias > 0
             cdgo = rgst[3].toString().trim()
             cn.eachRow("select undd__id from undd where unddcdgo = '${cdgo}'".toString()) { d ->
                 undd = d.undd__id ?: 0
             }
-            println "undd__id: $undd  --> ${undd ?: 22}"
+            undd = undd ?: 22
+            println "undd__id: $undd  --> ${undd}"
 
-            cn.eachRow("select max(substr(itemcdgo,6,3)::integer)+1 cnta " +
+            cn.eachRow("select max(substr(itemcdgo,6,4)::integer)+1 cnta " +
                     "from item where itemcdgo ilike 'EXST-%'".toString()) { d ->
                 cnta = d.cnta ?: 1
             }
             println "cuenta: ${cnta}"
 
             cdgo = rgst[1].toString().trim()
-            if (cdgo.toString().size() > 0) {
+            dscr = rgst[2].toString().trim()
+            if ((cdgo.toString().size() > 0)||(dscr.toString().size() > 0)) {
                 cn.eachRow("select item__id from item where itemcdgo = '${cdgo}'".toString()) { d ->
                     id = d.item__id ?: 0
                 }
-            } else {
-                //insertar el item
+                println "------id: $id"
+                if(!id) {
+                    println "+++++------id: $id"
+
+                    cn.eachRow("select item__id from item where itemnmbr ilike '${dscr}'".toString()) { d ->
+                        id = d.item__id ?: 0
+                    }
+                }
+                println "------id: $id"
+            }
+            if(!id){
+                println "insertar el item: ${rgst[2].toString().trim()}"
                 sql1 = "insert into item(item__id, undd__id, tpit__id, dprt__id, itemcdgo, itemnmbr," +
                         "itempeso, itemtrps, itemtrvl, itemrndm, tpls__id) " +
                         "values (default, ${undd}, 1, 469, 'EXST-${completa(cnta.toString())}', '${rgst[2].toString().trim()}', " +
@@ -401,17 +418,35 @@ class InicioController extends janus.seguridad.Shield {
             println "sqlitem: $sql1"
 
             sbtt = pcun.toDouble() * rgst[6].toDouble()
-            sql = "insert into dtad(dtad__id, adqc__id, item__id, dtadcntd, dtadpcun, dtadsbtt) " +
-                    "values (default, 0, ${id}, ${rgst[6]}, ${pcun}, ${sbtt}) returning dtad__id"
-            println "--> $sql"
+            if(id){
+                sql = "insert into dtad(dtad__id, adqc__id, item__id, dtadcntd, dtadpcun, dtadsbtt) " +
+                        "values (default, 0, ${id}, ${rgst[31]}, ${pcun}, ${sbtt}) returning dtad__id"
+                println "--> $sql"
 
-            try {
-                cn.eachRow(sql.toString()) { d ->
-                    if (d.dtad__id > 0) insertados++
+                for(i in 6..30) {
+                    cntd = rgst[i].toDouble()
+                    if(cntd > 0){
+                        sql2 = "insert into rtzo(rtzo__id, bdga__id, rtzocntd, rtzoetdo, rtzofcha, item__id) " +
+                                "values (default, 1, ${cntd}, 'N', '${fcha}', ${id}) returning rtzo__id"
+                        println "rtzo --> $sql"
+                        try {
+                            cn.eachRow(sql2.toString()) { d ->
+                                if (d.rtzo__id > 0) retazos++
+                            }
+                        } catch (Exception ex) {
+                            println "Error dtad ${rgst[0]}"
+                        }
+                    }
                 }
-            } catch (Exception ex) {
-                repetidos++
-                println "Error dtad ${rgst[0]}"
+
+                try {
+                    cn.eachRow(sql.toString()) { d ->
+                        if (d.dtad__id > 0) insertados++
+                    }
+                } catch (Exception ex) {
+                    repetidos++
+                    println "Error dtad ${rgst[0]}"
+                }
             }
         }
         return [errores: errores, insertados: insertados, repetidos: repetidos]
