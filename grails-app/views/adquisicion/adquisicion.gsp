@@ -182,25 +182,33 @@
 
                 <div class="row-fluid" style="margin-bottom: 5px">
 
-                    <div class="span2">
-
-                        <div style="display: inline-block">
+                    <div class="span1">
+%{--                        <div style="display: inline-block">--}%
                             Código
-                        </div>
-                        <input type="text" name="item.codigo" id="cdgo_buscar" class="span12" readonly="true">
+%{--                        </div>--}%
+                        <input type="text" name="item.codigo" id="cdgo_buscar" class="span12" style="width: 95px" readonly="true">
                         <input type="hidden" id="item_id_original">
                         <input type="hidden" id="idItems">
                     </div>
 
                     <g:if test="${adquisicion?.estado == 'N'}">
-                        <div class="span1" style="margin-top: 20px; width: 80px">
+                        <div class="span1" style="margin-top: 20px;">
                             <a class="btn btn-small btn-primary btn-ajax" href="#" rel="tooltip" title="Agregar Item" id="btnBuscarItem">
-                                <i class="icon-search"></i> Buscar
+                                <i class="icon-search"></i>
                             </a>
                         </div>
                     </g:if>
 
-                    <div class="span5">
+                    <div class="span2">
+                        <div class="span3">
+                            Lugar
+                        </div>
+                        <div class="span10">
+                            <g:select name="lugar" from="${[0: 'Planta Baja', 1: 'Planta Alta', 2 : 'Local Exterior']}" class="form-control" optionValue="value" optionKey="key" style="width: 120px; margin-top: -10px"/>
+                        </div>
+                    </div>
+
+                    <div class="span4" style="margin-left: -20px">
                         Descripción
                         <input type="text" name="item.descripcion" id="item_desc" class="span11" disabled="disabled">
                     </div>
@@ -290,7 +298,7 @@
                                    data-id="${detalle.id}"
                                    data-cant="${detalle.cantidad}" data-nombre="${detalle.item.nombre}"
                                    data-precio="${detalle.precioUnitario}"
-                                   data-unidad="${detalle.item.unidad}" data-item="${detalle.item.id}"
+                                   data-unidad="${detalle.item.unidad}" data-item="${detalle.item.id}" data-lugar="${detalle.lugar}"
                                    data-codigo="${detalle.item.codigo}">
                                     <i class="icon-edit"></i>
                                 </a>
@@ -518,13 +526,15 @@
         var precio = $(this).data("precio");
         var codigo = $(this).data("codigo");
         var unidad = $(this).data("unidad");
+        var lugar = $(this).data("lugar")
         $("#idItems").val(id);
         $("#item_id_original").val(comp);
         $("#item_cantidad").val(cantidad);
         $("#item_desc").val(nombre).addClass("readonly");
         $("#item_precio").val(precio);
         $("#item_unidad").val(unidad).addClass("readonly");
-        $("#cdgo_buscar").val(codigo)
+        $("#cdgo_buscar").val(codigo);
+        $("#lugar").val(lugar);
         $("#btn_guardarItem").removeClass("hidden");
         $("#btn_agregarItem").addClass("hidden");
         // $("#btnCancelarEdicion").removeClass("hidden");
@@ -536,6 +546,7 @@
         $("#item_cantidad").val(1);
         $("#item_desc").val("").removeClass("readonly");
         $("#item_precio").val(1);
+        $("#lugar").val(0);
         $("#item_unidad").val("").removeClass("readonly");
         $("#cdgo_buscar").val("")
         $("#btn_guardarItem").addClass("hidden");
@@ -979,6 +990,7 @@
         }
 
         function guardarDetalleAdquisición(id) {
+            var lugar = $("#lugar option:selected").val()
             $("#dlgLoad").dialog("open");
             $.ajax({
                 type: 'POST',
@@ -988,7 +1000,8 @@
                     item: $("#item_id_original").val(),
                     cantidad: $("#item_cantidad").val(),
                     precioUnitario: $("#item_precio").val(),
-                    adquisicion: '${adquisicion?.id}'
+                    adquisicion: '${adquisicion?.id}',
+                    lugar: lugar
                 },
                 success: function (msg) {
                     $("#dlgLoad").dialog("close");

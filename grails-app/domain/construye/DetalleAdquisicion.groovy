@@ -9,6 +9,7 @@ class DetalleAdquisicion {
     double cantidad
     double precioUnitario
     double subtotal
+    String lugar
 
     static auditable = true
     static mapping = {
@@ -24,6 +25,7 @@ class DetalleAdquisicion {
             cantidad column: 'dtadcntd'
             precioUnitario column: 'dtadpcun'
             subtotal column: 'dtadsbtt'
+            lugar column: 'dtadlgar'
         }
     }
     static constraints = {
@@ -32,6 +34,7 @@ class DetalleAdquisicion {
         cantidad(blank: false, nullable: false, attributes: [title: 'cantidad'])
         precioUnitario(blank: false, nullable: false, attributes: [title: 'precio unitario'])
         subtotal(blank: false, nullable: false, attributes: [title: 'subtotal'])
+        lugar(size: 0..63, blank: true, nullable: true, attributes: [title: 'lugar'])
     }
 
 
