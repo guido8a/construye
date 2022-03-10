@@ -11,6 +11,11 @@
     <script src="${resource(dir: 'js/jquery/plugins/', file: 'jquery.livequery.js')}"></script>
     <script src="${resource(dir: 'js/jquery/plugins/box/js', file: 'jquery.luz.box.js')}"></script>
     <link href="${resource(dir: 'js/jquery/plugins/box/css', file: 'jquery.luz.box.css')}" rel="stylesheet">
+    <style type="text/css">
+    .fondo-rojo {
+        color: #802020;
+    }
+    </style>
 </head>
 
 <body>
@@ -260,7 +265,7 @@
                 <thead>
                 <tr>
                     <th style="width: 8%">Código</th>
-                    <th style="width: 46%">Descripción</th>
+                    <th style="width: 36%">Descripción</th>
                     <th style="width: 6%">Unidad</th>
                     <th style="width: 8%">Presupuestado</th>
                     <th style="width: 8%">Usado</th>
@@ -273,48 +278,52 @@
                 <tbody id="tabla_equipo">
                 <g:set var="total" value="${0}"/>
                 <g:each in="${items}" var="item" status="i">
-                    <tr class="item_row " id="${item.id}">
-                        <td class="col_hora" style="text-align: left">${item.composicion.item.codigo}</td>
-                        <td class="col_hora" style="text-align: left">${item.composicion.item.nombre}</td>
-                        <td class="col_rend rend" style="width: 50px;text-align: center">${item.composicion.item.unidad}</td>
+                    <tr class="item_row ${(item.cnsmacml + item.dtcscntd) > item.compcntd? 'fondo-rojo':''}" id="${item.dtcs__id}">
+                        <td class="col_hora" style="text-align: left">${item.itemcdgo}</td>
+                        <td class="col_hora" style="text-align: left">${item.itemnmbr}</td>
+                        <td class="col_rend rend" style="width: 50px;text-align: center">${item.unddcdgo}</td>
                         <td style="text-align: right" class="cant">
-                            <g:formatNumber number="${item.composicion.cantidad}" format="##,###0" minFractionDigits="2"
+                            <g:formatNumber number="${item.compcntd}" format="##,###0" minFractionDigits="2"
                                             maxFractionDigits="2" locale="ec"/>
                         </td>
                         <td style="text-align: right" class="cant">
-                            <g:formatNumber number="${item.cantidad}" format="##,###0" minFractionDigits="2"
+                            <g:formatNumber number="${item.cnsmacml}" format="##,###0" minFractionDigits="2"
                                             maxFractionDigits="2" locale="ec"/>
                         </td>
                         <td style="text-align: right" class="cant">
-                            <g:formatNumber number="${item.precioUnitario}" format="##,#####0" minFractionDigits="5"
+                            <g:formatNumber number="${item.dtcscntd}" format="##,###0" minFractionDigits="2"
+                                            maxFractionDigits="2" locale="ec"/>
+                        </td>
+                        <td style="text-align: right" class="cant">
+                            <g:formatNumber number="${item.dtcspcun}" format="##,#####0" minFractionDigits="5"
                                             maxFractionDigits="5" locale="ec"/>
                         </td>
                         <td style="text-align: right" class="cant">
-                            <g:formatNumber number="${item.precioUnitario * item.cantidad}" format="##,#####0"
+                            <g:formatNumber number="${item.dtcscntd * item.dtcspcun}" format="##,#####0"
                                             minFractionDigits="5" maxFractionDigits="5" locale="ec"/>
                         </td>
                         <td style="width: 50px;text-align: center" class="col_delete">
                             <g:if test="${consumo?.estado == 'N'}">
                                 <a class="btn btn-small btn-primary editarItem" href="#" rel="tooltip" title="Editar"
-                                   data-id="${item.id}"
-                                   data-cant="${item.cantidad}" data-nombre="${item.composicion.item.nombre}"
-                                   data-precio="${item.precioUnitario}"
-                                   data-unidad="${item.composicion.item.unidad}" data-item="${item.composicion.id}"
-                                   data-codigo="${item.composicion.item.codigo}">
+                                   data-id="${item.dtcs__id}"
+                                   data-cant="${item.dtcscntd}" data-nombre="${item.itemnmbr}"
+                                   data-precio="${item.dtcspcun}"
+                                   data-unidad="${item.unddcdgo}" data-item="${item.comp__id}"
+                                   data-codigo="${item.itemcdgo}">
                                     <i class="icon-edit"></i>
                                 </a>
                                 <a class="btn btn-small btn-danger borrarItem" href="#" rel="tooltip" title="Eliminar"
-                                   data-id="${item.id}">
+                                   data-id="${item.dtcs__id}">
                                     <i class="icon-trash"></i>
                                 </a>
                             </g:if>
                         </td>
                     </tr>
-                    <g:set var="total" value="${total + (item.precioUnitario * item.cantidad)}"/>
+                    <g:set var="total" value="${total + (item.dtcspcun * item.dtcscntd)}"/>
                 </g:each>
                 <g:if test="${items.size() > 0}">
                     <tr class="item_row ">
-                        <td class="col_hora" style="text-align: left" colspan="4"></td>
+                        <td class="col_hora" style="text-align: left" colspan="6"></td>
                         <td class="col_hora" style="text-align: right; font-weight: bold">TOTAL:</td>
                         <td style="text-align: right; font-weight: bold" class="cant">
                             <g:formatNumber number="${total}" format="##,#####0" minFractionDigits="5" maxFractionDigits="5" locale="ec"/>

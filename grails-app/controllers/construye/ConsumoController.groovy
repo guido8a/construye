@@ -38,15 +38,17 @@ class ConsumoController extends janus.seguridad.Shield {
         def dpto = Departamento.findAllByPermisosIlike("APU")
         def recibe = Persona.findAllByDepartamentoInList(dpto)
         def consumo
-        def items = []
+        def cn = dbConnectionService.getConnection()
+        def items = [], sql
 
-//        println "depto "+dpto
         if (params.id) {
             consumo = Consumo.get(params.id)
         }
 
         if(consumo){
-            items = DetalleConsumo.findAllByConsumo(consumo).sort{it.composicion.item.nombre}
+            sql = "select * from dt_consumo(${consumo.id}) order by itemnmbr"
+//            items = DetalleConsumo.findAllByConsumo(consumo).sort{it.composicion.item.nombre}
+            items = cn.rows(sql.toString())
         }
 
         [consumo: consumo, recibe: recibe, bodegas:bodegas, listaCnsm: listaConsumo, listaItems: listaItems,
