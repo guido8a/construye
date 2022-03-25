@@ -6,6 +6,18 @@
         <tr>
             <td width="100px">
                 <span class="control-label label label-inverse">
+                    Empresa
+                </span>
+            </td>
+            <td colspan="3">
+                <g:select name="empresa" from="${janus.construye.Empresa?.list()}" optionKey="id" optionValue="nombre" style="width: 400px" class="span2 required" value="${personaInstance?.empresa?.id}"/>
+                <p class="help-block ui-helper-hidden"></p>
+%{--                <span class="mandatory">*</span>--}%
+            </td>
+        </tr>
+        <tr>
+            <td width="100px">
+                <span class="control-label label label-inverse">
                     Cédula
                 </span>
             </td>
@@ -42,11 +54,8 @@
                 </span>
             </td>
             <td>
-                %{--<g:field type="number" name="codigo"  class="span2 required"  value="${fieldValue(bean: personaInstance, field: 'codigo')}"/>--}%
                 <g:textField type="number" name="codigo required"  class="span2"  value="${personaInstance?.codigo}"/>
-
                 <span class="mandatory">*</span>
-
                 <p class="help-block ui-helper-hidden"></p>
             </td>
         </tr>
