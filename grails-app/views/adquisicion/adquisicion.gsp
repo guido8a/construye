@@ -186,20 +186,20 @@
 %{--                        <div style="display: inline-block">--}%
                             Código
 %{--                        </div>--}%
-                        <input type="text" name="item.codigo" id="cdgo_buscar" class="span12" style="width: 95px" readonly="true">
+                        <input type="text" name="item.codigo" id="cdgo_buscar" class="span12" style="width: 120px" readonly="true">
                         <input type="hidden" id="item_id_original">
                         <input type="hidden" id="idItems">
                     </div>
 
                     <g:if test="${adquisicion?.estado == 'N'}">
-                        <div class="span1" style="margin-top: 20px;">
+                        <div class="span1" style="margin-top: 22px; margin-left: 55px">
                             <a class="btn btn-small btn-primary btn-ajax" href="#" rel="tooltip" title="Agregar Item" id="btnBuscarItem">
                                 <i class="icon-search"></i>
                             </a>
                         </div>
                     </g:if>
 
-                    <div class="span2">
+                    <div class="span2" style="margin-left: -30px">
                         <div class="span3">
                             Lugar
                         </div>
@@ -208,7 +208,7 @@
                         </div>
                     </div>
 
-                    <div class="span4" style="margin-left: -20px">
+                    <div class="span5" style="margin-left: -20px">
                         Descripción
                         <input type="text" name="item.descripcion" id="item_desc" class="span11" disabled="disabled">
                     </div>
@@ -231,7 +231,7 @@
                     </div>
 
                     <g:if test="${adquisicion?.estado == 'N'}">
-                        <div class="span1" style="border: 0px solid black;height: 45px;padding-top: 22px;margin-left: 10px">
+                        <div class="span1" style="border: 0px solid black;height: 45px;padding-top: 22px;margin-left: 0px">
                             <a class="btn btn-small btn-primary btn-ajax" href="#" rel="tooltip" title="Agregar"
                                id="btn_agregarItem">
                                 <i class="icon-plus"></i>

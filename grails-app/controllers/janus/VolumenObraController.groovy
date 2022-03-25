@@ -239,13 +239,13 @@ class VolumenObraController extends janus.seguridad.Shield {
         } else {
             valores = preciosService.rbro_pcun_v4(obra.id, orden)
         }
-//        println("-->>" + valores)
 
         def subPres = VolumenesObra.findAllByObra(obra, [sort: "orden"]).subPresupuesto.unique()
 
         def estado = obra.estado
 
         duenoObra = esDuenoObra(obra)? 1 : 0
+        println("duenoObra-->>" + duenoObra)
 
         [subPres: subPres, subPre: params.sub, obra: obra, valores: valores,
          subPresupuesto1: subPresupuesto1, estado: estado, msg: params.msg, persona: persona, duenoObra: duenoObra]
@@ -263,8 +263,8 @@ class VolumenObraController extends janus.seguridad.Shield {
 //            dueno = personasPRSP.contains(responsableRol) && session.usuario.departamento.codigo == 'PRSP'
 //        }
 
-//        println "responsable" + responsableRol + " dueño " + dueno
-//                dueno = session.usuario.departamento.id == obra?.responsableObra?.departamento?.id || dueno
+        println "responsable" + responsableRol + " dueño " + dueno
+//        dueno = session.usuario.departamento.id == obra?.responsableObra?.departamento?.id || dueno
 
         if (responsableRol) {
 //            println "..................."
