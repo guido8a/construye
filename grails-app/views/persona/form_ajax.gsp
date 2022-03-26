@@ -10,7 +10,9 @@
                 </span>
             </td>
             <td colspan="3">
-                <g:select name="empresa" from="${janus.construye.Empresa?.list()}" optionKey="id" optionValue="nombre" style="width: 400px" class="span2 required" value="${personaInstance?.empresa?.id}"/>
+                <g:select name="empresa" from="${janus.construye.Empresa?.list()}" optionKey="id"
+                          optionValue="nombre" style="width: 605px" class="span2 required"
+                          value="${personaInstance?.empresa?.id}"/>
                 <p class="help-block ui-helper-hidden"></p>
 %{--                <span class="mandatory">*</span>--}%
             </td>
