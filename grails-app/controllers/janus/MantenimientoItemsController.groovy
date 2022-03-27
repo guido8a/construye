@@ -60,9 +60,10 @@ class MantenimientoItemsController extends Shield {
             case "item_consultoria":
             case "item_material":
             case "item_equipo":
-                println "....1"
+                println "....1 Empresa: ${empresa.id}"
                 def tipoLista = Item.get(id).tipoLista
                 if (precios) {
+                    println "....2 tipoLista: ${tipoLista.id}"
                     if (ignore) {
                         hijos = ["Todos"]
                     } else {
@@ -79,6 +80,7 @@ class MantenimientoItemsController extends Shield {
 
         String tree = "", clase = "", rel = "", extra = ""
 
+        println "....3 hijos: ${hijos.size()}"
         tree += "<ul>"
         hijos.each { hijo ->
             def hijosH, desc, liId

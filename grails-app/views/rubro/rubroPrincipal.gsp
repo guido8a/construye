@@ -229,7 +229,7 @@
 
             <div class="span6" style="width: 500px;">
                 Lista de precios: MO y Equipos
-                <g:select name="item.ciudad.id" from="${janus.Lugar.findAllByTipoLista(janus.TipoLista.get(6))}" optionKey="id" optionValue="descripcion" class="span10" id="ciudad" style="width: 300px"/>
+                <g:select name="item.ciudad.id" from="${janus.Lugar.findAllByTipoListaAndEmpresa(janus.TipoLista.get(6), empresa)}" optionKey="id" optionValue="descripcion" class="span10" id="ciudad" style="width: 300px"/>
             </div>
 
             <div class="span3" style="width: 180px;">
@@ -616,7 +616,7 @@
             </div>
 
             <div class="span4">
-                <g:select name="item.ciudad.id" from="${janus.Lugar.findAllByTipoLista(janus.TipoLista.get(1))}"
+                <g:select name="item.ciudad.id" from="${janus.Lugar.findAllByTipoListaAndEmpresa(janus.TipoLista.get(1), empresa)}"
                           optionKey="id" optionValue="descripcion" class="span10" id="lista_1"/>
             </div>
 
@@ -625,7 +625,7 @@
             </div>
 
             <div class="span4">
-                <g:select name="item.ciudad.id" from="${janus.Lugar.findAllByTipoLista(janus.TipoLista.get(3))}"
+                <g:select name="item.ciudad.id" from="${janus.Lugar.findAllByTipoListaAndEmpresa(janus.TipoLista.get(3), empresa)}"
                           optionKey="id" optionValue="descripcion" class="span10" id="lista_3"/>
             </div>
         </div>
@@ -636,7 +636,7 @@
             </div>
 
             <div class="span4">
-                <g:select name="item.ciudad.id" from="${janus.Lugar.findAllByTipoLista(janus.TipoLista.get(2))}"
+                <g:select name="item.ciudad.id" from="${janus.Lugar.findAllByTipoListaAndEmpresa(janus.TipoLista.get(2), empresa)}"
                           optionKey="id" optionValue="descripcion" class="span10" id="lista_2"/>
             </div>
 
@@ -645,7 +645,7 @@
             </div>
 
             <div class="span4">
-                <g:select name="item.ciudad.id" from="${janus.Lugar.findAllByTipoLista(janus.TipoLista.get(4))}"
+                <g:select name="item.ciudad.id" from="${janus.Lugar.findAllByTipoListaAndEmpresa(janus.TipoLista.get(4), empresa)}"
                           optionKey="id" optionValue="descripcion" class="span10" id="lista_4"/>
             </div>
         </div>
@@ -658,7 +658,7 @@
             </div>
 
             <div class="span4">
-                <g:select name="item.ciudad.id" from="${janus.Lugar.findAllByTipoLista(janus.TipoLista.get(5))}"
+                <g:select name="item.ciudad.id" from="${janus.Lugar.findAllByTipoListaAndEmpresa(janus.TipoLista.get(5), empresa)}"
                           optionKey="id" optionValue="descripcion" class="span10" id="lista_5"/>
             </div>
         </div>
