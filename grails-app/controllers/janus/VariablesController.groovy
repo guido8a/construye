@@ -64,8 +64,8 @@ class VariablesController  extends janus.seguridad.Shield{
         println "saveVar_ajax: $params"
         def obra = Obra.get(params.id)
         params.totales = params.totales.toDouble()
-        params.precioManoObra = params.precioManoObra.toInteger()
-        params.precioMateriales = params.precioMateriales.toInteger()
+//        params.precioManoObra = params.precioManoObra.toDouble()
+//        params.precioMateriales = params.precioMateriales.toDouble()
         obra.properties = params
         if (!obra.transporteCamioneta) obra.distanciaCamioneta = 0
         if (!obra.transporteAcemila) obra.distanciaAcemila = 0

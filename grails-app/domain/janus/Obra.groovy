@@ -128,8 +128,8 @@ class Obra implements Serializable {
     double indiceCampamento = 0
     double indiceGastoObra = 0
     String coordenadasVia
-    int precioManoObra = 0
-    int precioMateriales = 0
+    double precioManoObra = 0
+    double precioMateriales = 0
 
     Empresa empresa
 

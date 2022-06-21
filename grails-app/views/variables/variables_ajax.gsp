@@ -229,8 +229,11 @@
                 </div>
 
                 <div class="span2" style="display: inline-block">
+                    %{--<g:textField type="text" name="precioManoObra" class="inputVar num"--}%
+                                 %{--value="${obra?.precioManoObra}"/>--}%
                     <g:textField type="text" name="precioManoObra" class="inputVar num"
-                                 value="${obra?.precioManoObra}"/>
+                                 value="${g.formatNumber(number: obra?.precioManoObra, maxFractionDigits: 2, minFractionDigits: 2, format: '##,##0')}"
+                                 title="Porcenta sobre mano de obra"/>
                 </div>
                 <div class="span2" style="display: inline-block">
                     %
@@ -243,8 +246,12 @@
                 </div>
 
                 <div class="span2">
+                    %{--<g:textField type="text" name="precioMateriales" class="inputVar num"--}%
+                                 %{--value="${obra?.precioMateriales}"/>--}%
                     <g:textField type="text" name="precioMateriales" class="inputVar num"
-                                 value="${obra?.precioMateriales}"/>
+                                 value="${g.formatNumber(number: obra?.precioMateriales, maxFractionDigits: 2, minFractionDigits: 2, format: '##,##0')}"
+                                 title="Porcenta sobre mano de obra"/>
+
                 </div>
                 <div class="span2" style="display: inline-block">
                     %
