@@ -11,6 +11,13 @@ import com.lowagie.text.pdf.PdfPTable
 import com.lowagie.text.pdf.PdfWriter
 import janus.ejecucion.DetallePlanillaCosto
 import janus.ejecucion.Planilla
+import janus.pac.CronogramaContrato
+import jxl.Workbook
+import jxl.WorkbookSettings
+import jxl.write.WritableCellFormat
+import jxl.write.WritableFont
+import jxl.write.WritableSheet
+import jxl.write.WritableWorkbook
 import org.jfree.chart.ChartFactory
 import org.jfree.chart.JFreeChart
 import org.jfree.chart.axis.CategoryAxis
@@ -29,6 +36,7 @@ import java.text.DecimalFormat
 class Reportes6Controller {
 
     def dbConnectionService
+    def preciosService
 
     def index() { }
 
@@ -821,10 +829,239 @@ class Reportes6Controller {
         return dataset;
     }
 
+    def reporteExcelCronograma() {
+
+        println("!!!" + params)
+
+
+        def tipo = params.tipo
+        def obra = null, contrato = null, lbl = ""
+        switch (tipo) {
+            case "obra":
+                obra = Obra.get(params.id.toLong())
+                lbl = " la obra"
+                break;
+            case "contrato":
+                contrato = Contrato.get(params.id)
+                obra = contrato.obra
+                lbl = "l contrato de la obra"
+                break;
+        }
+
+        def meses = obra.plazoEjecucionMeses + (obra.plazoEjecucionDias > 0 ? 1 : 0)
+
+        def detalle = VolumenesObra.findAllByObra(obra, [sort: "orden"])
+
+        def precios = [:]
+        def indirecto = obra.totales / 100
+
+        preciosService.ac_rbroObra(obra.id)
+
+        detalle.each {
+            it.refresh()
+            def res = preciosService.precioUnitarioVolumenObraSinOrderBy("sum(parcial)+sum(parcial_t) precio ", obra.id, it.item.id)
+            if(res["precio"][0] != null){
+                precios.put(it.id.toString(), (res["precio"][0] + res["precio"][0] * indirecto).toDouble().round(2))
+            }else{
+                precios.put(it.id.toString(), (0 * indirecto).toDouble().round(2))
+
+            }
+        }
+
+        def name = "cronograma${tipo.capitalize()}_" + new Date().format("ddMMyyyy_hhmm") + ".xls";
+
+        //excel
+        WorkbookSettings workbookSettings = new WorkbookSettings()
+        workbookSettings.locale = Locale.default
+
+        def file = File.createTempFile('myExcelDocument', '.xls')
+        file.deleteOnExit()
+        WritableWorkbook workbook = Workbook.createWorkbook(file, workbookSettings)
+
+        WritableFont font = new WritableFont(WritableFont.ARIAL, 12)
+        WritableCellFormat formatXls = new WritableCellFormat(font)
+
+        def row = 0
+        WritableSheet sheet = workbook.createSheet('Cronograma', 3)
+
+        def cn = dbConnectionService.getConnection()
+
+        WritableFont times16font = new WritableFont(WritableFont.ARIAL, 11, WritableFont.BOLD, false);
+        WritableCellFormat times16format = new WritableCellFormat(times16font);
+        sheet.setColumnView(0, 20)
+        sheet.setColumnView(1, 30)
+        sheet.setColumnView(2, 70)
+        sheet.setColumnView(3, 10)
+        sheet.setColumnView(4, 10)
+        sheet.setColumnView(5, 20)
+        sheet.setColumnView(6, 20)
+        sheet.setColumnView(7, 10)
+        sheet.setColumnView(8, 20)
+        sheet.setColumnView(9, 20)
+        sheet.setColumnView(10, 20)
+
+        def label
+        def number
+        def fila = 21;
+
+        label = new jxl.write.Label(1, 4, (Auxiliar.get(1)?.titulo ?: ''), times16format); sheet.addCell(label);
+        label = new jxl.write.Label(1, 6, "CRONOGRAMA"); sheet.addCell(label);
+        label = new jxl.write.Label(1, 8, "DGCP - COORDINACIÓN DE FIJACIÓN DE PRECIOS UNITARIOS: " + obra?.codigo, times16format); sheet.addCell(label);
+        label = new jxl.write.Label(1, 10, "OBRA: ${obra.descripcion}  ( ${meses} mes  ${meses == 1 ? '' : 'es'} )", times16format);
+        sheet.addCell(label);
+        label = new jxl.write.Label(1, 12, "Requirente: ${obra?.departamento?.direccion?.nombre + ' - ' + obra.departamento?.descripcion}", times16format);
+        sheet.addCell(label);
+        label = new jxl.write.Label(1, 13, "Código de la Obra: ${obra?.codigo}", times16format);
+        sheet.addCell(label);
+        label = new jxl.write.Label(1, 14, "Doc. Referencia: ${obra?.oficioIngreso ? obra?.oficioIngreso : ''}", times16format);
+        sheet.addCell(label);
+        label = new jxl.write.Label(1, 15, "Fecha: ${printFecha(obra?.fechaCreacionObra)}", times16format);
+        sheet.addCell(label);
+        label = new jxl.write.Label(1, 16, "Plazo: ${obra?.plazoEjecucionMeses} Meses" + " ${obra?.plazoEjecucionDias} Días", times16format);
+        sheet.addCell(label);
+        label = new jxl.write.Label(1, 17, "Los rubros pertenecientes a la ruta crítica están marcados con un * antes de su código.", times16format);
+        sheet.addCell(label);
+
+        def tams = [10, 40, 5, 6, 6, 6, 2]
+        meses.times {
+            tams.add(7)
+        }
+        tams.add(10)
+
+        label = new jxl.write.Label(1, 20, "CODIGO", times16format); sheet.addCell(label);
+        label = new jxl.write.Label(2, 20, "RUBRO", times16format); sheet.addCell(label);
+        label = new jxl.write.Label(3, 20, "UNIDAD", times16format); sheet.addCell(label);
+        label = new jxl.write.Label(4, 20, "CANTIDAD", times16format); sheet.addCell(label);
+        label = new jxl.write.Label(5, 20, "P.UNITARIO", times16format); sheet.addCell(label);
+        label = new jxl.write.Label(6, 20, "C.TOTAL", times16format); sheet.addCell(label);
+        label = new jxl.write.Label(7, 20, "T.", times16format); sheet.addCell(label);
+        meses.times { i ->
+            label = new jxl.write.Label(8, 20, "MES " + (i + 1), times16format); sheet.addCell(label);
+        }
+        label = new jxl.write.Label(9, 20, "TOTAL RUBRO", times16format); sheet.addCell(label);
+
+        def totalMes = []
+        def sum = 0
+
+        detalle.eachWithIndex { vol, s ->
+            def cronos
+            switch (tipo) {
+                case "obra":
+                    cronos = Cronograma.findAllByVolumenObra(vol)
+                    break;
+                case "contrato":
+                    cronos = CronogramaContrato.findAllByVolumenObra(vol)
+                    break;
+
+            }
+            def totalDolRow = 0, totalPrcRow = 0, totalCanRow = 0
+            def parcial = Math.round(precios[vol.id.toString()] * vol.cantidad*100)/100
+            sum += parcial
+
+           label = new jxl.write.Label(1, fila,  ((vol.rutaCritica == 'S' ? "* " : "") + vol.item.codigo)?.toString()); sheet.addCell(label);
+           label = new jxl.write.Label(2, fila, vol.item.nombre); sheet.addCell(label);
+           label = new jxl.write.Label(3, fila, vol.item.unidad.codigo); sheet.addCell(label);
+           number = new jxl.write.Number(4, fila, vol.cantidad?.toDouble() ?: 0); sheet.addCell(number);
+           number = new jxl.write.Number(5, fila, precios[vol.id.toString()] ?: 0); sheet.addCell(number);
+           number = new jxl.write.Number(6, fila, parcial); sheet.addCell(number);
+           label = new jxl.write.Label(7, fila, '$'); sheet.addCell(label);
+            meses.times { i ->
+                def prec = cronos.find { it.periodo == i + 1 }
+                totalDolRow += (prec ? prec.precio : 0)
+                if (!totalMes[i]) {
+                    totalMes[i] = 0
+                }
+                totalMes[i] += (prec ? prec.precio : 0)
+                number = new jxl.write.Number(8, fila, prec?.precio ?: 0); sheet.addCell(number);
+            }
+            number = new jxl.write.Number(9, fila, totalDolRow ?: 0); sheet.addCell(number);
+
+            fila++
+        }
+
+
+        //total parcial
+        label = new jxl.write.Label(1, fila, ''); sheet.addCell(label);
+        label = new jxl.write.Label(2, fila, 'TOTAL PARCIAL', times16format); sheet.addCell(label);
+        label = new jxl.write.Label(3, fila, ''); sheet.addCell(label);
+        label = new jxl.write.Label(4, fila, ''); sheet.addCell(label);
+        label = new jxl.write.Label(5, fila, ''); sheet.addCell(label);
+        number = new jxl.write.Number(6, fila, sum ?: 0, times16format); sheet.addCell(number);
+        label = new jxl.write.Label(7, fila, 'T', times16format); sheet.addCell(label);
+        meses.times { i ->
+            number = new jxl.write.Number(8, fila, totalMes[i] ?: 0, times16format); sheet.addCell(number);
+        }
+        label = new jxl.write.Label(9, fila, ''); sheet.addCell(label);
+        fila++
+
+        //total acumulado
+        label = new jxl.write.Label(1, fila, ''); sheet.addCell(label);
+        label = new jxl.write.Label(2, fila, 'TOTAL ACUMULADO', times16format); sheet.addCell(label);
+        label = new jxl.write.Label(3, fila, ''); sheet.addCell(label);
+        label = new jxl.write.Label(4, fila, ''); sheet.addCell(label);
+        label = new jxl.write.Label(5, fila, ''); sheet.addCell(label);
+        label = new jxl.write.Label(6, fila, ''); sheet.addCell(label);
+        label = new jxl.write.Label(7, fila, 'T', times16format); sheet.addCell(label);
+        def acu = 0
+        meses.times { i ->
+            acu += totalMes[i]
+            number = new jxl.write.Number(8, fila, acu ?: 0, times16format); sheet.addCell(number);
+        }
+        label = new jxl.write.Label(9, fila, ''); sheet.addCell(label);
+        fila++
+
+        //total % parcial
+        label = new jxl.write.Label(1, fila, ''); sheet.addCell(label);
+        label = new jxl.write.Label(2, fila, '% PARCIAL', times16format); sheet.addCell(label);
+        label = new jxl.write.Label(3, fila, ''); sheet.addCell(label);
+        label = new jxl.write.Label(4, fila, ''); sheet.addCell(label);
+        label = new jxl.write.Label(5, fila, ''); sheet.addCell(label);
+        label = new jxl.write.Label(6, fila, ''); sheet.addCell(label);
+        label = new jxl.write.Label(7, fila, 'T', times16format); sheet.addCell(label);
+        meses.times { i ->
+            def prc = 100 * totalMes[i] / sum
+            number = new jxl.write.Number(8, fila, prc ?: 0, times16format); sheet.addCell(number);
+        }
+        label = new jxl.write.Label(9, fila, ''); sheet.addCell(label);
+        fila++
+
+        //total %acumulado
+        label = new jxl.write.Label(1, fila, ''); sheet.addCell(label);
+        label = new jxl.write.Label(2, fila, '% ACUMULADO', times16format); sheet.addCell(label);
+        label = new jxl.write.Label(3, fila, ''); sheet.addCell(label);
+        label = new jxl.write.Label(4, fila, ''); sheet.addCell(label);
+        label = new jxl.write.Label(5, fila, ''); sheet.addCell(label);
+        label = new jxl.write.Label(6, fila, ''); sheet.addCell(label);
+        label = new jxl.write.Label(7, fila, 'T', times16format); sheet.addCell(label);
+        acu = 0
+        meses.times { i ->
+            def prc = 100 * totalMes[i] / sum
+            acu += prc
+            number = new jxl.write.Number(8, fila, acu ?: 0, times16format); sheet.addCell(number);
+        }
+        label = new jxl.write.Label(9, fila, ''); sheet.addCell(label);
+        fila++
 
 
 
+        workbook.write();
+        workbook.close();
+        def output = response.getOutputStream()
+        def header = "attachment; filename=" + name;
+        response.setContentType("application/octet-stream")
+        response.setHeader("Content-Disposition", header);
+        output.write(file.getBytes());
+    }
 
+    def meses = ['', "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"]
+
+    private String printFecha(Date fecha) {
+        if (fecha) {
+            return (fecha.format("dd") + ' de ' + meses[fecha.format("MM").toInteger()] + ' de ' + fecha.format("yyyy")).toUpperCase()
+        } else {
+            return "Error: no hay fecha que mostrar"
+        }
+    }
 
 
 }

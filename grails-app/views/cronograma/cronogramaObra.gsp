@@ -50,6 +50,9 @@
                 Gráficos de avance
             </a>
             <a href="#" id="btnReporte" class="btn"><i class="icon-print"></i>Imprimir</a>
+            <a href="#" class="btn btn-print btnExcel" data-id="${obra?.id}">
+                <i class="icon-table"></i> Excel
+            </a>
         </div>
     </g:if>
 </div>
@@ -1259,6 +1262,14 @@
         $("#btnReporte").click(function () {
             location.href = "${createLink(controller: 'reportes2', action:'reporteCronogramaPdf', id:obra.id, params:[tipo:'obra'])}";
             return false;
+        });
+
+        $(".btnExcel").click(function () {
+            $("#dlgLoad").dialog("open");
+            location.href = "${g.createLink(controller: 'reportes6' ,action: 'reporteExcelCronograma',id: obra?.id, params:[tipo:'obra'])}";
+            setTimeout(function () {
+                $("#dlgLoad").dialog("close");
+            }, 3000);
         });
 
         $("#btnGrafico").click(function () {
