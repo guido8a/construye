@@ -1020,10 +1020,13 @@ class RubroController extends janus.seguridad.Shield {
         println "listaItem" + params
         def listaItems = ['itemnmbr', 'itemcdgo']
         def datos;
+        def usuario = Persona.get(session.usuario.id)
+        def empresa = usuario.empresa
+
         def select = "select item.item__id, itemcdgo, itemnmbr, item.tpls__id, unddcdgo " +
                 "from item, undd, dprt, sbgr "
         def txwh = "where tpit__id = 1 and undd.undd__id = item.undd__id and dprt.dprt__id = item.dprt__id and " +
-                "sbgr.sbgr__id = dprt.sbgr__id "
+                "sbgr.sbgr__id = dprt.sbgr__id and empr__id = ${empresa.id}"
         def sqlTx = ""
         def bsca = listaItems[params.buscarPor.toInteger()-1]
         def ordn = listaItems[params.ordenar.toInteger()-1]
