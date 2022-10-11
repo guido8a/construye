@@ -931,26 +931,27 @@ class ReportesController {
         def band = 0
         def rowsTrans = []
         res.each { r ->
-//            println "r "+r
             if (r["grpocdgo"] == 3) {
                 if (band == 0) {
                     label = new Label(0, fila, "Código", times16format); sheet.addCell(label);
                     label = new Label(1, fila, "Descripción", times16format); sheet.addCell(label);
-                    label = new Label(2, fila, "Cantidad", times16format); sheet.addCell(label);
-                    label = new Label(3, fila, "Tarifa", times16format); sheet.addCell(label);
-                    label = new Label(4, fila, "Costo", times16format); sheet.addCell(label);
-                    label = new Label(5, fila, "Rendimiento", times16format); sheet.addCell(label);
-                    label = new Label(6, fila, "C.Total", times16format); sheet.addCell(label);
+                    label = new Label(2, fila, "Unidad", times16format); sheet.addCell(label);
+                    label = new Label(3, fila, "Cantidad", times16format); sheet.addCell(label);
+                    label = new Label(5, fila, "Tarifa", times16format); sheet.addCell(label);
+                    label = new Label(5, fila, "Costo", times16format); sheet.addCell(label);
+                    label = new Label(6, fila, "Rendimiento", times16format); sheet.addCell(label);
+                    label = new Label(7, fila, "C.Total", times16format); sheet.addCell(label);
                     fila++
                 }
                 band = 1
                 label = new Label(0, fila, r["itemcdgo"], times10); sheet.addCell(label);
                 label = new Label(1, fila, r["itemnmbr"], times10); sheet.addCell(label);
-                number = new Number(2, fila, r["rbrocntd"]); sheet.addCell(number);
-                number = new Number(3, fila, r["rbpcpcun"]); sheet.addCell(number);
-                number = new Number(4, fila, r["rbpcpcun"] * r["rbrocntd"]); sheet.addCell(number);
-                number = new Number(5, fila, r["rndm"]); sheet.addCell(number);
-                number = new Number(6, fila, r["parcial"]); sheet.addCell(number);
+                label = new Label(2, fila, r["unddcdgo"], times10); sheet.addCell(label);
+                number = new Number(3, fila, r["rbrocntd"]); sheet.addCell(number);
+                number = new Number(4, fila, r["rbpcpcun"]); sheet.addCell(number);
+                number = new Number(5, fila, r["rbpcpcun"] * r["rbrocntd"]); sheet.addCell(number);
+                number = new Number(6, fila, r["rndm"]); sheet.addCell(number);
+                number = new Number(7, fila, r["parcial"]); sheet.addCell(number);
                 totalHer += r["parcial"]
                 fila++
             }
@@ -967,21 +968,23 @@ class ReportesController {
                     fila++
                     label = new Label(0, fila, "Código", times16format); sheet.addCell(label);
                     label = new Label(1, fila, "Descripción", times16format); sheet.addCell(label);
-                    label = new Label(2, fila, "Cantidad", times16format); sheet.addCell(label);
-                    label = new Label(3, fila, "Jornal", times16format); sheet.addCell(label);
-                    label = new Label(4, fila, "Costo", times16format); sheet.addCell(label);
-                    label = new Label(5, fila, "Rendimiento", times16format); sheet.addCell(label);
-                    label = new Label(6, fila, "C.Total", times16format); sheet.addCell(label);
+                    label = new Label(2, fila, "Unidad", times16format); sheet.addCell(label);
+                    label = new Label(3, fila, "Cantidad", times16format); sheet.addCell(label);
+                    label = new Label(4, fila, "Jornal", times16format); sheet.addCell(label);
+                    label = new Label(5, fila, "Costo", times16format); sheet.addCell(label);
+                    label = new Label(6, fila, "Rendimiento", times16format); sheet.addCell(label);
+                    label = new Label(7, fila, "C.Total", times16format); sheet.addCell(label);
                     fila++
                 }
                 band = 2
                 label = new Label(0, fila, r["itemcdgo"], times10); sheet.addCell(label);
                 label = new Label(1, fila, r["itemnmbr"], times10); sheet.addCell(label);
-                number = new Number(2, fila, r["rbrocntd"]); sheet.addCell(number);
-                number = new Number(3, fila, r["rbpcpcun"]); sheet.addCell(number);
-                number = new Number(4, fila, r["rbpcpcun"] * r["rbrocntd"]); sheet.addCell(number);
-                number = new Number(5, fila, r["rndm"]); sheet.addCell(number);
-                number = new Number(6, fila, r["parcial"]); sheet.addCell(number);
+                label = new Label(2, fila, r["unddcdgo"], times10); sheet.addCell(label);
+                number = new Number(3, fila, r["rbrocntd"]); sheet.addCell(number);
+                number = new Number(4, fila, r["rbpcpcun"]); sheet.addCell(number);
+                number = new Number(5, fila, r["rbpcpcun"] * r["rbrocntd"]); sheet.addCell(number);
+                number = new Number(6, fila, r["rndm"]); sheet.addCell(number);
+                number = new Number(7, fila, r["parcial"]); sheet.addCell(number);
                 totalMan += r["parcial"]
                 fila++
             }
@@ -999,17 +1002,19 @@ class ReportesController {
                     fila++
                     label = new Label(0, fila, "Código", times16format); sheet.addCell(label);
                     label = new Label(1, fila, "Descripción", times16format); sheet.addCell(label);
-                    label = new Label(2, fila, "Cantidad", times16format); sheet.addCell(label);
-                    label = new Label(3, fila, "Unitario", times16format); sheet.addCell(label);
-                    label = new Label(6, fila, "C.Total", times16format); sheet.addCell(label);
+                    label = new Label(2, fila, "Unidad", times16format); sheet.addCell(label);
+                    label = new Label(3, fila, "Cantidad", times16format); sheet.addCell(label);
+                    label = new Label(4, fila, "Unitario", times16format); sheet.addCell(label);
+                    label = new Label(7, fila, "C.Total", times16format); sheet.addCell(label);
                     fila++
                 }
                 band = 3
                 label = new Label(0, fila, r["itemcdgo"], times10); sheet.addCell(label);
                 label = new Label(1, fila, r["itemnmbr"], times10); sheet.addCell(label);
-                number = new Number(2, fila, r["rbrocntd"]); sheet.addCell(number);
-                number = new Number(3, fila, r["rbpcpcun"]); sheet.addCell(number);
-                number = new Number(6, fila, r["parcial"]); sheet.addCell(number);
+                label = new Label(2, fila, r["unddcdgo"], times10); sheet.addCell(label);
+                number = new Number(3, fila, r["rbrocntd"]); sheet.addCell(number);
+                number = new Number(4, fila, r["rbpcpcun"]); sheet.addCell(number);
+                number = new Number(7, fila, r["parcial"]); sheet.addCell(number);
                 totalMat += r["parcial"]
                 fila++
 
@@ -1022,7 +1027,7 @@ class ReportesController {
         }
         if (band == 3) {
             label = new Label(0, fila, "SUBTOTAL", times10); sheet.addCell(label);
-            number = new Number(6, fila, totalMat); sheet.addCell(number);
+            number = new Number(7, fila, totalMat); sheet.addCell(number);
             fila++
         }
 
@@ -1034,11 +1039,12 @@ class ReportesController {
             fila++
             label = new Label(0, fila, "Código", times16format); sheet.addCell(label);
             label = new Label(1, fila, "Descripción", times16format); sheet.addCell(label);
-            label = new Label(2, fila, "Peso/Vol", times16format); sheet.addCell(label);
-            label = new Label(3, fila, "Cantidad", times16format); sheet.addCell(label);
-            label = new Label(4, fila, "Distancia", times16format); sheet.addCell(label);
-            label = new Label(5, fila, "Unitario", times16format); sheet.addCell(label);
-            label = new Label(6, fila, "C.Total", times16format); sheet.addCell(label);
+            label = new Label(2, fila, "Unidad", times16format); sheet.addCell(label);
+            label = new Label(3, fila, "Peso/Vol", times16format); sheet.addCell(label);
+            label = new Label(4, fila, "Cantidad", times16format); sheet.addCell(label);
+            label = new Label(5, fila, "Distancia", times16format); sheet.addCell(label);
+            label = new Label(6, fila, "Unitario", times16format); sheet.addCell(label);
+            label = new Label(7, fila, "C.Total", times16format); sheet.addCell(label);
             fila++
             rowsTrans.each { rt ->
                 def tra = rt["parcial_t"]
@@ -1047,15 +1053,16 @@ class ReportesController {
                     tot = rt["parcial_t"] / (rt["itempeso"] * rt["rbrocntd"] * rt["distancia"])
                 label = new Label(0, fila, rt["itemcdgo"], times10); sheet.addCell(label);
                 label = new Label(1, fila, rt["itemnmbr"], times10); sheet.addCell(label);
-                number = new Number(2, fila, rt["itempeso"]); sheet.addCell(number);
-                number = new Number(3, fila, rt["rbrocntd"]); sheet.addCell(number);
-                number = new Number(4, fila, rt["distancia"]); sheet.addCell(number);
-                number = new Number(5, fila, tot); sheet.addCell(number);
-                number = new Number(6, fila, rt["parcial_t"]); sheet.addCell(number);
+                label = new Label(2, fila, rt["unddcdgo"], times10); sheet.addCell(label);
+                number = new Number(3, fila, rt["itempeso"]); sheet.addCell(number);
+                number = new Number(4, fila, rt["rbrocntd"]); sheet.addCell(number);
+                number = new Number(5, fila, rt["distancia"]); sheet.addCell(number);
+                number = new Number(6, fila, tot); sheet.addCell(number);
+                number = new Number(7, fila, rt["parcial_t"]); sheet.addCell(number);
                 fila++
             }
             label = new Label(0, fila, "SUBTOTAL", times10); sheet.addCell(label);
-            number = new Number(6, fila, total); sheet.addCell(number);
+            number = new Number(7, fila, total); sheet.addCell(number);
             fila++
             fila++
         }
@@ -1088,10 +1095,10 @@ class ReportesController {
         sheet.mergeCells(4, fila + 2, 5, fila + 2)
         label = new Label(4, fila + 3, "Precio unitario", times16format); sheet.addCell(label);
         sheet.mergeCells(4, fila + 3, 5, fila + 3)
-        number = new Number(6, fila, totalRubro); sheet.addCell(number);
-        number = new Number(6, fila + 1, totalIndi); sheet.addCell(number);
-        number = new Number(6, fila + 2, totalRubro + totalIndi); sheet.addCell(number);
-        number = new Number(6, fila + 3, (totalRubro + totalIndi).toDouble().round(2)); sheet.addCell(number);
+        number = new Number(7, fila, totalRubro); sheet.addCell(number);
+        number = new Number(7, fila + 1, totalIndi); sheet.addCell(number);
+        number = new Number(7, fila + 2, totalRubro + totalIndi); sheet.addCell(number);
+        number = new Number(7, fila + 3, (totalRubro + totalIndi).toDouble().round(2)); sheet.addCell(number);
         return sheet
     }
 
