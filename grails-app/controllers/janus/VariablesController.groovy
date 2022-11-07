@@ -62,11 +62,39 @@ class VariablesController  extends janus.seguridad.Shield{
 
     def saveVar_ajax() {
         println "saveVar_ajax: $params"
+//        println "saveVar_ajax: ${params.replaceAll(',','.')}"
+//        def mapa = params
+        params.eachWithIndex{ m, i->
+            if(m.value.toString().contains(',')) m.value = m.value.toString().replaceAll(',','.')
+        }
+//        println "mapa: $mapa"
         def obra = Obra.get(params.id)
         params.totales = params.totales.toDouble()
 //        params.precioManoObra = params.precioManoObra.toDouble()
 //        params.precioMateriales = params.precioMateriales.toDouble()
+        params.distanciaPeso     = params.distanciaPeso.toDouble()
+        params.distanciaVolumen  = params.distanciaVolumen.toDouble()
+        params.distanciaPesoEspecial = params.distanciaPesoEspecial.toDouble()
+        params.distanciaVolumenMejoramiento = params.distanciaVolumenMejoramiento.toDouble()
+        params.distanciaVolumenCarpetaAsfaltica = params.distanciaVolumenCarpetaAsfaltica.toDouble()
+        params.distanciaVolumenCarpetaAsfaltica = params.distanciaVolumenCarpetaAsfaltica.toDouble()
+        params.precioManoObra    = params.precioManoObra.toDouble()
+        params.precioMateriales  = params.precioMateriales.toDouble()
+        params.factorReduccion   = params.factorReduccion.toDouble()
+        params.factorVelocidad   = params.factorVelocidad.toDouble()
+        params.capacidadVolquete = params.capacidadVolquete.toDouble()
+        params.factorReduccionTiempo = params.factorReduccionTiempo.toDouble()
+        params.factorVolumen     = params.factorVolumen.toDouble()
+        params.factorPeso        = params.factorPeso.toDouble()
+        params.indiceCostosIndirectosObra = params.indiceCostosIndirectosObra.toDouble()
+        params.indiceGastoObra   = params.indiceGastoObra.toDouble()
+        params.desgloseEquipo    = params.desgloseEquipo.toDouble()
+        params.desgloseRepuestos = params.desgloseRepuestos.toDouble()
+        params.desgloseCombustible = params.desgloseCombustible.toDouble()
+        params.desgloseMecanico  = params.desgloseMecanico.toDouble()
+        params.desgloseSaldo     = params.desgloseSaldo.toDouble()
         obra.properties = params
+//        obra.properties = mapa
         if (!obra.transporteCamioneta) obra.distanciaCamioneta = 0
         if (!obra.transporteAcemila) obra.distanciaAcemila = 0
 
