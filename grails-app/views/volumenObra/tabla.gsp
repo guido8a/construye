@@ -46,6 +46,10 @@
             <i class="fa fa-file-excel-o"></i>
             VAE Excel
         </a>
+        <a href="#" class="btn  " id="imprimir_desglose_excel">
+            <i class="fa fa-file-excel-o"></i>
+            Desglose
+        </a>
     </div>
 </div>
 <table class="table table-bordered table-striped table-condensed table-hover">
@@ -331,6 +335,7 @@
 
     });
 
+
     $("#imprimir_excel").click(function () {
         $("#dlgLoad").dialog("open");
 
@@ -342,6 +347,23 @@
             },
             success: function (msg) {
                 location.href = "${g.createLink(controller: 'reportes',action: 'reporteExcelVolObra',id: obra?.id)}?sub=" + $("#subPres_desc").val();
+                $("#dlgLoad").dialog("close");
+            }
+        });
+    });
+
+
+    $("#imprimir_desglose_excel").click(function () {
+        $("#dlgLoad").dialog("open");
+
+        $.ajax({
+            type: 'POST',
+            url: "${g.createLink(controller: 'reportes',action: 'reporteDesgloseExcelVolObra')}",
+            data: {
+                id: '${obra?.id}'
+            },
+            success: function (msg) {
+                location.href = "${g.createLink(controller: 'reportes',action: 'reporteDesgloseExcelVolObra',id: obra?.id)}?sub=" + $("#subPres_desc").val();
                 $("#dlgLoad").dialog("close");
             }
         });

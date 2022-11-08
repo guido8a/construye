@@ -1344,7 +1344,6 @@ class Reportes5Controller extends Shield{
     }
 
 
-
     def reporteCronogramaNuevoPdf() {
 //        println "reporteCronogramaPdf params: $params"
         def tipo = params.tipo

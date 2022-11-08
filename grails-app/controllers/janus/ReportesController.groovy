@@ -5600,6 +5600,195 @@ class ReportesController {
         output.write(file.getBytes());
     }
 
+    def reporteDesgloseExcelVolObra() {
+
+        def obra = Obra.get(params.id)
+        def detalle
+        detalle = VolumenesObra.findAllByObra(obra, [sort: "orden"])
+        def subPres = VolumenesObra.findAllByObra(obra, [sort: "orden"]).subPresupuesto.unique()
+
+        def precios = [:]
+        def fecha = obra.fechaPreciosRubros
+        def dsps = obra.distanciaPeso
+        def dsvl = obra.distanciaVolumen
+        def lugar = obra.lugar
+        def prch = 0
+        def prvl = 0
+        def subPre
+
+
+        def parcialEquipo = 0
+        def parcialMano = 0
+        def parcialMateriales = 0
+
+
+        preciosService.ac_rbroObra(obra.id)
+
+        def valores
+
+        if (params.sub)
+            if (params.sub == '-1') {
+                valores = preciosService.rbro_pcun_v2(obra.id)
+            } else {
+                valores = preciosService.rbro_pcun_v3(obra.id, params.sub)
+            }
+        else
+            valores = preciosService.rbro_pcun_v2(obra.id)
+
+        if (params.sub == '-1' || params.sub == null) {
+            subPre = subPres?.descripcion
+        } else {
+            subPre = SubPresupuesto.get(params.sub).descripcion
+        }
+
+        def indirecto = obra.totales / 100
+        def c;
+        def total1 = 0;
+        def totales = 0
+        def totalPresupuesto = 0;
+
+        //excel
+
+        WorkbookSettings workbookSettings = new WorkbookSettings()
+        workbookSettings.locale = Locale.default
+        def file = File.createTempFile('myExcelDocument', '.xls')
+        file.deleteOnExit()
+        WritableWorkbook workbook = Workbook.createWorkbook(file, workbookSettings)
+
+        WritableFont font = new WritableFont(WritableFont.ARIAL, 12)
+        WritableCellFormat formatXls = new WritableCellFormat(font)
+
+        def row = 0
+        WritableSheet sheet = workbook.createSheet('MySheet', 0)
+
+        params.id = params.id.split(",")
+        if (params.id.class == java.lang.String) {
+            params.id = [params.id]
+        }
+        WritableFont times16font = new WritableFont(WritableFont.TIMES, 11, WritableFont.BOLD, false);
+        WritableCellFormat times16format = new WritableCellFormat(times16font);
+        sheet.setColumnView(0, 12)
+        sheet.setColumnView(1, 25)
+        sheet.setColumnView(2, 25)
+        sheet.setColumnView(3, 60)
+        sheet.setColumnView(4, 25)
+        sheet.setColumnView(5, 25)
+        sheet.setColumnView(6, 5)
+        sheet.setColumnView(7, 25)
+        sheet.setColumnView(8, 25)
+        sheet.setColumnView(9, 5)
+        sheet.setColumnView(10, 25)
+        sheet.setColumnView(11, 25)
+        sheet.setColumnView(12, 5)
+        sheet.setColumnView(13, 25)
+        sheet.setColumnView(14, 25)
+
+        def label
+        def number
+        def nmro
+        def numero = 1;
+        def fila = 16;
+        def ultimaFila
+
+        label = new Label(2, 2, (Auxiliar.get(1)?.titulo ?: ''), times16format); sheet.addCell(label);
+        label = new Label(2, 4, "DGCP - COORDINACIÓN DE FIJACIÓN DE PRECIOS", times16format); sheet.addCell(label);
+        label = new Label(2, 6, "PRESUPUESTO", times16format); sheet.addCell(label);
+        label = new Label(2, 8, "FECHA: " + obra?.fechaCreacionObra?.format("dd-MM-yyyy"), times16format);
+        sheet.addCell(label);
+        label = new Label(2, 9, "FECHA ACT. PRECIOS: " + obra?.fechaPreciosRubros?.format("dd-MM-yyyy"), times16format);
+        sheet.addCell(label);
+        label = new Label(2, 10, "NOMBRE: " + obra?.nombre, times16format); sheet.addCell(label);
+        label = new Label(2, 11, "DOC. REFERENCIA: " + (obra?.oficioIngreso ?: '') + "  " + (obra?.referencia ?: ''), times16format); sheet.addCell(label);
+        label = new Label(2, 12, "MEMO CANT. DE OBRA: " + (obra?.memoCantidadObra ?: ''), times16format); sheet.addCell(label);
+        label = new Label(7, 14, "Mano de Obra", times16format); sheet.addCell(label);
+        label = new Label(10, 14, "Equipos", times16format); sheet.addCell(label);
+        label = new Label(13, 14, "Materiales", times16format); sheet.addCell(label);
+        label = new Label(0, 15, "N°", times16format); sheet.addCell(label);
+        label = new Label(1, 15, "CÓDIGO", times16format); sheet.addCell(label);
+        label = new Label(2, 15, "SUBPRESUPUESTO", times16format); sheet.addCell(label);
+        label = new Label(3, 15, "RUBRO", times16format); sheet.addCell(label);
+        label = new Label(4, 15, "UNIDAD", times16format); sheet.addCell(label);
+        label = new Label(5, 15, "CANTIDAD", times16format); sheet.addCell(label);
+        label = new Label(6, 15, "", times16format); sheet.addCell(label);
+        label = new Label(7, 15, "C.U", times16format); sheet.addCell(label);
+        label = new Label(8, 15, "TOTAL", times16format); sheet.addCell(label);
+        label = new Label(9, 15, "", times16format); sheet.addCell(label);
+        label = new Label(10, 15, "C.U", times16format); sheet.addCell(label);
+        label = new Label(11, 15, "TOTAL", times16format); sheet.addCell(label);
+        label = new Label(12, 15, "", times16format); sheet.addCell(label);
+        label = new Label(13, 15, "C.U", times16format); sheet.addCell(label);
+        label = new Label(14, 15, "TOTAL", times16format); sheet.addCell(label);
+
+        valores.each {
+
+//            println("---->" + it)
+
+            number = new Number(0, fila, numero++); sheet.addCell(number);
+            label = new Label(1, fila, it.rbrocdgo.toString()); sheet.addCell(label);
+            label = new Label(2, fila, it.sbprdscr.toString()); sheet.addCell(label);
+            label = new Label(3, fila, it.rbronmbr.toString()); sheet.addCell(label);
+            label = new Label(4, fila, it.unddcdgo.toString()); sheet.addCell(label);
+            number = new Number(5, fila, it.vlobcntd); sheet.addCell(number);
+
+            parcialMano = 0
+            parcialEquipo = 0
+            parcialMateriales = 0
+
+            def res = preciosService.precioUnitarioVolumenObraAsc("*", obra.id, it.item__id)
+
+            res.each{ r->
+
+                if(r.grpocdgo == 3){
+                    parcialMano += (r.parcial + r.parcial_t)
+                }
+
+                if(r.grpocdgo == 2){
+                    parcialEquipo += (r.parcial + r.parcial_t)
+                }
+
+                if(r.grpocdgo == 1){
+                    parcialMateriales += (r.parcial + r.parcial_t)
+                }
+
+            }
+
+            // mano obra
+                number = new Number(7, fila, parcialMano); sheet.addCell(number);
+                number = new Number(8, fila, (parcialMano * it.vlobcntd)); sheet.addCell(number);
+
+
+            //equipos
+
+                number = new Number(10, fila, parcialEquipo); sheet.addCell(number);
+                number = new Number(11, fila, (parcialEquipo * it.vlobcntd)); sheet.addCell(number);
+
+
+            //materiales
+
+                number = new Number(13, fila, parcialMateriales); sheet.addCell(number);
+                number = new Number(14, fila, (parcialMateriales * it.vlobcntd)); sheet.addCell(number);
+
+
+//            println("res" + res)
+
+
+            fila++
+            totales = it.totl
+            totalPresupuesto = (total1 += totales);
+            ultimaFila = fila
+        }
+
+        label = new Label(6, ultimaFila, "TOTAL ", times16format); sheet.addCell(label);
+        number = new Number(7, ultimaFila, totalPresupuesto); sheet.addCell(number);
+        workbook.write();
+        workbook.close();
+        def output = response.getOutputStream()
+        def header = "attachment; filename=" + "VolObraDesgloseExcel.xls";
+        response.setContentType("application/octet-stream")
+        response.setHeader("Content-Disposition", header);
+        output.write(file.getBytes());
+    }
+
 
     def dummyReportes() {
         return false
