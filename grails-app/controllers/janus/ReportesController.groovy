@@ -5616,11 +5616,12 @@ class ReportesController {
         def prvl = 0
         def subPre
 
-
         def parcialEquipo = 0
         def parcialMano = 0
         def parcialMateriales = 0
-
+        def parcialTransporte = 0
+        def valorIndirectoObra = obra.totales
+        def indirectos = 0
 
         preciosService.ac_rbroObra(obra.id)
 
@@ -5667,21 +5668,29 @@ class ReportesController {
         }
         WritableFont times16font = new WritableFont(WritableFont.TIMES, 11, WritableFont.BOLD, false);
         WritableCellFormat times16format = new WritableCellFormat(times16font);
-        sheet.setColumnView(0, 12)
-        sheet.setColumnView(1, 25)
+        sheet.setColumnView(0, 10)
+        sheet.setColumnView(1, 15)
         sheet.setColumnView(2, 25)
         sheet.setColumnView(3, 60)
-        sheet.setColumnView(4, 25)
-        sheet.setColumnView(5, 25)
+        sheet.setColumnView(4, 10)
+        sheet.setColumnView(5, 15)
         sheet.setColumnView(6, 5)
-        sheet.setColumnView(7, 25)
-        sheet.setColumnView(8, 25)
+        sheet.setColumnView(7, 20)
+        sheet.setColumnView(8, 20)
         sheet.setColumnView(9, 5)
-        sheet.setColumnView(10, 25)
-        sheet.setColumnView(11, 25)
+        sheet.setColumnView(10, 20)
+        sheet.setColumnView(11, 20)
         sheet.setColumnView(12, 5)
-        sheet.setColumnView(13, 25)
-        sheet.setColumnView(14, 25)
+        sheet.setColumnView(13, 20)
+        sheet.setColumnView(14, 20)
+        sheet.setColumnView(15, 5)
+        sheet.setColumnView(16, 20)
+        sheet.setColumnView(17, 20)
+        sheet.setColumnView(18, 5)
+        sheet.setColumnView(19, 20)
+        sheet.setColumnView(20, 5)
+        sheet.setColumnView(21, 20)
+        sheet.setColumnView(22, 20)
 
         def label
         def number
@@ -5703,6 +5712,8 @@ class ReportesController {
         label = new Label(7, 14, "Mano de Obra", times16format); sheet.addCell(label);
         label = new Label(10, 14, "Equipos", times16format); sheet.addCell(label);
         label = new Label(13, 14, "Materiales", times16format); sheet.addCell(label);
+        label = new Label(16, 14, "Transporte", times16format); sheet.addCell(label);
+        label = new Label(21, 14, "Totales", times16format); sheet.addCell(label);
         label = new Label(0, 15, "N°", times16format); sheet.addCell(label);
         label = new Label(1, 15, "CÓDIGO", times16format); sheet.addCell(label);
         label = new Label(2, 15, "SUBPRESUPUESTO", times16format); sheet.addCell(label);
@@ -5718,10 +5729,16 @@ class ReportesController {
         label = new Label(12, 15, "", times16format); sheet.addCell(label);
         label = new Label(13, 15, "C.U", times16format); sheet.addCell(label);
         label = new Label(14, 15, "TOTAL", times16format); sheet.addCell(label);
+        label = new Label(15, 15, "", times16format); sheet.addCell(label);
+        label = new Label(16, 15, "C.U", times16format); sheet.addCell(label);
+        label = new Label(17, 15, "TOTAL", times16format); sheet.addCell(label);
+        label = new Label(18, 15, "", times16format); sheet.addCell(label);
+        label = new Label(19, 15, "INDIRECTOS", times16format); sheet.addCell(label);
+        label = new Label(20, 15, "", times16format); sheet.addCell(label);
+        label = new Label(21, 15, "C.U", times16format); sheet.addCell(label);
+        label = new Label(22, 15, "TOTAL", times16format); sheet.addCell(label);
 
         valores.each {
-
-//            println("---->" + it)
 
             number = new Number(0, fila, numero++); sheet.addCell(number);
             label = new Label(1, fila, it.rbrocdgo.toString()); sheet.addCell(label);
@@ -5737,7 +5754,6 @@ class ReportesController {
             def res = preciosService.precioUnitarioVolumenObraAsc("*", obra.id, it.item__id)
 
             res.each{ r->
-
                 if(r.grpocdgo == 3){
                     parcialMano += (r.parcial + r.parcial_t)
                 }
@@ -5750,27 +5766,41 @@ class ReportesController {
                     parcialMateriales += (r.parcial + r.parcial_t)
                 }
 
+                if(r.grpocdgo == 1){
+                    parcialTransporte += r.parcial_t
+                }
             }
 
             // mano obra
                 number = new Number(7, fila, parcialMano); sheet.addCell(number);
                 number = new Number(8, fila, (parcialMano * it.vlobcntd)); sheet.addCell(number);
 
-
             //equipos
 
                 number = new Number(10, fila, parcialEquipo); sheet.addCell(number);
                 number = new Number(11, fila, (parcialEquipo * it.vlobcntd)); sheet.addCell(number);
-
 
             //materiales
 
                 number = new Number(13, fila, parcialMateriales); sheet.addCell(number);
                 number = new Number(14, fila, (parcialMateriales * it.vlobcntd)); sheet.addCell(number);
 
+            //transporte
 
-//            println("res" + res)
+                number = new Number(16, fila, parcialTransporte); sheet.addCell(number);
+                number = new Number(17, fila, (parcialTransporte * it.vlobcntd)); sheet.addCell(number);
 
+            //indirectos
+
+                indirectos = parcialMano + parcialEquipo + parcialMateriales + parcialTransporte
+                def totalIndirectos = indirectos?.toDouble() * valorIndirectoObra?.toDouble() / 100
+                number = new Number(19, fila, totalIndirectos); sheet.addCell(number);
+
+            //totales
+
+            def parcialCuTotal = indirectos + totalIndirectos
+            number = new Number(21, fila, parcialCuTotal); sheet.addCell(number);
+            number = new Number(22, fila, it.totl); sheet.addCell(number);
 
             fila++
             totales = it.totl
@@ -5778,8 +5808,8 @@ class ReportesController {
             ultimaFila = fila
         }
 
-        label = new Label(6, ultimaFila, "TOTAL ", times16format); sheet.addCell(label);
-        number = new Number(7, ultimaFila, totalPresupuesto); sheet.addCell(number);
+//        label = new Label(6, ultimaFila, "TOTAL ", times16format); sheet.addCell(label);
+//        number = new Number(7, ultimaFila, totalPresupuesto); sheet.addCell(number);
         workbook.write();
         workbook.close();
         def output = response.getOutputStream()
