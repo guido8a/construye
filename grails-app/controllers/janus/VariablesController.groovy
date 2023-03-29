@@ -140,6 +140,12 @@ class VariablesController  extends janus.seguridad.Shield{
         }
 
         def obra = Obra.get(params.id)
+
+        if(obra.valor == 0) {
+            flash.clase = "alert-error"
+            flash.message = "No se ha definido el valor de la obra, vaya a volúmenes de obra y calcule el total de la obra (botón 'Calcular')"
+        }
+
         if (params.tipo == "-1") {
             params.tipo = "1,2,3"
         }
