@@ -1063,5 +1063,85 @@ class Reportes6Controller {
         }
     }
 
+    def reporteMantenimientoItemsPreciosExcel() {
+
+        def cn = dbConnectionService.getConnection()
+
+        def res = Item.withCriteria {
+            eq("tipoItem", TipoItem.findByCodigo("I"))
+            eq("estado", "A")
+            order("nombre","asc")
+        }
+
+        WorkbookSettings workbookSettings = new WorkbookSettings()
+        workbookSettings.locale = Locale.default
+
+        def file = File.createTempFile('myExcelDocument', '.xls')
+        file.deleteOnExit()
+        WritableWorkbook workbook = Workbook.createWorkbook(file, workbookSettings)
+
+        WritableFont font = new WritableFont(WritableFont.ARIAL, 12)
+        WritableCellFormat formatXls = new WritableCellFormat(font)
+
+        def row = 0
+        WritableSheet sheet = workbook.createSheet('PRECIOS', 0)
+
+        WritableFont times16font = new WritableFont(WritableFont.TIMES, 11, WritableFont.BOLD, false);
+        WritableCellFormat times16format = new WritableCellFormat(times16font);
+        sheet.setColumnView(0, 20)
+        sheet.setColumnView(1, 60)
+        sheet.setColumnView(2, 15)
+        sheet.setColumnView(3, 20)
+        sheet.setColumnView(4, 20)
+        sheet.setColumnView(5, 20)
+        sheet.setColumnView(6, 25)
+
+        def label
+        def number
+        def fila = 8;
+
+//        label = new jxl.write.Label(2, 1, (Auxiliar.get(1)?.titulo ?: '').toUpperCase(), times16format);
+//        sheet.addCell(label);
+        label = new jxl.write.Label(1, 2, "GAD. LOS RÍOS ", times16format);
+        sheet.addCell(label);
+
+        label = new jxl.write.Label(1, 4, "LISTA DE PRECIOS " , times16format);
+        sheet.addCell(label);
+        label = new jxl.write.Label(1, 5, "FECHA DE CONSULTA: " + new Date().format("dd-MM-yyyy"), times16format);
+        sheet.addCell(label);
+
+        def col = 0
+        label = new jxl.write.Label(col, 6, "CODIGO", times16format); sheet.addCell(label); col++;
+        label = new jxl.write.Label(col, 6,"ITEM", times16format); sheet.addCell(label);         col++;
+        label = new jxl.write.Label(col, 6, "UNIDAD", times16format); sheet.addCell(label); col++;
+        label = new jxl.write.Label(col, 6, "PRECIO", times16format); sheet.addCell(label); col++;
+        label = new jxl.write.Label(col, 6, "FECHA", times16format); sheet.addCell(label); col++;
+
+        res.each {
+            def sql = "select rbpcfcha, rbpcpcun from item_pcun_v2(${it?.id}, now()::date, 2, null, null, null, null, null)"
+            def precio = cn.rows(sql.toString())
+//            println("precios " + precio)
+            col = 0
+            label = new jxl.write.Label(col, fila, it?.codigo?.toString()); sheet.addCell(label); col++;
+            label = new jxl.write.Label(col, fila, it?.nombre?.toString()); sheet.addCell(label); col++;
+            label = new jxl.write.Label(col, fila, it?.unidad?.codigo?.toString()); sheet.addCell(label); col++;
+            number = new jxl.write.Number(col, fila, (precio[0].rbpcpcun ?: 0)); sheet.addCell(number); col++;
+            if(precio[0].rbpcfcha){
+                label = new jxl.write.Label(col, fila,precio[0].rbpcfcha?.format("dd-MM-yyyy")); sheet.addCell(label); col++;
+            }else{
+                label = new jxl.write.Label(col, fila, ""); sheet.addCell(label); col++;
+            }
+            fila++
+        }
+
+        workbook.write();
+        workbook.close();
+        def output = response.getOutputStream()
+        def header = "attachment; filename=" + "MantenimientoItemsPreciosExcel.xls";
+        response.setContentType("application/octet-stream")
+        response.setHeader("Content-Disposition", header);
+        output.write(file.getBytes());
+    }
+
 
 }

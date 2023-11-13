@@ -43,7 +43,7 @@
             </div>
         </g:if>
 
-        <div class="span12 btn-group" data-toggle="buttons-radio">
+        <div class="span8 btn-group" data-toggle="buttons-radio">
             <a href="#" id="1" class="btn btn-info toggle active">
                 <i class="icon-folder-open-alt"></i>
                 Materiales <!--grpo--><!--sbgr -> Grupo--><!--dprt -> Subgrupo--><!--item-->
@@ -66,6 +66,13 @@
             </form>
 
         </div>
+
+    <div class="span2 btn-group">
+        <a href="#" id="btnReporteMIP" class="btn btn-success">
+            <i class="icon-print"></i>
+            Reporte
+        </a>
+    </div>
 
         <div id="loading" style="text-align:center;">
             <img src="${resource(dir: 'images', file: 'spinner_24.gif')}" alt="Cargando..."/>
@@ -1005,6 +1012,13 @@
                 });
 
             });
+
+
+            $("#btnReporteMIP").click(function () {
+                location.href = "${g.createLink(controller: 'reportes6', action: 'reporteMantenimientoItemsPreciosExcel')}";
+            });
+
+
         </script>
 
     </body>
