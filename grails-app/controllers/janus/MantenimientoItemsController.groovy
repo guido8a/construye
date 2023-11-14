@@ -84,7 +84,7 @@ class MantenimientoItemsController extends Shield {
         tree += "<ul>"
         hijos.each { hijo ->
             def hijosH, desc, liId
-            println "hijo ... "+tipo
+            //println "hijo ... "+tipo
             switch (tipo) {
                 case "grupo_manoObra":
                     hijosH = Item.findAllByDepartamentoAndEmpresa(hijo, empresa,[sort: 'codigo'])

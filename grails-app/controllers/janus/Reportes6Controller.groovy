@@ -1118,7 +1118,7 @@ class Reportes6Controller {
         label = new jxl.write.Label(col, 6, "FECHA", times16format); sheet.addCell(label); col++;
 
         res.each {
-            def sql = "select rbpcfcha, rbpcpcun from item_pcun_v2(${it?.id}, now()::date, 2, null, null, null, null, null)"
+            def sql = "select rbpcfcha, rbpcpcun from item_pcun_v2(${it?.id}, now()::date, 2, null, null, null, null, 4)"
             def precio = cn.rows(sql.toString())
 //            println("precios " + precio)
             col = 0

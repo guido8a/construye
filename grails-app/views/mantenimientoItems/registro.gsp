@@ -69,8 +69,8 @@
 
     <div class="span2 btn-group">
         <a href="#" id="btnReporteMIP" class="btn btn-success">
-            <i class="icon-print"></i>
-            Reporte
+            <i class="fa fa-file-excel-o"></i>
+            Reporte de Materiales
         </a>
     </div>
 
