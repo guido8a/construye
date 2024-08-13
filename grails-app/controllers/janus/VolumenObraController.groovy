@@ -567,11 +567,14 @@ class VolumenObraController extends janus.seguridad.Shield {
 
     def listaItem() {
         println "listaItem" + params
+        def usuario = Persona.get(session.usuario.id)
+        def empresa = usuario.empresa
         def listaItems = ['itemnmbr', 'itemcdgo']
         def datos;
         def select = "select item.item__id, itemcdgo, itemnmbr, unddcdgo " +
                 "from item, undd "
-        def txwh = "where tpit__id = 2 and undd.undd__id = item.undd__id and itemaprb = 'R'"
+        def txwh = "where tpit__id = 2 and undd.undd__id = item.undd__id and itemaprb = 'R' and " +
+                   "empr__id = ${empresa.id}"
         def sqlTx = ""
         def bsca = listaItems[params.buscarPor.toInteger()-1]
         def ordn = listaItems[params.ordenar.toInteger()-1]
