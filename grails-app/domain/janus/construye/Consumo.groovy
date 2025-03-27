@@ -16,6 +16,7 @@ class Consumo implements Serializable{
     Date fechaModificacion
     String estado
     String observaciones
+    String descripcion
 
         static auditable=[ignore:[]]
         static mapping = {
@@ -37,6 +38,7 @@ class Consumo implements Serializable{
                 fechaModificacion column: 'cnsmfcmd'
                 estado column: 'cnsmetdo'
                 observaciones column: 'cnsmobsr'
+                descripcion column: 'cnsmdscr'
 
             }
         }
@@ -46,6 +48,7 @@ class Consumo implements Serializable{
             padre(blank:true, nullable:true )
             estado(blank:false, nullable:false )
             observaciones(blank:true, nullable:true )
+            descripcion(blank:true, nullable:true )
         }
         String toString(){
             "${this.bodega.nombre} (${this.fecha})"

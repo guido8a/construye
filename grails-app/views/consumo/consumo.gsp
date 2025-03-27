@@ -108,15 +108,27 @@
 <div id="list-grupo" class="span12" role="main" style="margin-top: 10px;margin-left: -10px">
 
     <div style="border-bottom: 1px solid black;padding-left: 50px;position: relative;">
-        <g:form name="frmRubro" action="save" style="height: 160px;">
+        <g:form name="frmRubro" action="save" style="height: 190px;">
             <input type="hidden" id="obra__id" name="obra__id" value="${consumo?.obra?.id}">
             <input type="hidden" id="consumo__id" name="id" value="${consumo?.id}">
 
             <p class="css-vertical-text">Requisición</p>
 
-            <div class="linea" style="height: 100px;"></div>
+            <div class="linea" style="height: 190px;"></div>
 
             <div class="row-fluid">
+                <div class="span2">
+                    Concepto o propósito
+                </div>
+                <div class="span10">
+                    <g:textField name="descripcion" value="${consumo?.descripcion}"
+                                 title="${consumo?.descripcion}" class="span12"/>
+                </div>
+            </div>
+
+            <div class="row-fluid">
+
+
                 <div class="span2" style="width: 130px;">
                     Obra
                     <input type="text" name="obra" class="span20 allCaps required input-small"
@@ -137,7 +149,7 @@
                 </g:if>
 
                 <div class="span8" style="margin-left: 10px">
-                    Descripción
+                    Nombre de la Obra
                     <input type="text" name="nombre" class="span72" value="${consumo?.obra?.nombre}" id="obradscr" readonly="true">
                 </div>
 
@@ -308,7 +320,8 @@
                                    data-id="${item.dtcs__id}"
                                    data-cant="${item.dtcscntd}" data-nombre="${item.itemnmbr}"
                                    data-precio="${item.dtcspcun}"
-                                   data-unidad="${item.unddcdgo}" data-item="${item.comp__id}"
+                                   %{--data-unidad="${item.unddcdgo}" data-item="${item.comp__id}"--}%
+                                   data-unidad="${item.unddcdgo}"
                                    data-codigo="${item.itemcdgo}">
                                     <i class="icon-edit"></i>
                                 </a>
