@@ -112,11 +112,14 @@ class ConsumoController extends janus.seguridad.Shield {
 
     def listaObra() {
         println "listaObra" + params
+        def persona = Persona.get(session.usuario.id)
+        def empresa = persona.empresa
         def listaObra = ['obranmbr', 'obracdgo']
         def datos;
         def select = "select obra.obra__id, obracdgo, obranmbr " +
                 "from obra "
-        def txwh = "where obra.obra__id in (select obra__id from comp) "
+//        def txwh = "where obra.obra__id in (select obra__id from comp) "
+        def txwh = "where empr__id = ${empresa.id}"
         def sqlTx = ""
         def bsca = listaObra[params.buscarPor.toInteger()-1]
         def ordn = listaObra[params.ordenar.toInteger()-1]
@@ -154,10 +157,12 @@ class ConsumoController extends janus.seguridad.Shield {
 
     def listaItem() {
         println "listaItem" + params
-        def listaItems = ['itemnmbr', 'itemcdgo']
+        def listaItems = ['item.itemnmbr', 'item.itemcdgo']
         def datos;
-        def select = "select * from rp_existencias(${params.grupo}, ${params.bdga}) rp, comp "
-        def txwh = "where comp.item__id = rp.item__id and exstcntd > 0 and obra__id = ${params.obra} "
+//        def select = "select * from rp_existencias(${params.grupo}, ${params.bdga}) rp, comp "
+        def select = "select * from rp_existencias(${params.grupo}, ${params.bdga}) rp, item "
+//        def txwh = "where comp.item__id = rp.item__id and exstcntd > 0 and obra__id = ${params.obra} "
+        def txwh = "where item.item__id = rp.item__id and exstcntd > 0 "
         def sqlTx = ""
         def bsca = listaItems[params.buscarPor.toInteger()-1]
         def ordn = listaItems[params.ordenar.toInteger()-1]
@@ -201,17 +206,20 @@ class ConsumoController extends janus.seguridad.Shield {
     def guardarDetalleConsumo_ajax(){
         println("params dt " + params)
         def detalle
-        def composicion = Composicion.get(params.composicion)
+//        def composicion = Composicion.get(params.composicion)
+        def composicion = Item.get(params.composicion)
         def consumo = Consumo.get(params.consumo)
 
         if(params.id){
             detalle = DetalleConsumo.get(params.id)
+            composicion = detalle.item
         }else{
 
             def detalles = DetalleConsumo.findAllByConsumo(consumo)
 
             if(detalles){
-                if(composicion.item in detalles.composicion.item){
+//                if(composicion.item in detalles.composicion.item){
+                if(composicion in detalles.item){
                     render "er_El item seleccionado ya se encuentra agregado"
                     return false;
                 }else{
@@ -229,7 +237,8 @@ class ConsumoController extends janus.seguridad.Shield {
             if(params.cantidad.toDouble() > det2?.cantidad){
                 render "er_La cantidad ingresada es mayor a " + det2?.cantidad
             }else{
-                detalle.composicion = composicion
+//                detalle.composicion = composicion
+                detalle.item = composicion
                 detalle.consumo = consumo
                 detalle.precioUnitario = params.precioUnitario.toDouble()
                 detalle.cantidad = params.cantidad.toDouble()
@@ -242,8 +251,11 @@ class ConsumoController extends janus.seguridad.Shield {
                 }
             }
         }else{
-
-            def sql1="select * from rp_existencias('${composicion?.grupo?.codigo}', '${params.bodega}') rp, comp  where comp.item__id = rp.item__id and exstcntd > 0 and obra__id = ${consumo?.obra?.id} and rp.item__id = ${composicion?.item?.id}"
+            println "comp: ${composicion}"
+//            def sql1="select * from rp_existencias('${composicion?.grupo?.codigo}', '${params.bodega}') rp, comp  where comp.item__id = rp.item__id and exstcntd > 0 and obra__id = ${consumo?.obra?.id} and rp.item__id = ${composicion?.item?.id}"
+            def sql1="select * from rp_existencias('${composicion?.departamento?.subgrupo?.grupo?.codigo}', '${params.bodega}') rp, item " +
+                    "where item.item__id = rp.item__id and exstcntd > 0 and rp.item__id = ${composicion?.id}"
+            println "sql_dt: $sql1"
             def cn1 = dbConnectionService.getConnection()
             def datos1 = cn1.rows(sql1)
 
@@ -253,7 +265,7 @@ class ConsumoController extends janus.seguridad.Shield {
                 render "er_La cantidad ingresada es mayor a la cantidad disponible en existencias: ${cantidadExistencias}"
             }else{
 
-                def sql2 = "select * from rp_consumo(${consumo?.obra?.id?.toInteger()}) where item__id = ${composicion?.item?.id}"
+                def sql2 = "select compcntd from rp_consumo(${consumo?.obra?.id?.toInteger()}) where item__id = ${composicion?.id}"
                 def cn2 = dbConnectionService.getConnection()
                 def datos2 = cn2.rows(sql2)
 
@@ -261,15 +273,17 @@ class ConsumoController extends janus.seguridad.Shield {
 
                 def band = false
                 def exceso = 0
+                def cantidad = datos2[0]?.compcntd?:0
 
-                if(params.cantidad.toDouble() > datos2[0].compcntd){
-                    exceso = params.cantidad.toDouble() - datos2[0].compcntd.toDouble()
+                if(params.cantidad.toDouble() > cantidad){
+                    exceso = params.cantidad.toDouble() - cantidad.toDouble()
                     band = true
                 }else{
                     band= false
                 }
 
-                detalle.composicion = composicion
+//                detalle.composicion = composicion
+                detalle.item = composicion
                 detalle.consumo = consumo
                 detalle.precioUnitario = params.precioUnitario.toDouble()
                 detalle.cantidad = params.cantidad.toDouble()
@@ -279,9 +293,10 @@ class ConsumoController extends janus.seguridad.Shield {
                     render "no"
                 }else{
                     if(band){
-                        render "ms_El item se agregó correctamente a la requisición" + '<br>' + '<p style="color: #9A2020">' +
-                                "AVISO:" + "La composición consta de: "  + datos2[0].compcntd + '<br>' +
-                                "y se agregaron " + exceso + " adicionales" + '</p>'
+//                        render "ms_El item se agregó correctamente a la requisición" + '<br>' + '<p style="color: #9A2020">' +
+//                                "AVISO:" + "La composición consta de: "  + cantidad + '<br>' +
+//                                "y se agregaron " + exceso + " adicionales" + '</p>'
+                        render "ms_El item se agregó correctamente"
                     }else{
                         render "ok"
                     }

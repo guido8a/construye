@@ -61,7 +61,7 @@
         Cancelar
     </a>
     <g:if test="${consumo?.id}">
-        <g:if test="${consumo?.estado == 'P'}">
+        <g:if test="${consumo?.estado == 'N'}">
             <g:if test="${items?.size() > 0 }">
                 <a href="#" class="btn btn-ajax btn-new btn-primary" id="btnRegistrar">
                     <i class="icon-check"></i>
@@ -728,7 +728,8 @@
         var idRubro = '${consumo?.id}';
         $.box({
             imageClass: "box_info",
-            text: "Está seguro de cambiar el estado de este" + '<p style="margin-left: 42px">' + "consumo a " + '<strong style="color: #1a7031">' + "REGISTRADO" + "?" + '</strong>' + '</p>',
+            text: "Está seguro de cambiar el estado de este" + '<p style="margin-left: 42px">' + "consumo a " +
+              '<strong style="color: #1a7031">' + "REGISTRADO" + "?" + '</strong>' + '</p>',
             title: "Registrar consumo",
             dialog: {
                 resizable: false,

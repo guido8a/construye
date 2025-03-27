@@ -26,7 +26,8 @@
                 </td>
                 <td style="width: 12%">${dt.exstpcun}</td>
                 <td style="width: 8%"><div style="text-align: center" class="seleccionaItem" id="reg_${i}"
-                                           regId="${dt?.comp__id}" regNmbr="${dt?.itemnmbr}" regCdgo="${dt?.itemcdgo}"
+                                           %{--regId="${dt?.comp__id}" regNmbr="${dt?.itemnmbr}" regCdgo="${dt?.itemcdgo}"--}%
+                                           regId="${dt?.item__id}" regNmbr="${dt?.itemnmbr}" regCdgo="${dt?.itemcdgo}"
                                            regUn="${dt?.unddcdgo}" regPc="${dt?.exstpcun}" data-id="${dt?.item__id}" data-cant="${dt?.exstcntd}">
                     <button class="btn btn-small btn-success"><i class="icon-check"></i></button>
                 </div></td>
