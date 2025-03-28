@@ -269,10 +269,10 @@
                 <g:set var="total" value="${0}"/>
                 <g:each in="${items}" var="item" status="i">
                     <tr class="item_row " id="${item.id}">
-                        <td class="col_hora" style="text-align: left">${item.item.codigo}</td>
-                        <td class="col_hora" style="text-align: left">${item.item.nombre}</td>
+                        <td class="col_hora" style="text-align: left">${item.item?.codigo}</td>
+                        <td class="col_hora" style="text-align: left">${item.item?.nombre}</td>
                         <td class="col_rend rend" style="width: 50px;text-align: center">
-                            ${item.item.unidad}
+                            ${item.item?.unidad}
                         </td>
                         <td style="text-align: right" class="cant">
                             <g:formatNumber number="${item.cantidad}" format="##,###0" minFractionDigits="2"
@@ -290,10 +290,10 @@
                             <g:if test="${consumo?.estado == 'N'}">
                                 <a class="btn btn-small btn-primary editarItem" href="#" rel="tooltip" title="Editar"
                                    data-id="${item.id}"
-                                   data-cant="${item.cantidad}" data-nombre="${item.item.nombre}"
+                                   data-cant="${item.cantidad}" data-nombre="${item.item?.nombre}"
                                    data-precio="${item.precioUnitario}"
-                                   data-unidad="${item.item.unidad}" data-item="${item.item.id}"
-                                   data-codigo="${item.item.codigo}">
+                                   data-unidad="${item.item?.unidad}" data-item="${item.item?.id}"
+                                   data-codigo="${item.item?.codigo}">
                                     <i class="icon-edit"></i>
                                 </a>
                                 <a class="btn btn-small btn-danger borrarItem" href="#" rel="tooltip" title="Eliminar"
@@ -582,7 +582,7 @@
         var nombre = $(this).data("nombre");
         var precio = $(this).data("precio");
         var codigo = $(this).data("codigo");
-        var unidad = $(this).data("unidad");
+        var nombre = $(this).data("unidad");
         $("#idItems").val(id);
         $("#item_id").val(comp);
         $("#item_cantidad").val(cantidad);
