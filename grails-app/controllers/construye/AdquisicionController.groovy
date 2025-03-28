@@ -24,7 +24,15 @@ class AdquisicionController {
         if(params.id){
             adquisicion = Adquisicion.get(params.id)
         }else{
-            adquisicion = new Adquisicion()
+
+            def existen = Adquisicion.findAllByEstado('N')
+
+            if(existen){
+                adquisicion = existen[0]
+            }else{
+                adquisicion = new Adquisicion()
+            }
+
         }
 
         println "adqc: ${adquisicion?.id}"
