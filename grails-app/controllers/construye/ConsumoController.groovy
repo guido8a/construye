@@ -192,10 +192,12 @@ class ConsumoController extends janus.seguridad.Shield {
         def listaItems = ['itemnmbr', 'itemcdgo']
         def datos
         def reqc = params.consumo
-        def select = "select dtcs.comp__id, item.item__id, itemcdgo, itemnmbr, dtcscntd, dtcspcun, unddcdgo " +
-                "from cnsm d, cnsm pdre, dtcs, comp, item, undd "
-        def txwh = "where pdre.cnsm__id = d.cnsmpdre and d.cnsm__id = ${reqc} and item.item__id = comp.item__id and " +
-                "comp.comp__id = dtcs.comp__id and dtcs.cnsm__id = pdre.cnsm__id and " +
+//        def select = "select dtcs.comp__id, item.item__id, itemcdgo, itemnmbr, dtcscntd, dtcspcun, unddcdgo " +
+//                "from cnsm d, cnsm pdre, dtcs, comp, item, undd "
+        def select = "select dtcs.item__id, itemcdgo, itemnmbr, dtcscntd, dtcspcun, unddcdgo " +
+                "from cnsm d, cnsm pdre, dtcs, item, undd, dprt, sbgr "
+        def txwh = "where pdre.cnsm__id = d.cnsmpdre and d.cnsm__id = ${reqc} and item.item__id = dtcs.item__id and " +
+                "dtcs.cnsm__id = pdre.cnsm__id and dprt.dprt__id = item.dprt__id and sbgr.sbgr__id = dprt.sbgr__id and " +
                 "undd.undd__id = item.undd__id and pdre.cnsmetdo = 'R' "
         def sqlTx = ""
 
