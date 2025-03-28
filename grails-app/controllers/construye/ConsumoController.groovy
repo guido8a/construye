@@ -243,7 +243,8 @@ class ConsumoController extends janus.seguridad.Shield {
         }
 
         if(consumo?.padre){
-            def det2 = DetalleConsumo.findByConsumoAndComposicion(consumo.padre, composicion)
+//            def det2 = DetalleConsumo.findByConsumoAndComposicion(consumo.padre, composicion)
+            def det2 = DetalleConsumo.findByConsumoAndItem(consumo.padre, composicion)
 //        println("cantidad original " + det2?.cantidad)
 
             if(params.cantidad.toDouble() > det2?.cantidad){
