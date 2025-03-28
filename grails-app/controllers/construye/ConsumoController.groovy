@@ -374,24 +374,28 @@ class ConsumoController extends janus.seguridad.Shield {
         def recibe = Persona.findAllByDepartamentoInList(dpto)
         def consumo
         def items = []
+        def band = false
 
 //        println "depto "+dpto
         if (params.id) {
             consumo = Consumo.get(params.id)
         }else{
-//            def existen = Consumo.findAllByEstadoAndPadreIsNotNull("N")
-//            if(existen){
-//                consumo = Consumo.get(existen[0]?.id)
-//            }else{
-//                consumo = new Consumo()
-//            }
+            def existen = Consumo.findAllByEstadoAndPadreIsNotNull("N")
+            if(existen){
+                consumo = existen[0]
+                band = true
+            }else{
+                consumo = new Consumo()
+            }
         }
 
-        if(consumo){
-            items = DetalleConsumo.findAllByConsumo(consumo).sort{it?.composicion?.item?.nombre}
+        if(consumo?.id >= 0){
+            items = DetalleConsumo.findAllByConsumo(consumo).sort{it?.item?.nombre}
         }
 
-        [consumo: consumo, recibe: recibe, bodegas:bodegas, listaCnsm: listaConsumo, listaItems: listaItems, listaObra: listaObra, items: items ]
+        println("uitemns " + items)
+
+        [consumo: consumo, recibe: recibe, bodegas:bodegas, listaCnsm: listaConsumo, listaItems: listaItems, listaObra: listaObra, items: items, band: band]
     }
 
 

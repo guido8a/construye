@@ -84,6 +84,13 @@
     </g:if>
 </div>
 
+<g:if test="${band}">
+    <div class="span12" style="margin-top: 5px">
+        <div class="alert alert-info" style="text-align: center; font-size: 14px">
+            <i class="fa fa-exclamation-triangle fa-2x"></i>  Ya existe una devolución no registrada en el sistema
+        </div>
+    </div>
+</g:if>
 
 <div id="list-grupo" class="span12" role="main" style="margin-top: 10px;margin-left: -10px">
 
@@ -262,13 +269,12 @@
                 <g:set var="total" value="${0}"/>
                 <g:each in="${items}" var="item" status="i">
                     <tr class="item_row " id="${item.id}">
-                        <td class="col_hora" style="text-align: left">${item.composicion.item.codigo}</td>
-                        <td class="col_hora" style="text-align: left">${item.composicion.item.nombre}</td>
+                        <td class="col_hora" style="text-align: left">${item.item.codigo}</td>
+                        <td class="col_hora" style="text-align: left">${item.item.nombre}</td>
                         <td class="col_rend rend" style="width: 50px;text-align: center">
-                            ${item.composicion.item.unidad}
+                            ${item.item.unidad}
                         </td>
                         <td style="text-align: right" class="cant">
-                            %{--                            <g:hiddenField name="cantidad_original" value="${item.cantidad}"/>--}%
                             <g:formatNumber number="${item.cantidad}" format="##,###0" minFractionDigits="2"
                                             maxFractionDigits="2" locale="ec"/>
                         </td>
@@ -284,10 +290,10 @@
                             <g:if test="${consumo?.estado == 'N'}">
                                 <a class="btn btn-small btn-primary editarItem" href="#" rel="tooltip" title="Editar"
                                    data-id="${item.id}"
-                                   data-cant="${item.cantidad}" data-nombre="${item.composicion.item.nombre}"
+                                   data-cant="${item.cantidad}" data-nombre="${item.item.nombre}"
                                    data-precio="${item.precioUnitario}"
-                                   data-unidad="${item.composicion.item.unidad}" data-item="${item.composicion.id}"
-                                   data-codigo="${item.composicion.item.codigo}">
+                                   data-unidad="${item.item.unidad}" data-item="${item.item.id}"
+                                   data-codigo="${item.item.codigo}">
                                     <i class="icon-edit"></i>
                                 </a>
                                 <a class="btn btn-small btn-danger borrarItem" href="#" rel="tooltip" title="Eliminar"
@@ -481,11 +487,11 @@
                             success: function (msg) {
                                 $("#dlgLoad").dialog("close");
                                 var parts = msg.split("_");
-                                if (parts[0] == 'ok') {
+                                if (parts[0] === 'ok') {
                                     $("#spanOk").html("Estado cambiado correctamente");
                                     $("#divOk").show();
                                     setTimeout(function () {
-                                        location.reload(true)
+                                        location.reload()
                                     }, 1000);
                                 } else {
                                     $("#spanError").html("Error al cambiar el estado de la requisición");
@@ -501,7 +507,7 @@
                 }
             }
         });
-    })
+    });
 
     function validarNumDec(ev) {
         /*
@@ -548,8 +554,8 @@
                                 id: id
                             },
                             success: function (msg) {
-                                $("#dlgLoad").dialog("close")
-                                if (msg == 'ok') {
+                                $("#dlgLoad").dialog("close");
+                                if (msg === 'ok') {
                                     $("#spanOk").html("Se ha eliminado el item correctamente");
                                     $("#divOk").show();
                                     setTimeout(function () {
