@@ -82,8 +82,15 @@
     </a>
 </div>
 
+<g:if test="${band}">
+    <div class="span12" style="margin-top: 5px">
+        <div class="alert alert-info" style="text-align: center; font-size: 14px">
+            <i class="fa fa-exclamation-triangle fa-2x"></i>  Ya existe una adquisición no registrada en el sistema
+        </div>
+    </div>
+</g:if>
 
-<div id="list-grupo" class="span12" role="main" style="margin-top: 10px;margin-left: -10px">
+<div id="list-grupo" class="span12" role="main" style="margin-top: 5px;margin-left: -10px">
 
     <div style="border-bottom: 1px solid black;padding-left: 50px;position: relative;">
         <g:form name="frmAdquisicion" action="save" style="height: 100px;">
@@ -183,9 +190,9 @@
                 <div class="row-fluid" style="margin-bottom: 5px">
 
                     <div class="span1">
-%{--                        <div style="display: inline-block">--}%
-                            Código
-%{--                        </div>--}%
+                        %{--                        <div style="display: inline-block">--}%
+                        Código
+                        %{--                        </div>--}%
                         <input type="text" name="item.codigo" id="cdgo_buscar" class="span12" style="width: 120px" readonly="true">
                         <input type="hidden" id="item_id_original">
                         <input type="hidden" id="idItems">

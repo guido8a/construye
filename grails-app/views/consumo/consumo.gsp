@@ -105,6 +105,15 @@
 </div>
 
 
+<g:if test="${band}">
+    <div class="span12" style="margin-top: 5px">
+        <div class="alert alert-info" style="text-align: center; font-size: 14px">
+            <i class="fa fa-exclamation-triangle fa-2x"></i>  Ya existe una requisición no registrada en el sistema
+        </div>
+    </div>
+</g:if>
+
+
 <div id="list-grupo" class="span12" role="main" style="margin-top: 10px;margin-left: -10px">
 
     <div style="border-bottom: 1px solid black;padding-left: 50px;position: relative;">

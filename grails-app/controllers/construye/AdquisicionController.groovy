@@ -20,6 +20,7 @@ class AdquisicionController {
         def bodegas = Bodega.findAllByTipoNotEqual('T',[sort: 'nombre'])
         def listaAdqc = [1: 'Proveedor', 2: 'fecha', 3: 'Estado']
         def listaItems = [1: 'Nombre', 2: 'Código']
+        def band = false
 
         if(params.id){
             adquisicion = Adquisicion.get(params.id)
@@ -29,10 +30,10 @@ class AdquisicionController {
 
             if(existen){
                 adquisicion = existen[0]
+                band = true
             }else{
                 adquisicion = new Adquisicion()
             }
-
         }
 
         println "adqc: ${adquisicion?.id}"
@@ -44,7 +45,7 @@ class AdquisicionController {
 
         println "detalle: ${detalles.size()}"
 
-        return[adquisicion: adquisicion, bodegas: bodegas, detalles:detalles, listaAdqc: listaAdqc, listaItems: listaItems]
+        return[adquisicion: adquisicion, bodegas: bodegas, detalles:detalles, listaAdqc: listaAdqc, listaItems: listaItems, band: band]
     }
 
     def listaProveedor() {

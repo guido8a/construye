@@ -40,19 +40,29 @@ class ConsumoController extends janus.seguridad.Shield {
         def consumo
         def cn = dbConnectionService.getConnection()
         def items = [], sql
+        def band = false
 
         if (params.id) {
             consumo = Consumo.get(params.id)
+        }else{
+            def existen = Consumo.findAllByEstadoAndPadreIsNull("N")
+
+            if(existen){
+                consumo = existen[0]
+                band = true
+            }else{
+                consumo = new Consumo()
+            }
         }
 
-        if(consumo){
+        if(consumo?.id >= 0){
             sql = "select * from dt_consumo(${consumo.id}) order by itemnmbr"
 //            items = DetalleConsumo.findAllByConsumo(consumo).sort{it.composicion.item.nombre}
             items = cn.rows(sql.toString())
         }
 
         [consumo: consumo, recibe: recibe, bodegas:bodegas, listaCnsm: listaConsumo, listaItems: listaItems,
-         listaObra: listaObra, items: items ]
+         listaObra: listaObra, items: items, band: band ]
     }
 
     def save() {
@@ -368,14 +378,20 @@ class ConsumoController extends janus.seguridad.Shield {
 //        println "depto "+dpto
         if (params.id) {
             consumo = Consumo.get(params.id)
+        }else{
+//            def existen = Consumo.findAllByEstadoAndPadreIsNotNull("N")
+//            if(existen){
+//                consumo = Consumo.get(existen[0]?.id)
+//            }else{
+//                consumo = new Consumo()
+//            }
         }
 
         if(consumo){
-            items = DetalleConsumo.findAllByConsumo(consumo).sort{it.composicion.item.nombre}
+            items = DetalleConsumo.findAllByConsumo(consumo).sort{it?.composicion?.item?.nombre}
         }
 
-        [consumo: consumo, recibe: recibe, bodegas:bodegas, listaCnsm: listaConsumo, listaItems: listaItems,
-         listaObra: listaObra, items: items ]
+        [consumo: consumo, recibe: recibe, bodegas:bodegas, listaCnsm: listaConsumo, listaItems: listaItems, listaObra: listaObra, items: items ]
     }
 
 
