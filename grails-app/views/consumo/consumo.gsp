@@ -384,7 +384,7 @@
             </div>
 
             <div class="span2">
-                <g:textField name="criterio" id="criterioCnsm" style="width: 80%"/></div>
+                <g:textField name="criterioCnsm" id="criterioCnsm" style="width: 80%"/></div>
 
             <div class="span2">
                 <g:select name="ordenarCnsm" class="ordenar" from="${listaCnsm}" style="width: 100%" optionKey="key"
@@ -409,7 +409,7 @@
         <div class="row-fluid" style="margin-left: 20px">
             <div class="span2">Buscar Por</div>
 
-            <div class="span2">Criterio</div>
+            <div class="span2">Criterio para Obra</div>
 
             <div class="span2">Ordenado por</div>
         </div>
@@ -421,7 +421,7 @@
             </div>
 
             <div class="span2">
-                <g:textField name="criterioObra" id="criterioCnsm" style="width: 80%"/></div>
+                <g:textField name="criterioObra" id="criterioObra" style="width: 80%"/></div>
 
             <div class="span2">
                 <g:select name="ordenarObra" class="ordenar" from="${listaObra}" style="width: 100%" optionKey="key"
@@ -935,7 +935,7 @@
 
         function buscarObras() {
             var buscarPor = $("#buscarPor").val();
-            var criterio = $(".criterio").val();
+            var criterio = $("#criterioObra").val();
             var ordenar = $("#ordenar").val();
             $.ajax({
                 type: "POST",
