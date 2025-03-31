@@ -808,9 +808,9 @@
     });
 
     function buscarObras() {
-        var buscarPor = $("#buscarPor").val();
-        var criterio = $(".criterio").val();
-        var ordenar = $("#ordenar").val();
+        var buscarPor = $("#buscarPorObra option:selected").val();
+        var criterio = $("#criterioObra").val();
+        var ordenar = $("#ordenarObra").val();
         $.ajax({
             type: "POST",
             url: "${createLink(controller: 'consumo', action:'listaObraRqsc')}",
