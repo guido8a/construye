@@ -190,10 +190,8 @@
                 <div class="row-fluid" style="margin-bottom: 5px">
 
                     <div class="span1">
-                        %{--                        <div style="display: inline-block">--}%
                         Código
-                        %{--                        </div>--}%
-                        <input type="text" name="item.codigo" id="cdgo_buscar" class="span12" style="width: 120px" readonly="true">
+                        <input type="text" name="item.codigo" id="cdgo_buscar" class="span12" style="width: 120px" readonly="">
                         <input type="hidden" id="item_id_original">
                         <input type="hidden" id="idItems">
                     </div>
@@ -458,6 +456,8 @@
 
 <script type="text/javascript">
 
+
+
     function validarNumDec(ev) {
         /*
          48-57      -> numeros
@@ -672,135 +672,215 @@
         });
     })
 
-    $(function () {
 
-        $("#btn_lista").click(function () {
-            $("#listaAdq").dialog("open");
-            $(".ui-dialog-titlebar-close").html("x")
+
+    $("#btn_lista").click(function () {
+        $("#listaAdq").dialog("open");
+        $(".ui-dialog-titlebar-close").html("x")
+    });
+
+    $("#listaAdq").dialog({
+        autoOpen: false,
+        resizable: false,
+        modal: true,
+        draggable: false,
+        width: 1000,
+        height: 600,
+        position: 'center',
+        title: 'Adquisiciones'
+    });
+
+    $("#btn-consumos").click(function () {
+        buscaAdquisiciones();
+    });
+
+    function buscaAdquisiciones() {
+        var buscarPor = $("#buscarPorCnsm").val();
+        var criterio = $("#criterioCnsm").val();
+        var ordenar = $("#ordenarCnsm").val();
+        $.ajax({
+            type: "POST",
+            url: "${createLink(controller: 'adquisicion', action:'listaAdquisiciones')}",
+            data: {
+                buscarPor: buscarPor,
+                criterio: criterio,
+                ordenar: ordenar
+
+            },
+            success: function (msg) {
+                $("#divTablaAdqc").html(msg);
+            }
         });
+    }
 
-        $("#listaAdq").dialog({
-            autoOpen: false,
-            resizable: false,
-            modal: true,
-            draggable: false,
-            width: 1000,
-            height: 600,
-            position: 'center',
-            title: 'Adquisiciones'
+    <g:if test="${adquisicion?.id}">
+
+    // $("#cdgo_buscar").dblclick(function () {
+    $("#btnBuscarItem").click(function () {
+        $("#busqueda").dialog("open");
+        $(".ui-dialog-titlebar-close").html("x");
+        return false;
+    });
+    </g:if>
+
+    $("#busqueda").dialog({
+        autoOpen: false,
+        resizable: false,
+        modal: true,
+        draggable: false,
+        width: 1000,
+        height: 600,
+        position: 'center',
+        title: 'Materiales y Equipos a Entregar'
+    });
+
+    $("#btn-consultar").click(function () {
+        busqueda();
+    });
+
+    function busqueda() {
+        var buscarPor = $("#buscarPor").val();
+        var criterio = $(".criterio").val();
+        var ordenar = $("#ordenar").val();
+        var grupo = $("#buscarGrupo").val();
+        $.ajax({
+            type: "POST",
+            url: "${createLink(controller: 'adquisicion', action:'listaItem')}",
+            data: {
+                buscarPor: buscarPor,
+                criterio: criterio,
+                ordenar: ordenar,
+                grupo: grupo
+            },
+            success: function (msg) {
+                $("#divTabla").html(msg);
+            }
         });
+    }
 
-        $("#btn-consumos").click(function () {
-            buscaAdquisiciones();
+    $("#input_codigo").click(function () {
+        $("#buscarObra").dialog("open");
+        $(".ui-dialog-titlebar-close").html("x");
+        return false;
+    });
+
+    $("#buscarObra").dialog({
+        autoOpen: false,
+        resizable: false,
+        modal: true,
+        draggable: false,
+        width: 1000,
+        height: 600,
+        position: 'center',
+        title: 'Lista de proveedores'
+    });
+
+    $("#btn-obras").click(function () {
+        buscarObras();
+    });
+
+    function buscarObras() {
+        var buscarPor = $("#buscarPorObra").val();
+        var criterio = $("#criterioObra").val();
+        var ordenar = $("#ordenar").val();
+        $.ajax({
+            type: "POST",
+            url: "${createLink(controller: 'adquisicion', action:'listaProveedor')}",
+            data: {
+                buscarPor: buscarPor,
+                criterio: criterio,
+                ordenar: ordenar
+            },
+            success: function (msg) {
+                $("#divTablaObra").html(msg);
+            }
         });
+    }
 
-        function buscaAdquisiciones() {
-            var buscarPor = $("#buscarPorCnsm").val();
-            var criterio = $("#criterioCnsm").val();
-            var ordenar = $("#ordenarCnsm").val();
-            $.ajax({
-                type: "POST",
-                url: "${createLink(controller: 'adquisicion', action:'listaAdquisiciones')}",
-                data: {
-                    buscarPor: buscarPor,
-                    criterio: criterio,
-                    ordenar: ordenar
-
-                },
-                success: function (msg) {
-                    $("#divTablaAdqc").html(msg);
+    $("#borrar").click(function () {
+        $.box({
+            imageClass: "box_info",
+            text: "&nbsp;  Desea anular la adquisición,<br>&nbsp; ¿Está Seguro?",
+            title: "Alerta",
+            iconClose: false,
+            dialog: {
+                resizable: false,
+                draggable: false,
+                buttons: {
+                    "Aceptar": function () {
+                        $.ajax({
+                            type: "POST", url: "${g.createLink(controller: 'adquisicion',action:'anularAdquisicion')}",
+                            data: "id=${adquisicion?.id}",
+                            success: function (msg) {
+                                $("#dlgLoad").dialog("close");
+                                if (msg == "ok") {
+                                    location.href = "${createLink(controller: 'adquisicion', action: 'adquisicion')}"
+                                } else {
+                                    $.box({
+                                        imageClass: "box_info",
+                                        text: "Error al anular la adquisición",
+                                        title: "Error",
+                                        iconClose: false,
+                                        dialog: {
+                                            resizable: false,
+                                            draggable: false,
+                                            buttons: {
+                                                "Aceptar": function () {
+                                                }
+                                            },
+                                            width: 700
+                                        }
+                                    });
+                                }
+                            }
+                        });
+                    },
+                    "Cancelar": function () {
+                    }
                 }
-            });
+            }
+        });
+    });
+
+
+    $("#cdgo_buscar").keydown(function (ev) {
+
+        if (ev.keyCode * 1 != 9 && (ev.keyCode * 1 < 37 || ev.keyCode * 1 > 40)) {
+            $("#item_tipoLista").val("")
+            $("#item_id").val("")
+            $("#item_desc").val("")
+            $("#item_unidad").val("")
+        } else {
+//                ////console.log("no reset")
         }
+    });
 
-        <g:if test="${adquisicion?.id}">
-
-        // $("#cdgo_buscar").dblclick(function () {
-        $("#btnBuscarItem").click(function () {
-            $("#busqueda").dialog("open");
-            $(".ui-dialog-titlebar-close").html("x");
-            return false;
-        });
-        </g:if>
-
-        $("#busqueda").dialog({
-            autoOpen: false,
-            resizable: false,
-            modal: true,
-            draggable: false,
-            width: 1000,
-            height: 600,
-            position: 'center',
-            title: 'Materiales y Equipos a Entregar'
-        });
-
-        $("#btn-consultar").click(function () {
-            busqueda();
-        });
-
-        function busqueda() {
-            var buscarPor = $("#buscarPor").val();
-            var criterio = $(".criterio").val();
-            var ordenar = $("#ordenar").val();
-            var grupo = $("#buscarGrupo").val();
-            $.ajax({
-                type: "POST",
-                url: "${createLink(controller: 'adquisicion', action:'listaItem')}",
-                data: {
-                    buscarPor: buscarPor,
-                    criterio: criterio,
-                    ordenar: ordenar,
-                    grupo: grupo
-                },
-                success: function (msg) {
-                    $("#divTabla").html(msg);
-                }
-            });
+    $("#consumo_registro").click(function () {
+        if ($(this).hasClass("active")) {
+            if (confirm("Esta seguro de desregistrar este consumo?")) {
+                $("#registrado").val("N")
+                $("#fechaReg").val("")
+            }
+        } else {
+            if (confirm("Esta seguro de registrar este consumo?")) {
+                $("#registrado").val("R")
+                var fecha = new Date()
+                $("#fechaReg").val(fecha.toString("dd/mm/yyyy"))
+            }
         }
+    });
 
-        $("#input_codigo").click(function () {
-            $("#buscarObra").dialog("open");
-            $(".ui-dialog-titlebar-close").html("x");
-            return false;
-        });
+    $("#guardar").click(function () {
+        var proveedor = $("#proveedor_nombre").val()
+        var bdga = $("#bodega").val()
+        var iva = $("#iva").val();
+        var subtotal = $("#subtotal").val();
+        var observaciones = $("#observaciones").val();
 
-        $("#buscarObra").dialog({
-            autoOpen: false,
-            resizable: false,
-            modal: true,
-            draggable: false,
-            width: 1000,
-            height: 600,
-            position: 'center',
-            title: 'Lista de proveedores'
-        });
-
-        $("#btn-obras").click(function () {
-            buscarObras();
-        });
-
-        function buscarObras() {
-            var buscarPor = $("#buscarPorObra").val();
-            var criterio = $("#criterioObra").val();
-            var ordenar = $("#ordenar").val();
-            $.ajax({
-                type: "POST",
-                url: "${createLink(controller: 'adquisicion', action:'listaProveedor')}",
-                data: {
-                    buscarPor: buscarPor,
-                    criterio: criterio,
-                    ordenar: ordenar
-                },
-                success: function (msg) {
-                    $("#divTablaObra").html(msg);
-                }
-            });
-        }
-
-        $("#borrar").click(function () {
+        if (proveedor == '' || proveedor == null) {
             $.box({
                 imageClass: "box_info",
-                text: "&nbsp;  Desea anular la adquisición,<br>&nbsp; ¿Está Seguro?",
+                text: "Seleccione un proveedor",
                 title: "Alerta",
                 iconClose: false,
                 dialog: {
@@ -808,79 +888,15 @@
                     draggable: false,
                     buttons: {
                         "Aceptar": function () {
-                            $.ajax({
-                                type: "POST", url: "${g.createLink(controller: 'adquisicion',action:'anularAdquisicion')}",
-                                data: "id=${adquisicion?.id}",
-                                success: function (msg) {
-                                    $("#dlgLoad").dialog("close");
-                                    if (msg == "ok") {
-                                        location.href = "${createLink(controller: 'adquisicion', action: 'adquisicion')}"
-                                    } else {
-                                        $.box({
-                                            imageClass: "box_info",
-                                            text: "Error al anular la adquisición",
-                                            title: "Error",
-                                            iconClose: false,
-                                            dialog: {
-                                                resizable: false,
-                                                draggable: false,
-                                                buttons: {
-                                                    "Aceptar": function () {
-                                                    }
-                                                },
-                                                width: 700
-                                            }
-                                        });
-                                    }
-                                }
-                            });
-                        },
-                        "Cancelar": function () {
                         }
                     }
                 }
             });
-        });
-
-
-        $("#cdgo_buscar").keydown(function (ev) {
-
-            if (ev.keyCode * 1 != 9 && (ev.keyCode * 1 < 37 || ev.keyCode * 1 > 40)) {
-                $("#item_tipoLista").val("")
-                $("#item_id").val("")
-                $("#item_desc").val("")
-                $("#item_unidad").val("")
-            } else {
-//                ////console.log("no reset")
-            }
-        });
-
-        $("#consumo_registro").click(function () {
-            if ($(this).hasClass("active")) {
-                if (confirm("Esta seguro de desregistrar este consumo?")) {
-                    $("#registrado").val("N")
-                    $("#fechaReg").val("")
-                }
-            } else {
-                if (confirm("Esta seguro de registrar este consumo?")) {
-                    $("#registrado").val("R")
-                    var fecha = new Date()
-                    $("#fechaReg").val(fecha.toString("dd/mm/yyyy"))
-                }
-            }
-        });
-
-        $("#guardar").click(function () {
-            var proveedor = $("#proveedor_nombre").val()
-            var bdga = $("#bodega").val()
-            var iva = $("#iva").val();
-            var subtotal = $("#subtotal").val();
-            var observaciones = $("#observaciones").val();
-
-            if (proveedor == '' || proveedor == null) {
+        } else {
+            if (bdga == 'null') {
                 $.box({
                     imageClass: "box_info",
-                    text: "Seleccione un proveedor",
+                    text: "Seleccione una bodega",
                     title: "Alerta",
                     iconClose: false,
                     dialog: {
@@ -893,10 +909,10 @@
                     }
                 });
             } else {
-                if (bdga == 'null') {
+                if (iva == '' || iva == 'null') {
                     $.box({
                         imageClass: "box_info",
-                        text: "Seleccione una bodega",
+                        text: "Ingrese el IVA",
                         title: "Alerta",
                         iconClose: false,
                         dialog: {
@@ -909,10 +925,10 @@
                         }
                     });
                 } else {
-                    if (iva == '' || iva == 'null') {
+                    if (subtotal == '' || subtotal == 'null') {
                         $.box({
                             imageClass: "box_info",
-                            text: "Ingrese el IVA",
+                            text: "Ingrese un subtotal",
                             title: "Alerta",
                             iconClose: false,
                             dialog: {
@@ -925,10 +941,10 @@
                             }
                         });
                     } else {
-                        if (subtotal == '' || subtotal == 'null') {
+                        if (observaciones == '' || observaciones == 'null') {
                             $.box({
                                 imageClass: "box_info",
-                                text: "Ingrese un subtotal",
+                                text: "Ingrese el concepto",
                                 title: "Alerta",
                                 iconClose: false,
                                 dialog: {
@@ -941,107 +957,107 @@
                                 }
                             });
                         } else {
-                            if (observaciones == '' || observaciones == 'null') {
-                                $.box({
-                                    imageClass: "box_info",
-                                    text: "Ingrese el concepto",
-                                    title: "Alerta",
-                                    iconClose: false,
-                                    dialog: {
-                                        resizable: false,
-                                        draggable: false,
-                                        buttons: {
-                                            "Aceptar": function () {
-                                            }
-                                        }
-                                    }
-                                });
-                            } else {
-                                guardarAdquisicion();
-                            }
+                            guardarAdquisicion();
                         }
                     }
                 }
             }
+        }
+    });
+
+    function guardarAdquisicion(){
+        $("#dlgLoad").dialog("open");
+        $.ajax({
+            type: 'POST',
+            url: '${createLink(controller: 'adquisicion', action: 'save')}',
+            data: $("#frmAdquisicion").serialize(),
+            success: function (msg) {
+                $("#dlgLoad").dialog("close");
+                var parts = msg.split("_")
+                if (parts[0] == 'ok') {
+                    location.href = "${createLink(controller: 'adquisicion', action: 'adquisicion')}/" + parts[1]
+                } else {
+                    $.box({
+                        imageClass: "box_info",
+                        text: "Error al guardar la adquisición",
+                        title: "Error",
+                        iconClose: false,
+                        dialog: {
+                            resizable: false,
+                            draggable: false,
+                            buttons: {
+                                "Aceptar": function () {
+                                }
+                            }
+                        }
+                    });
+                }
+            }
         });
+    }
 
-        function guardarAdquisicion(){
-            $("#dlgLoad").dialog("open");
-            $.ajax({
-                type: 'POST',
-                url: '${createLink(controller: 'adquisicion', action: 'save')}',
-                data: $("#frmAdquisicion").serialize(),
-                success: function (msg) {
-                    $("#dlgLoad").dialog("close");
-                    var parts = msg.split("_")
-                    if (parts[0] == 'ok') {
-                        location.href = "${createLink(controller: 'adquisicion', action: 'adquisicion')}/" + parts[1]
-                    } else {
-                        $.box({
-                            imageClass: "box_info",
-                            text: "Error al guardar la adquisición",
-                            title: "Error",
-                            iconClose: false,
-                            dialog: {
-                                resizable: false,
-                                draggable: false,
-                                buttons: {
-                                    "Aceptar": function () {
-                                    }
+    function guardarDetalleAdquisición(id) {
+        var lugar = $("#lugar option:selected").val()
+        $("#dlgLoad").dialog("open");
+        $.ajax({
+            type: 'POST',
+            url: '${createLink(controller: 'adquisicion', action: 'guardarDetalleAdquisicion_ajax')}',
+            data: {
+                id: $("#idItems").val(),
+                item: $("#item_id_original").val(),
+                cantidad: $("#item_cantidad").val(),
+                precioUnitario: $("#item_precio").val(),
+                adquisicion: '${adquisicion?.id}',
+                lugar: lugar
+            },
+            success: function (msg) {
+                $("#dlgLoad").dialog("close");
+                if (msg == 'ok') {
+                    location.href = "${createLink(controller: 'adquisicion', action: 'adquisicion')}/" + '${adquisicion?.id}'
+                } else {
+                    $.box({
+                        imageClass: "box_info",
+                        text: "Error al agregar el item",
+                        title: "Error",
+                        iconClose: false,
+                        dialog: {
+                            resizable: false,
+                            draggable: false,
+                            buttons: {
+                                "Aceptar": function () {
                                 }
                             }
-                        });
+                        }
+                    });
+                }
+            }
+        });
+    }
+
+    <g:if test="${adquisicion?.id}">
+
+    $("#btn_agregarItem, #btn_guardarItem").click(function () {
+        var id = $("#item_id").val();
+        if ($('#item_desc').val().length == 0) {
+            $.box({
+                imageClass: "box_info",
+                text: "Seleccione un item",
+                title: "Alerta",
+                iconClose: false,
+                dialog: {
+                    resizable: false,
+                    draggable: false,
+                    buttons: {
+                        "Aceptar": function () {
+                        }
                     }
                 }
             });
-        }
-
-        function guardarDetalleAdquisición(id) {
-            var lugar = $("#lugar option:selected").val()
-            $("#dlgLoad").dialog("open");
-            $.ajax({
-                type: 'POST',
-                url: '${createLink(controller: 'adquisicion', action: 'guardarDetalleAdquisicion_ajax')}',
-                data: {
-                    id: $("#idItems").val(),
-                    item: $("#item_id_original").val(),
-                    cantidad: $("#item_cantidad").val(),
-                    precioUnitario: $("#item_precio").val(),
-                    adquisicion: '${adquisicion?.id}',
-                    lugar: lugar
-                },
-                success: function (msg) {
-                    $("#dlgLoad").dialog("close");
-                    if (msg == 'ok') {
-                        location.href = "${createLink(controller: 'adquisicion', action: 'adquisicion')}/" + '${adquisicion?.id}'
-                    } else {
-                        $.box({
-                            imageClass: "box_info",
-                            text: "Error al agregar el item",
-                            title: "Error",
-                            iconClose: false,
-                            dialog: {
-                                resizable: false,
-                                draggable: false,
-                                buttons: {
-                                    "Aceptar": function () {
-                                    }
-                                }
-                            }
-                        });
-                    }
-                }
-            });
-        }
-
-        <g:if test="${adquisicion?.id}">
-
-        $("#btn_agregarItem, #btn_guardarItem").click(function () {
-            var id = $("#item_id").val();
-            if ($('#item_desc').val().length == 0) {
+        }else{
+            if($("#item_cantidad").val() == '' || $("#item_cantidad").val() == null ||  $("#item_cantidad").val() == 0){
                 $.box({
                     imageClass: "box_info",
-                    text: "Seleccione un item",
+                    text: "Ingrese una cantidad",
                     title: "Alerta",
                     iconClose: false,
                     dialog: {
@@ -1054,10 +1070,10 @@
                     }
                 });
             }else{
-                if($("#item_cantidad").val() == '' || $("#item_cantidad").val() == null ||  $("#item_cantidad").val() == 0){
+                if($("#item_precio").val() == '' || $("#item_precio").val() == null || $("#item_precio").val() == 0){
                     $.box({
                         imageClass: "box_info",
-                        text: "Ingrese una cantidad",
+                        text: "Ingrese un precio",
                         title: "Alerta",
                         iconClose: false,
                         dialog: {
@@ -1070,30 +1086,30 @@
                         }
                     });
                 }else{
-                    if($("#item_precio").val() == '' || $("#item_precio").val() == null || $("#item_precio").val() == 0){
-                        $.box({
-                            imageClass: "box_info",
-                            text: "Ingrese un precio",
-                            title: "Alerta",
-                            iconClose: false,
-                            dialog: {
-                                resizable: false,
-                                draggable: false,
-                                buttons: {
-                                    "Aceptar": function () {
-                                    }
-                                }
-                            }
-                        });
-                    }else{
-                        guardarDetalleAdquisición(id);
-                    }
+                    guardarDetalleAdquisición(id);
                 }
             }
-        });
-        </g:if>
+        }
+    });
+    </g:if>
+
+    $("#criterioCnsm").keyup(function (ev) {
+        if (ev.keyCode === 13) {
+            buscaAdquisiciones();
+        }
     });
 
+    $("#criterioObra").keyup(function (ev) {
+        if (ev.keyCode === 13) {
+            buscarObras();
+        }
+    });
+
+    $("#criterio").keyup(function (ev) {
+        if (ev.keyCode === 13) {
+            busqueda();
+        }
+    });
 </script>
 </body>
 </html>

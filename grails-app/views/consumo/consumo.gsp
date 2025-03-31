@@ -822,8 +822,6 @@
 
     });
 
-    $(function () {
-
         $("#btn_lista").click(function () {
             $("#listaConsumo").dialog("open");
             $(".ui-dialog-titlebar-close").html("x")
@@ -1276,7 +1274,25 @@
         });
         </g:else>
 
+
+    $("#criterioCnsm").keyup(function (ev) {
+        if (ev.keyCode === 13) {
+            buscaConsumos();
+        }
     });
+
+    $("#criterioObra").keyup(function (ev) {
+        if (ev.keyCode === 13) {
+            buscarObras();
+        }
+    });
+
+    $("#criterio").keyup(function (ev) {
+        if (ev.keyCode === 13) {
+            busqueda();
+        }
+    });
+
 </script>
 </body>
 </html>

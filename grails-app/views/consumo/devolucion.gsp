@@ -381,7 +381,7 @@
             </div>
 
             <div class="span2">
-                <g:textField name="criterioObra" id="criterioCnsm" style="width: 80%"/></div>
+                <g:textField name="criterioObra" id="criterioObra" style="width: 80%"/></div>
 
             <div class="span2">
                 <g:select name="ordenarObra" class="ordenar" from="${listaObra}" style="width: 100%" optionKey="key"
@@ -698,142 +698,223 @@
 
     });
 
-    $(function () {
+    $("#btn_lista").click(function () {
+        $("#listaConsumo").dialog("open");
+        $(".ui-dialog-titlebar-close").html("x")
+    });
 
-        $("#btn_lista").click(function () {
-            $("#listaConsumo").dialog("open");
-            $(".ui-dialog-titlebar-close").html("x")
+    $("#listaConsumo").dialog({
+        autoOpen: false,
+        resizable: false,
+        modal: true,
+        draggable: false,
+        width: 1000,
+        height: 600,
+        position: 'center',
+        title: 'Requisiciones'
+    });
+
+    $("#btn-consumos").click(function () {
+        buscaConsumos();
+    });
+
+    function buscaConsumos() {
+        var buscarPor = $("#buscarPorCnsm").val();
+        var criterio = $("#criterioCnsm").val();
+        var ordenar = $("#ordenarCnsm").val();
+        $.ajax({
+            type: "POST",
+            url: "${createLink(controller: 'consumo', action:'listaDevoluciones')}",
+            data: {
+                buscarPor: buscarPor,
+                criterio: criterio,
+                ordenar: ordenar
+
+            },
+            success: function (msg) {
+                $("#divTablaCnsm").html(msg);
+            }
         });
+    }
 
-        $("#listaConsumo").dialog({
-            autoOpen: false,
-            resizable: false,
-            modal: true,
-            draggable: false,
-            width: 1000,
-            height: 600,
-            position: 'center',
-            title: 'Requisiciones'
+    <g:if test="${consumo?.id}">
+
+    // $("#cdgo_buscar").dblclick(function () {
+    $("#btnBuscarItem").click(function () {
+        $("#busqueda").dialog("open");
+        $(".ui-dialog-titlebar-close").html("x");
+        return false;
+    });
+    </g:if>
+
+    $("#busqueda").dialog({
+        autoOpen: false,
+        resizable: false,
+        modal: true,
+        draggable: false,
+        width: 1000,
+        height: 600,
+        position: 'center',
+        title: 'Materiales y Equipos a Entregar'
+    });
+
+    $("#btn-consultar").click(function () {
+        busqueda();
+    });
+
+    function busqueda() {
+        var buscarPor = $("#buscarPor").val();
+        var criterio = $(".criterio").val();
+        var ordenar = $("#ordenar").val();
+        var grupo = $("#buscarGrupo").val();
+        $.ajax({
+            type: "POST",
+            url: "${createLink(controller: 'consumo', action:'listaItemDvlc')}",
+            data: {
+                buscarPor: buscarPor,
+                criterio: criterio,
+                ordenar: ordenar,
+                grupo: grupo,
+                consumo: '${consumo?.id}'
+            },
+            success: function (msg) {
+                $("#divTabla").html(msg);
+            }
         });
+    }
 
-        $("#btn-consumos").click(function () {
-            buscaConsumos();
+    %{--        <g:if test="${!consumo?.id}">--}%
+    // $("#input_codigo").dblclick(function () {
+    $("#buscar_codigo").click(function () {
+        $("#buscarObra").dialog("open");
+        $(".ui-dialog-titlebar-close").html("x")
+        return false;
+    });
+    %{--        </g:if>--}%
+
+    $("#buscarObra").dialog({
+        autoOpen: false,
+        resizable: false,
+        modal: true,
+        draggable: false,
+        width: 1000,
+        height: 600,
+        position: 'center',
+        title: 'Obras'
+    });
+
+    $("#btn-obras").click(function () {
+        buscarObras();
+    });
+
+    function buscarObras() {
+        var buscarPor = $("#buscarPor").val();
+        var criterio = $(".criterio").val();
+        var ordenar = $("#ordenar").val();
+        $.ajax({
+            type: "POST",
+            url: "${createLink(controller: 'consumo', action:'listaObraRqsc')}",
+            data: {
+                buscarPor: buscarPor,
+                criterio: criterio,
+                ordenar: ordenar,
+                tipo: 2,
+                consumo: '${consumo?.id}'
+
+            },
+            success: function (msg) {
+                $("#divTablaObra").html(msg);
+            }
         });
+    }
 
-        function buscaConsumos() {
-            var buscarPor = $("#buscarPorCnsm").val();
-            var criterio = $("#criterioCnsm").val();
-            var ordenar = $("#ordenarCnsm").val();
-            $.ajax({
-                type: "POST",
-                url: "${createLink(controller: 'consumo', action:'listaDevoluciones')}",
-                data: {
-                    buscarPor: buscarPor,
-                    criterio: criterio,
-                    ordenar: ordenar
-
-                },
-                success: function (msg) {
-                    $("#divTablaCnsm").html(msg);
+    $("#borrar").click(function () {
+        $.box({
+            imageClass: "box_info",
+            text: "Desea anular la devolución,<br>¿Está Seguro?",
+            title: "Alerta",
+            iconClose: false,
+            dialog: {
+                resizable: false,
+                draggable: false,
+                buttons: {
+                    "Aceptar": function () {
+                        $("#dlgLoad").dialog("open");
+                        $.ajax({
+                            type: "POST",
+                            url: "${g.createLink(controller: 'consumo',action:'anularDevolucion')}",
+                            data: "id=${consumo?.id}",
+                            success: function (msg) {
+                                $("#dlgLoad").dialog("close");
+                                if (msg == "ok") {
+                                    location.href = "${createLink(controller: 'consumo', action: 'devolucion')}/" + '${consumo?.id}'
+                                } else {
+                                    $.box({
+                                        imageClass: "box_info",
+                                        text: "No se puede anular la devolución, tiene items asociados",
+                                        title: "Alerta",
+                                        iconClose: false,
+                                        dialog: {
+                                            resizable: false,
+                                            draggable: false,
+                                            buttons: {
+                                                "Aceptar": function () {
+                                                }
+                                            },
+                                            // width: 700
+                                        }
+                                    });
+                                }
+                            }
+                        });
+                    },
+                    "Cancelar": function () {
+                    }
                 }
-            });
+            }
+        });
+    });
+
+
+    $("#cdgo_buscar").keydown(function (ev) {
+
+        if (ev.keyCode * 1 != 9 && (ev.keyCode * 1 < 37 || ev.keyCode * 1 > 40)) {
+            $("#item_tipoLista").val("")
+            $("#item_id").val("")
+            $("#item_desc").val("")
+            $("#item_unidad").val("")
+        } else {
+//                ////console.log("no reset")
         }
+    });
 
-        <g:if test="${consumo?.id}">
-
-        // $("#cdgo_buscar").dblclick(function () {
-        $("#btnBuscarItem").click(function () {
-            $("#busqueda").dialog("open");
-            $(".ui-dialog-titlebar-close").html("x");
-            return false;
-        });
-        </g:if>
-
-        $("#busqueda").dialog({
-            autoOpen: false,
-            resizable: false,
-            modal: true,
-            draggable: false,
-            width: 1000,
-            height: 600,
-            position: 'center',
-            title: 'Materiales y Equipos a Entregar'
-        });
-
-        $("#btn-consultar").click(function () {
-            busqueda();
-        });
-
-        function busqueda() {
-            var buscarPor = $("#buscarPor").val();
-            var criterio = $(".criterio").val();
-            var ordenar = $("#ordenar").val();
-            var grupo = $("#buscarGrupo").val();
-            $.ajax({
-                type: "POST",
-                url: "${createLink(controller: 'consumo', action:'listaItemDvlc')}",
-                data: {
-                    buscarPor: buscarPor,
-                    criterio: criterio,
-                    ordenar: ordenar,
-                    grupo: grupo,
-                    consumo: '${consumo?.id}'
-                },
-                success: function (msg) {
-                    $("#divTabla").html(msg);
-                }
-            });
+    $("#consumo_registro").click(function () {
+        if ($(this).hasClass("active")) {
+            if (confirm("Esta seguro de desregistrar este consumo?")) {
+                $("#registrado").val("N")
+                $("#fechaReg").val("")
+            }
+        } else {
+            if (confirm("Esta seguro de registrar este consumo?")) {
+                $("#registrado").val("R")
+                var fecha = new Date()
+                $("#fechaReg").val(fecha.toString("dd/mm/yyyy"))
+            }
         }
+    });
 
-        %{--        <g:if test="${!consumo?.id}">--}%
-        // $("#input_codigo").dblclick(function () {
-        $("#buscar_codigo").click(function () {
-            $("#buscarObra").dialog("open");
-            $(".ui-dialog-titlebar-close").html("x")
-            return false;
-        });
-        %{--        </g:if>--}%
+    $("#guardar").click(function () {
+        var obra = $("#obra__id").val();
+        var bdga = $("#bodega").val();
+        var rcbe = $("#recibe").val();
+        var trnp = $("#transporta").val();
+        var obr = $("#observaciones").val();
+        var req = $("#requisicion").val();
 
-        $("#buscarObra").dialog({
-            autoOpen: false,
-            resizable: false,
-            modal: true,
-            draggable: false,
-            width: 1000,
-            height: 600,
-            position: 'center',
-            title: 'Obras'
-        });
-
-        $("#btn-obras").click(function () {
-            buscarObras();
-        });
-
-        function buscarObras() {
-            var buscarPor = $("#buscarPor").val();
-            var criterio = $(".criterio").val();
-            var ordenar = $("#ordenar").val();
-            $.ajax({
-                type: "POST",
-                url: "${createLink(controller: 'consumo', action:'listaObraRqsc')}",
-                data: {
-                    buscarPor: buscarPor,
-                    criterio: criterio,
-                    ordenar: ordenar,
-                    tipo: 2,
-                    consumo: '${consumo?.id}'
-
-                },
-                success: function (msg) {
-                    $("#divTablaObra").html(msg);
-                }
-            });
-        }
-
-        $("#borrar").click(function () {
+        if (obra == '' || obra == null) {
             $.box({
                 imageClass: "box_info",
-                text: "Desea anular la devolución,<br>¿Está Seguro?",
+                text: "Seleccione una obra",
                 title: "Alerta",
                 iconClose: false,
                 dialog: {
@@ -841,82 +922,15 @@
                     draggable: false,
                     buttons: {
                         "Aceptar": function () {
-                            $("#dlgLoad").dialog("open");
-                            $.ajax({
-                                type: "POST",
-                                url: "${g.createLink(controller: 'consumo',action:'anularDevolucion')}",
-                                data: "id=${consumo?.id}",
-                                success: function (msg) {
-                                    $("#dlgLoad").dialog("close");
-                                    if (msg == "ok") {
-                                        location.href = "${createLink(controller: 'consumo', action: 'devolucion')}/" + '${consumo?.id}'
-                                    } else {
-                                        $.box({
-                                            imageClass: "box_info",
-                                            text: "No se puede anular la devolución, tiene items asociados",
-                                            title: "Alerta",
-                                            iconClose: false,
-                                            dialog: {
-                                                resizable: false,
-                                                draggable: false,
-                                                buttons: {
-                                                    "Aceptar": function () {
-                                                    }
-                                                },
-                                                // width: 700
-                                            }
-                                        });
-                                    }
-                                }
-                            });
-                        },
-                        "Cancelar": function () {
                         }
                     }
                 }
             });
-        });
-
-
-        $("#cdgo_buscar").keydown(function (ev) {
-
-            if (ev.keyCode * 1 != 9 && (ev.keyCode * 1 < 37 || ev.keyCode * 1 > 40)) {
-                $("#item_tipoLista").val("")
-                $("#item_id").val("")
-                $("#item_desc").val("")
-                $("#item_unidad").val("")
-            } else {
-//                ////console.log("no reset")
-            }
-        });
-
-        $("#consumo_registro").click(function () {
-            if ($(this).hasClass("active")) {
-                if (confirm("Esta seguro de desregistrar este consumo?")) {
-                    $("#registrado").val("N")
-                    $("#fechaReg").val("")
-                }
-            } else {
-                if (confirm("Esta seguro de registrar este consumo?")) {
-                    $("#registrado").val("R")
-                    var fecha = new Date()
-                    $("#fechaReg").val(fecha.toString("dd/mm/yyyy"))
-                }
-            }
-        });
-
-        $("#guardar").click(function () {
-            var obra = $("#obra__id").val();
-            var bdga = $("#bodega").val();
-            var rcbe = $("#recibe").val();
-            var trnp = $("#transporta").val();
-            var obr = $("#observaciones").val();
-            var req = $("#requisicion").val();
-
-            if (obra == '' || obra == null) {
+        } else {
+            if (req == null || req == '') {
                 $.box({
                     imageClass: "box_info",
-                    text: "Seleccione una obra",
+                    text: "Seleccione una requisición",
                     title: "Alerta",
                     iconClose: false,
                     dialog: {
@@ -929,10 +943,10 @@
                     }
                 });
             } else {
-                if (req == null || req == '') {
+                if (bdga == null || bdga == '') {
                     $.box({
                         imageClass: "box_info",
-                        text: "Seleccione una requisición",
+                        text: "Seleccione una bodega",
                         title: "Alerta",
                         iconClose: false,
                         dialog: {
@@ -945,10 +959,10 @@
                         }
                     });
                 } else {
-                    if (bdga == null || bdga == '') {
+                    if (rcbe == 'null') {
                         $.box({
                             imageClass: "box_info",
-                            text: "Seleccione una bodega",
+                            text: "Seleccione quien recibe",
                             title: "Alerta",
                             iconClose: false,
                             dialog: {
@@ -961,10 +975,10 @@
                             }
                         });
                     } else {
-                        if (rcbe == 'null') {
+                        if (trnp == 'null') {
                             $.box({
                                 imageClass: "box_info",
-                                text: "Seleccione quien recibe",
+                                text: "Seleccione quien transporta",
                                 title: "Alerta",
                                 iconClose: false,
                                 dialog: {
@@ -977,10 +991,10 @@
                                 }
                             });
                         } else {
-                            if (trnp == 'null') {
+                            if (obr == 'null' || obr == '') {
                                 $.box({
                                     imageClass: "box_info",
-                                    text: "Seleccione quien transporta",
+                                    text: "Ingrese las observaciones",
                                     title: "Alerta",
                                     iconClose: false,
                                     dialog: {
@@ -993,48 +1007,85 @@
                                     }
                                 });
                             } else {
-                                if (obr == 'null' || obr == '') {
-                                    $.box({
-                                        imageClass: "box_info",
-                                        text: "Ingrese las observaciones",
-                                        title: "Alerta",
-                                        iconClose: false,
-                                        dialog: {
-                                            resizable: false,
-                                            draggable: false,
-                                            buttons: {
-                                                "Aceptar": function () {
-                                                }
-                                            }
-                                        }
-                                    });
-                                } else {
-                                    guardarDevolucion();
-                                }
+                                guardarDevolucion();
                             }
                         }
                     }
+                }
 
+            }
+        }
+    });
+
+
+    function guardarDevolucion(){
+        $("#dlgLoad").dialog("open");
+        $.ajax({
+            type: 'POST',
+            url: '${createLink(controller: 'consumo', action: 'guardarDevolucion_ajax')}',
+            data: $("#frmDevolucion").serialize(),
+            success: function (msg) {
+                $("#dlgLoad").dialog("close");
+                var parts = msg.split("_");
+                if (parts[0] === 'ok') {
+                    location.href = "${createLink(controller: 'consumo', action: 'devolucion')}/" + parts[1]
+                } else {
+                    $.box({
+                        imageClass: "box_info",
+                        text: "Error al guardar la devolución",
+                        title: "Error",
+                        iconClose: false,
+                        dialog: {
+                            resizable: false,
+                            draggable: false,
+                            buttons: {
+                                "Aceptar": function () {
+                                }
+                            }
+                        }
+                    });
                 }
             }
         });
+    }
 
-
-        function guardarDevolucion(){
-            $("#dlgLoad").dialog("open");
-            $.ajax({
-                type: 'POST',
-                url: '${createLink(controller: 'consumo', action: 'guardarDevolucion_ajax')}',
-                data: $("#frmDevolucion").serialize(),
-                success: function (msg) {
-                    $("#dlgLoad").dialog("close");
-                    var parts = msg.split("_");
-                    if (parts[0] == 'ok') {
-                        location.href = "${createLink(controller: 'consumo', action: 'devolucion')}/" + parts[1]
-                    } else {
+    function guardarDetalleConsumo(id) {
+        $("#dlgLoad").dialog("open");
+        $.ajax({
+            type: 'POST',
+            url: '${createLink(controller: 'consumo', action: 'guardarDetalleConsumo_ajax')}',
+            data: {
+                id: $("#idItems").val(),
+                composicion: id,
+                cantidad: $("#item_cantidad").val(),
+                precioUnitario: $("#item_precio").val(),
+                consumo: '${consumo?.id}'
+            },
+            success: function (msg) {
+                $("#dlgLoad").dialog("close");
+                var parts = msg.split("_");
+                if (parts[0] == 'ok') {
+                    location.href = "${createLink(controller: 'consumo', action: 'devolucion')}/" + '${consumo?.id}'
+                } else {
+                    if(parts[0] == 'er'){
                         $.box({
                             imageClass: "box_info",
-                            text: "Error al guardar la devolución",
+                            text: parts[1],
+                            title: "Alerta",
+                            iconClose: false,
+                            dialog: {
+                                resizable: false,
+                                draggable: false,
+                                buttons: {
+                                    "Aceptar": function () {
+                                    }
+                                }
+                            }
+                        });
+                    }else{
+                        $.box({
+                            imageClass: "box_info",
+                            text: "Error al guardar el detalle de la devolución",
                             title: "Error",
                             iconClose: false,
                             dialog: {
@@ -1048,72 +1099,35 @@
                         });
                     }
                 }
-            });
-        }
+            }
+        });
+    }
 
+    <g:if test="${consumo}">
 
-        function guardarDetalleConsumo(id) {
-            $("#dlgLoad").dialog("open");
-            $.ajax({
-                type: 'POST',
-                url: '${createLink(controller: 'consumo', action: 'guardarDetalleConsumo_ajax')}',
-                data: {
-                    id: $("#idItems").val(),
-                    composicion: id,
-                    cantidad: $("#item_cantidad").val(),
-                    precioUnitario: $("#item_precio").val(),
-                    consumo: '${consumo?.id}'
-                },
-                success: function (msg) {
-                    $("#dlgLoad").dialog("close");
-                    var parts = msg.split("_")
-                    if (parts[0] == 'ok') {
-                        location.href = "${createLink(controller: 'consumo', action: 'devolucion')}/" + '${consumo?.id}'
-                    } else {
-                        if(parts[0] == 'er'){
-                            $.box({
-                                imageClass: "box_info",
-                                text: parts[1],
-                                title: "Alerta",
-                                iconClose: false,
-                                dialog: {
-                                    resizable: false,
-                                    draggable: false,
-                                    buttons: {
-                                        "Aceptar": function () {
-                                        }
-                                    }
-                                }
-                            });
-                        }else{
-                            $.box({
-                                imageClass: "box_info",
-                                text: "Error al guardar el detalle de la devolución",
-                                title: "Error",
-                                iconClose: false,
-                                dialog: {
-                                    resizable: false,
-                                    draggable: false,
-                                    buttons: {
-                                        "Aceptar": function () {
-                                        }
-                                    }
-                                }
-                            });
+    $("#btn_agregarItem, #btn_guardarItem").click(function () {
+        var id = $("#item_id").val();
+        if ($('#item_desc').val().length == 0) {
+            $.box({
+                imageClass: "box_info",
+                text: "No hay item que agregar al APU",
+                title: "Alerta",
+                iconClose: false,
+                dialog: {
+                    resizable: false,
+                    draggable: false,
+                    buttons: {
+                        "Aceptar": function () {
                         }
                     }
                 }
             });
-        }
-
-        <g:if test="${consumo}">
-
-        $("#btn_agregarItem, #btn_guardarItem").click(function () {
-            var id = $("#item_id").val();
-            if ($('#item_desc').val().length == 0) {
+            return false
+        }else{
+            if($("#item_cantidad").val() == 0 || $("#item_cantidad").val() == null){
                 $.box({
                     imageClass: "box_info",
-                    text: "No hay item que agregar al APU",
+                    text: "Ingrese la cantidad",
                     title: "Alerta",
                     iconClose: false,
                     dialog: {
@@ -1125,60 +1139,50 @@
                         }
                     }
                 });
-                return false
             }else{
-                if($("#item_cantidad").val() == 0 || $("#item_cantidad").val() == null){
-                    $.box({
-                        imageClass: "box_info",
-                        text: "Ingrese la cantidad",
-                        title: "Alerta",
-                        iconClose: false,
-                        dialog: {
-                            resizable: false,
-                            draggable: false,
-                            buttons: {
-                                "Aceptar": function () {
-                                }
-                            }
-                        }
-                    });
-                }else{
-                    // $("#dlgLoad").dialog("open");
-                    %{--$.ajax({--}%
-                    %{--    type: "POST", url: "${g.createLink(controller: 'consumo', action:'verificaItem')}",--}%
-                    %{--    data: "id=" + id,--}%
-                    %{--    success: function (msg) {--}%
-                    %{--        $("#dlgLoad").dialog("close");--}%
-                    %{--        if (msg == "ok") {--}%
-                    guardarDetalleConsumo(id);
-                    //         }
-                    //     }
-                    // });
-                }
+                guardarDetalleConsumo(id);
+            }
+        }
+    });
+    </g:if>
+    <g:else>
+    $("#btn_agregarItem, #btn_guardarItem").click(function () {
+        $.box({
+            imageClass: "box_info",
+            text: "Primero guarde el consumo o seleccione uno para editar",
+            title: "Alerta",
+            iconClose: false,
+            dialog: {
+                resizable: false,
+                draggable: false,
+                buttons: {
+                    "Aceptar": function () {
+                    }
+                },
+                width: 500
             }
         });
-        </g:if>
-        <g:else>
-        $("#btn_agregarItem, #btn_guardarItem").click(function () {
-            $.box({
-                imageClass: "box_info",
-                text: "Primero guarde el consumo o seleccione uno para editar",
-                title: "Alerta",
-                iconClose: false,
-                dialog: {
-                    resizable: false,
-                    draggable: false,
-                    buttons: {
-                        "Aceptar": function () {
-                        }
-                    },
-                    width: 500
-                }
-            });
-        });
-        </g:else>
-
     });
+    </g:else>
+
+    $("#criterioCnsm").keyup(function (ev) {
+        if (ev.keyCode === 13) {
+            buscaConsumos();
+        }
+    });
+
+    $("#criterioObra").keyup(function (ev) {
+        if (ev.keyCode === 13) {
+            buscarObras();
+        }
+    });
+
+    $("#criterio").keyup(function (ev) {
+        if (ev.keyCode === 13) {
+            busqueda();
+        }
+    });
+
 </script>
 </body>
 </html>
