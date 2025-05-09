@@ -4,7 +4,7 @@
     <tr>
         <th style="width: 10%">Código</th>
         <th style="width: 54%">Descripción</th>
-        <th style="width: 15%">Cantidad</th>
+%{--        <th style="width: 15%">Cantidad</th>--}%
         <th style="width: 12%">Precio U.</th>
         <th style="width: 9%">Seleccionar</th>
     </tr>
@@ -22,15 +22,20 @@
                 <td style="width: 10%">${dt.itemcdgo}</td>
                 <td style="width: 55%">${dt.itemnmbr}</td>
                 <td style="width: 15%">
-                    <g:formatNumber number="${dt.exstcntd}" format="##,#####0" minFractionDigits="2" maxFractionDigits="2" locale="ec"/>
+%{--                    <g:formatNumber number="${dt.exstcntd}" format="##,#####0" minFractionDigits="2" maxFractionDigits="2" locale="ec"/>--}%
                 </td>
-                <td style="width: 12%">${dt.exstpcun}</td>
-                <td style="width: 8%"><div style="text-align: center" class="seleccionaItem" id="reg_${i}"
-                                           %{--regId="${dt?.comp__id}" regNmbr="${dt?.itemnmbr}" regCdgo="${dt?.itemcdgo}"--}%
-                                           regId="${dt?.item__id}" regNmbr="${dt?.itemnmbr}" regCdgo="${dt?.itemcdgo}"
-                                           regUn="${dt?.unddcdgo}" regPc="${dt?.exstpcun}" data-id="${dt?.item__id}" data-cant="${dt?.exstcntd}">
+%{--                <td style="width: 12%">${dt.exstpcun}</td>--}%
+                <td style="width: 12%">${dt.krdxpcun}</td>
+                <td style="width: 8%">
+%{--                    <div style="text-align: center" class="seleccionaItem" id="reg_${i}"--}%
+%{--                                           regId="${dt?.item__id}" regNmbr="${dt?.itemnmbr}" regCdgo="${dt?.itemcdgo}"--}%
+%{--                                           regUn="${dt?.unddcdgo}" regPc="${dt?.exstpcun}" data-id="${dt?.item__id}" data-cant="${dt?.exstcntd}">--}%
+                        <div style="text-align: center" class="seleccionaItem" id="reg_${i}"
+                             regId="${dt?.item__id}" regNmbr="${dt?.itemnmbr}" regCdgo="${dt?.itemcdgo}"
+                             regPc="${dt?.krdxpcun}" data-id="${dt?.item__id}" >
                     <button class="btn btn-small btn-success"><i class="icon-check"></i></button>
-                </div></td>
+                </div>
+                </td>
             </tr>
         </g:each>
     </table>
