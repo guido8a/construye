@@ -171,8 +171,12 @@ class ConsumoController extends janus.seguridad.Shield {
         def datos;
 //        def select = "select * from rp_existencias(${params.grupo}, ${params.bdga}) rp, item "
 //        def txwh = "where item.item__id = rp.item__id and exstcntd > 0 "
-        def select = "select distinct itemnmbr,itemcdgo, item.item__id, krdxpcun from item, krdx "
-        def txwh = "where item.item__id = krdx.item__id "
+//        def select = "select distinct itemnmbr,itemcdgo, item.item__id, krdxpcun from item, krdx "
+//        def txwh = "where item.item__id = krdx.item__id "
+
+                def select = "select * from rp_exst(${params.grupo}, ${params.bdga}) rp, item "
+        def txwh = "where item.item__id = rp.item__id "
+
         def sqlTx = ""
         def bsca = listaItems[params.buscarPor.toInteger()-1]
         def ordn = listaItems[params.ordenar.toInteger()-1]
@@ -272,11 +276,11 @@ class ConsumoController extends janus.seguridad.Shield {
             def cn1 = dbConnectionService.getConnection()
             def datos1 = cn1.rows(sql1)
 
-            def cantidadExistencias = datos1[0].exstcntd
-
-            if(params.cantidad.toDouble() > cantidadExistencias?.toDouble()){
-                render "er_La cantidad ingresada es mayor a la cantidad disponible en existencias: ${cantidadExistencias}"
-            }else{
+//            def cantidadExistencias = datos1[0].exstcntd
+//
+//            if(params.cantidad.toDouble() > cantidadExistencias?.toDouble()){
+//                render "er_La cantidad ingresada es mayor a la cantidad disponible en existencias: ${cantidadExistencias}"
+//            }else{
 
                 def sql2 = "select compcntd from rp_consumo(${consumo?.obra?.id?.toInteger()}) where item__id = ${composicion?.id}"
                 def cn2 = dbConnectionService.getConnection()
@@ -315,7 +319,7 @@ class ConsumoController extends janus.seguridad.Shield {
                     }
 
                 }
-            }
+//            }
         }
     }
 
