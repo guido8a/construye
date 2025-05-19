@@ -17,6 +17,7 @@ class Consumo implements Serializable{
     String estado
     String observaciones
     String descripcion
+    Persona aprueba
 
         static auditable=[ignore:[]]
         static mapping = {
@@ -39,7 +40,7 @@ class Consumo implements Serializable{
                 estado column: 'cnsmetdo'
                 observaciones column: 'cnsmobsr'
                 descripcion column: 'cnsmdscr'
-
+                aprueba column: 'prsnaprb'
             }
         }
         static constraints = {

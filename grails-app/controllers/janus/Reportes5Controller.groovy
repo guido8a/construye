@@ -1782,9 +1782,12 @@ class Reportes5Controller extends Shield{
 
     def reporteRequisiciones () {
         println("params " + params)
-
+        def cn = dbConnectionService.getConnection()
         def consumo = Consumo.get(params.id)
-        def detalles = DetalleConsumo.findAllByConsumo(consumo)
+//        def detalles = DetalleConsumo.findAllByConsumo(consumo)
+        def detalles
+        def sql = "select * from dt_consumo(${consumo.id}) order by itemnmbr"
+        detalles = cn.rows(sql.toString())
         def empresa = consumo.empresa
         def obra = consumo.obra
 
@@ -1792,19 +1795,10 @@ class Reportes5Controller extends Shield{
         def prmsFila = [border: Color.WHITE, align : Element.ALIGN_CENTER, valign: Element.ALIGN_MIDDLE]
         def prmsFilaIzquierda = [border: Color.WHITE, align : Element.ALIGN_LEFT, valign: Element.ALIGN_MIDDLE]
         def prmsFilaDerecha = [border: Color.WHITE, align : Element.ALIGN_RIGHT, valign: Element.ALIGN_MIDDLE]
-        def prmsHeaderHoja2 = [border: Color.WHITE, colspan: 9]
-        def prmsHeader = [border: Color.WHITE, colspan: 7, bg: new Color(73, 175, 205),
-                          align : Element.ALIGN_CENTER, valign: Element.ALIGN_MIDDLE]
-        def prmsHeader2 = [border: Color.WHITE, colspan: 3, bg: new Color(73, 175, 205),
-                           align : Element.ALIGN_CENTER, valign: Element.ALIGN_MIDDLE]
-        def prmsCellHead = [border: Color.WHITE, bg: new Color(73, 175, 205),
-                            align : Element.ALIGN_CENTER, valign: Element.ALIGN_MIDDLE]
         def prmsCellCenter = [border: Color.WHITE, align: Element.ALIGN_CENTER, valign: Element.ALIGN_MIDDLE]
         def prmsCellRight = [border: Color.BLACK, align: Element.ALIGN_RIGHT, valign: Element.ALIGN_MIDDLE]
-        def prmsCellLeft = [border: Color.WHITE, valign: Element.ALIGN_LEFT, valign: Element.ALIGN_MIDDLE]
-        def prmsSubtotal = [border: Color.BLACK, colspan: 6,
-                            align : Element.ALIGN_RIGHT, valign: Element.ALIGN_MIDDLE]
-        def prmsNum = [border: Color.BLACK, align: Element.ALIGN_RIGHT, valign: Element.ALIGN_MIDDLE]
+        def prmsCellLeft = [border: Color.WHITE, align: Element.ALIGN_LEFT, valign: Element.ALIGN_MIDDLE]
+        def prmsSubtotal = [border: Color.BLACK, colspan: 6, align : Element.ALIGN_RIGHT, valign: Element.ALIGN_MIDDLE]
 
         def celdaCabecera = [border: Color.BLACK, bg: new Color(220, 220, 220), align: Element.ALIGN_CENTER, valign: Element.ALIGN_MIDDLE, bordeBot: "1"]
 
@@ -1815,7 +1809,6 @@ class Reportes5Controller extends Shield{
         Font times8bold = new Font(Font.TIMES_ROMAN, 8, Font.BOLD)
         Font times8normal = new Font(Font.TIMES_ROMAN, 8, Font.NORMAL)
         Font times7bold = new Font(Font.TIMES_ROMAN, 7, Font.BOLD)
-        Font times7normal = new Font(Font.TIMES_ROMAN, 7, Font.NORMAL)
         Font times10boldWhite = new Font(Font.TIMES_ROMAN, 10, Font.BOLD);
         Font times8boldWhite = new Font(Font.TIMES_ROMAN, 8, Font.BOLD)
 
@@ -1833,7 +1826,6 @@ class Reportes5Controller extends Shield{
         logo.setAlignment(Image.MIDDLE | Image.TEXTWRAP)
 
         Document document
-//        document = new Document(PageSize.A4.rotate());
         document = new Document(PageSize.A4);
 
         document.setMargins(40, 40, 20, 25);
@@ -1866,7 +1858,7 @@ class Reportes5Controller extends Shield{
         tablaCoeficiente.setWidths(arregloEnteros([15,50, 15,50]))
 
         reportesPdfService.addCellTb(tablaCoeficiente, new Paragraph("Fecha: ", times10bold), prmsHeaderHoja)
-        reportesPdfService.addCellTb(tablaCoeficiente, new Paragraph((consumo?.fecha?.format("dd-MM-yyyy") ?: ''), times10normal), prmsHeaderHoja)
+        reportesPdfService.addCellTb(tablaCoeficiente, new Paragraph((consumo?.fecha?.format("dd/MM/yyyy") ?: ''), times10normal), prmsHeaderHoja)
         reportesPdfService.addCellTb(tablaCoeficiente, new Paragraph("Bodega: ", times10bold), prmsHeaderHoja)
         reportesPdfService.addCellTb(tablaCoeficiente, new Paragraph((consumo?.bodega?.descripcion ?: ''), times10normal), prmsHeaderHoja)
 
@@ -1885,27 +1877,24 @@ class Reportes5Controller extends Shield{
         reportesPdfService.addCellTb(tablaCoeficiente, new Paragraph("" , times10normal), [border: Color.WHITE, colspan: 4])
         reportesPdfService.addCellTb(tablaCoeficiente, new Paragraph("" , times10normal), [border: Color.WHITE, colspan: 4])
 
-        //EQUIPOS
-        PdfPTable tablaEquipos = new PdfPTable(4);
+        PdfPTable tablaEquipos = new PdfPTable(6);
         tablaEquipos.setWidthPercentage(100);
-        tablaEquipos.setWidths(arregloEnteros([15,65,10,10]))
-
-//        reportesPdfService.addCellTb(tablaEquipos, new Paragraph("EQUIPOS", times12bold), tituloRubro)
+        tablaEquipos.setWidths(arregloEnteros([10,40,10,10,15,15]))
 
         reportesPdfService.addCellTb(tablaEquipos, new Paragraph("CÓDIGO", times7bold), celdaCabecera)
         reportesPdfService.addCellTb(tablaEquipos, new Paragraph("DESCRIPCIÓN", times7bold), celdaCabecera)
         reportesPdfService.addCellTb(tablaEquipos, new Paragraph("UNIDAD", times7bold), celdaCabecera)
         reportesPdfService.addCellTb(tablaEquipos, new Paragraph("CANTIDAD", times7bold), celdaCabecera)
-//        reportesPdfService.addCellTb(tablaEquipos, new Paragraph("C. UNITARIO", times7bold), celdaCabecera)
-//        reportesPdfService.addCellTb(tablaEquipos, new Paragraph("C.TOTAL(\$)", times7bold), celdaCabecera)
+        reportesPdfService.addCellTb(tablaEquipos, new Paragraph("C. UNITARIO", times7bold), celdaCabecera)
+        reportesPdfService.addCellTb(tablaEquipos, new Paragraph("C.TOTAL(\$)", times7bold), celdaCabecera)
 
         detalles.eachWithIndex { r, i ->
-            reportesPdfService.addCellTb(tablaEquipos, new Paragraph(r?.composicion?.item?.codigo, times8normal), prmsFilaIzquierda)
-            reportesPdfService.addCellTb(tablaEquipos, new Paragraph(r?.composicion?.item?.nombre, times8normal), prmsFilaIzquierda)
-            reportesPdfService.addCellTb(tablaEquipos, new Paragraph(r?.composicion?.item?.unidad?.codigo, times8normal), prmsFilaIzquierda)
-            reportesPdfService.addCellTb(tablaEquipos, new Paragraph(numero(r?.cantidad, 5)?.toString(), times8normal), prmsFilaDerecha)
-//            reportesPdfService.addCellTb(tablaEquipos, new Paragraph(numero(r?.precioUnitario, 5)?.toString(), times8normal), prmsFilaDerecha)
-//            reportesPdfService.addCellTb(tablaEquipos, new Paragraph((numero((r?.cantidad * r?.precioUnitario), 5))?.toString(), times8normal), prmsFilaDerecha)
+            reportesPdfService.addCellTb(tablaEquipos, new Paragraph(r.itemcdgo, times8normal), prmsFilaIzquierda)
+            reportesPdfService.addCellTb(tablaEquipos, new Paragraph(r.itemnmbr, times8normal), prmsFilaIzquierda)
+            reportesPdfService.addCellTb(tablaEquipos, new Paragraph(r.unddcdgo, times8normal), prmsCellCenter)
+            reportesPdfService.addCellTb(tablaEquipos, new Paragraph(numero(r.compcntd, 2)?.toString(), times8normal), prmsFilaDerecha)
+            reportesPdfService.addCellTb(tablaEquipos, new Paragraph(numero(r.compprco, 5)?.toString(), times8normal), prmsFilaDerecha)
+            reportesPdfService.addCellTb(tablaEquipos, new Paragraph((numero((r.compcntd * r.compprco), 5))?.toString(), times8normal), prmsFilaDerecha)
         }
 
         PdfPTable tablaHeader = new PdfPTable(2);
@@ -1915,16 +1904,13 @@ class Reportes5Controller extends Shield{
         addCellTabla(tablaHeader, logo, prmsCellLeft)
         addCellTabla(tablaHeader, headers, prmsCellCenter)
 
-//        document.add(tablaHeader)
-//        document.add(logo)
         document.add(tablaHeader)
         document.add(headersRemi)
-//        document.add(headers)
         document.add(tablaCoeficiente)
         document.add(tablaEquipos)
-
         document.close();
         pdfw.close()
+
         byte[] b = baos.toByteArray();
         response.setContentType("application/pdf")
         response.setHeader("Content-disposition", "attachment; filename=" + name)
