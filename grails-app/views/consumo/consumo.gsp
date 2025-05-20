@@ -84,7 +84,7 @@
             Imprimir
         </a>
         <a href="#" class="btn btn-ajax btn-new" id="excel" title="Imprimir">
-            <i class="icon-print"></i>
+            <i class="fa fa-file-excel-o"></i>
             Excel
         </a>
     </g:if>

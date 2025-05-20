@@ -1781,7 +1781,6 @@ class Reportes5Controller extends Shield{
     }
 
     def reporteRequisiciones () {
-        println("params " + params)
         def cn = dbConnectionService.getConnection()
         def consumo = Consumo.get(params.id)
 //        def detalles = DetalleConsumo.findAllByConsumo(consumo)
@@ -1790,6 +1789,7 @@ class Reportes5Controller extends Shield{
         detalles = cn.rows(sql.toString())
         def empresa = consumo.empresa
         def obra = consumo.obra
+        def totales = 0
 
         def prmsHeaderHoja = [border: Color.WHITE]
         def prmsFila = [border: Color.WHITE, align : Element.ALIGN_CENTER, valign: Element.ALIGN_MIDDLE]
@@ -1801,6 +1801,7 @@ class Reportes5Controller extends Shield{
         def prmsSubtotal = [border: Color.BLACK, colspan: 6, align : Element.ALIGN_RIGHT, valign: Element.ALIGN_MIDDLE]
 
         def celdaCabecera = [border: Color.BLACK, bg: new Color(220, 220, 220), align: Element.ALIGN_CENTER, valign: Element.ALIGN_MIDDLE, bordeBot: "1"]
+        def celdaCabeceraDerecho = [border: Color.BLACK, bg: new Color(220, 220, 220), align: Element.ALIGN_RIGHT, valign: Element.ALIGN_MIDDLE, bordeBot: "1"]
 
         Font times12bold = new Font(Font.TIMES_ROMAN, 12, Font.BOLD)
         Font times14bold = new Font(Font.TIMES_ROMAN, 14, Font.BOLD)
@@ -1895,7 +1896,15 @@ class Reportes5Controller extends Shield{
             reportesPdfService.addCellTb(tablaEquipos, new Paragraph(numero(r.compcntd, 2)?.toString(), times8normal), prmsFilaDerecha)
             reportesPdfService.addCellTb(tablaEquipos, new Paragraph(numero(r.compprco, 5)?.toString(), times8normal), prmsFilaDerecha)
             reportesPdfService.addCellTb(tablaEquipos, new Paragraph((numero((r.compcntd * r.compprco), 5))?.toString(), times8normal), prmsFilaDerecha)
+            totales += (r.compcntd * r.compprco)
         }
+
+        PdfPTable tablaTotales = new PdfPTable(2);
+        tablaTotales.setWidthPercentage(100);
+        tablaTotales.setWidths(arregloEnteros([85,15]))
+
+        reportesPdfService.addCellTb(tablaTotales, new Paragraph("TOTAL", times8bold), celdaCabeceraDerecho)
+        reportesPdfService.addCellTb(tablaTotales, new Paragraph((numero(totales, 5))?.toString(), times8bold), celdaCabeceraDerecho)
 
         PdfPTable tablaHeader = new PdfPTable(2);
         tablaHeader.setWidthPercentage(100);
@@ -1908,6 +1917,7 @@ class Reportes5Controller extends Shield{
         document.add(headersRemi)
         document.add(tablaCoeficiente)
         document.add(tablaEquipos)
+        document.add(tablaTotales)
         document.close();
         pdfw.close()
 
