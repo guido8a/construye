@@ -525,8 +525,13 @@ class ConsumoController extends janus.seguridad.Shield {
     } //anular
 
     def aprobar_ajax(){
+        println("params ap " + params)
+
+        def cn = dbConnectionService.getConnection()
         def consumo = Consumo.get(params.id)
-        def detalles = DetalleConsumo.findAllByConsumo(consumo)
+//        def detalles = DetalleConsumo.findAllByConsumo(consumo)
+        def sql = "select * from dt_consumo(${consumo.id}) order by itemnmbr"
+        def detalles = cn.rows(sql.toString())
 
         if(detalles?.size() > 0) {
             consumo.estado = 'P'

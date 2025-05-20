@@ -50,6 +50,8 @@ class Consumo implements Serializable{
             estado(blank:false, nullable:false )
             observaciones(blank:true, nullable:true )
             descripcion(blank:true, nullable:true )
+            aprueba(blank:true, nullable:true )
+
         }
         String toString(){
             "${this.bodega.nombre} (${this.fecha})"

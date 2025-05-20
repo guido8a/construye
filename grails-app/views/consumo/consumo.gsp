@@ -91,12 +91,12 @@
     <g:if test="${consumo?.id}">
         <g:if test="${consumo?.estado == 'N'}">
             <g:if test="${items?.size() > 0}">
-                <g:if test="${session.perfil.codigo == 'APRB'}">
+%{--                <g:if test="${session.perfil.codigo == 'APRB'}">--}%
                     <a href="#" class="btn btn-ajax btn-new btn-primary" id="aprobar">
                         <i class="icon-bell"></i>
                         Aprobar
                     </a>
-                </g:if>
+%{--                </g:if>--}%
             </g:if>
         </g:if>
     </g:if>
@@ -745,7 +745,7 @@
                 height: 180,
                 buttons: {
                     "Aceptar": function () {
-                        $("#dlgLoad").dialog("open")
+                        $("#dlgLoad").dialog("open");
                         $.ajax({
                             type: 'POST',
                             url: '${createLink(controller: 'consumo', action: 'registrar_ajax')}',
@@ -753,8 +753,8 @@
                                 id: idRubro
                             },
                             success: function (msg) {
-                                $("#dlgLoad").dialog("close")
-                                if (msg == 'ok') {
+                                $("#dlgLoad").dialog("close");
+                                if (msg === 'ok') {
                                     $("#spanOk").html("Rubro registrado correctamente");
                                     $("#divOk").show();
                                     setTimeout(function () {
