@@ -38,7 +38,8 @@
         <i class="icon-file-alt"></i>
         Nuevo
     </a>
-    <g:if test="${consumo?.estado == 'N' || consumo?.estado == null || consumo?.estado == 'P'}">
+%{--    <g:if test="${consumo?.estado == 'N' || consumo?.estado == null || consumo?.estado == 'P'}">--}%
+    <g:if test="${consumo?.estado == 'N' || consumo?.estado == null}">
         <a href="#" class="btn btn-ajax btn-new" id="guardar">
             <i class="icon-save"></i>
             Guardar
@@ -59,7 +60,7 @@
         Cancelar
     </a>
     <g:if test="${consumo?.id}">
-        <g:if test="${consumo?.estado == 'N'}">
+        <g:if test="${consumo?.estado == 'P'}">
             <g:if test="${items?.size() > 0 }">
                 <a href="#" class="btn btn-ajax btn-new btn-primary" id="btnRegistrar">
                     <i class="icon-check"></i>
@@ -91,17 +92,16 @@
     <g:if test="${consumo?.id}">
         <g:if test="${consumo?.estado == 'N'}">
             <g:if test="${items?.size() > 0}">
-%{--                <g:if test="${session.perfil.codigo == 'APRB'}">--}%
+                <g:if test="${session.perfil.codigo == 'APRB'}">
                     <a href="#" class="btn btn-ajax btn-new btn-primary" id="aprobar">
                         <i class="icon-bell"></i>
                         Aprobar
                     </a>
-%{--                </g:if>--}%
+                </g:if>
             </g:if>
         </g:if>
     </g:if>
 </div>
-
 
 <g:if test="${band}">
     <div class="span12" style="margin-top: 5px">
@@ -124,7 +124,7 @@
             <div class="linea" style="height: 190px;"></div>
 
             <div class="row-fluid">
-                <div class="span2">
+                <div class="span1">
                     Concepto o propósito
                 </div>
                 <div class="span10">
@@ -134,8 +134,6 @@
             </div>
 
             <div class="row-fluid">
-
-
                 <div class="span2" style="width: 130px;">
                     Obra
                     <input type="text" name="obra" class="span20 allCaps required input-small"
@@ -181,7 +179,7 @@
                               value="${consumo?.recibe?.id}" noSelection="[null: '--Seleccione--']"/>
                 </div>
 
-                <div class="span3" style="color: #01a; margin-left: 10px">
+                <div class="span2" style="color: #01a; margin-left: 10px">
                     Transporta: <br>
                     <g:select name="transporta" id="transporta" from="${recibe}" class="span12" optionKey="id"
                               value="${consumo?.transporta?.id}" noSelection="[null: '--Seleccione--']"/>
@@ -192,10 +190,24 @@
                     <g:textField name="estado" value="${consumo?.estado ?: 'N'}" readonly="true"
                                  title="${consumo?.estado == 'R' ? 'Registrado' : 'Ingresado'}" class="span12"/>
                 </div>
+
+                <div class="span1" style="width: 220px; color: #01a; margin-top: 10px">
+                    <table class="table table-bordered table-striped table-condensed table-hover" style="margin-top: 10px;">
+                       <thead>
+                       <tr>
+                           <th>N: Proceso</th>
+                           <th>P: Aprobado</th>
+                           <th>R: Entregado</th>
+                       </tr>
+                       </thead>
+                   </table>
+                </div>
             </div>
             <div class="row-fluid">
-                <div class="span11">
+                <div class="span1">
                     Observaciones
+                </div>
+                <div class="span10">
                     <g:textField name="observaciones" value="${consumo?.observaciones}" title="${consumo?.observaciones}" class="span12"/>
                 </div>
             </div>
