@@ -138,13 +138,13 @@
                     Obra
                     <input type="text" name="obra" class="span20 allCaps required input-small"
                            value="${consumo?.obra?.codigo}"
-                           id="input_codigo" maxlength="30" minlength="2" readonly="true">
+                           id="input_codigo" maxlength="30" minlength="2" readonly="">
 
                     <p class="help-block ui-helper-hidden"></p>
                 </div>
 
 %{--                <g:if test="${items?.size() == 0}">--}%
-                    <g:if test="${consumo?.estado == 'N'}">
+                    <g:if test="${consumo?.estado == 'N' || consumo?.estado == null}">
                         <div class="span1" style="margin-top: 20px; width: 80px">
                             <a class="btn btn-small btn-primary btn-ajax" href="#" rel="tooltip" title="Agregar" id="buscar_codigo">
                                 <i class="icon-search"></i> Buscar
@@ -155,7 +155,7 @@
 
                 <div class="span8" style="margin-left: 10px">
                     Nombre de la Obra
-                    <input type="text" name="nombre" class="span72" value="${consumo?.obra?.nombre}" id="obradscr" readonly="true">
+                    <input type="text" name="nombre" class="span72" value="${consumo?.obra?.nombre}" id="obradscr" readonly="">
                 </div>
 
                 <div class="span2" style="width: 105px; margin-left: 10px">
