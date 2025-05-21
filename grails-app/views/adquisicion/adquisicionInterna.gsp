@@ -968,7 +968,7 @@
                 $("#dlgLoad").dialog("close");
                 var parts = msg.split("_");
                 if (parts[0] === 'ok') {
-                    location.href = "${createLink(controller: 'adquisicion', action: 'adquisicionBodega')}/" + parts[1]
+                    location.href = "${createLink(controller: 'adquisicion', action: 'adquisicionInterna')}/" + parts[1]
                 } else {
                     $.box({
                         imageClass: "box_info",

@@ -285,7 +285,7 @@ class AdquisicionController {
         }
     }
 
-    def adquisicionBodega(){
+    def adquisicionInterna(){
 
         def adquisicion
         def bodegas = Bodega.findAllByTipoNotEqual('T',[sort: 'nombre'])
