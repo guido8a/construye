@@ -29,7 +29,7 @@
         <i class="icon-list-ul"></i>
         Lista
     </a>
-    <a href="${g.createLink(controller: 'adquisicion', action: 'adquisicionBodega')}" class="btn btn-ajax btn-new">
+    <a href="${g.createLink(controller: 'adquisicion', action: 'adquisicionInterna')}" class="btn btn-ajax btn-new">
         <i class="icon-file-alt"></i>
         Nuevo
     </a>
@@ -87,7 +87,7 @@
         <g:form name="frmAdquisicion" action="save" style="height: 100px;">
             <input type="hidden" id="adquisicion__id" name="id" value="${adquisicion?.id}">
             <input type="hidden" name="proveedor" id="proveedor_id" value="${janus.pac.Proveedor.findByNombre("Consugez")?.id ?: ''}">
-            <g:hiddenField name="tipo" value="1"/>
+            <g:hiddenField name="tipo" value="E"/>
 
             <p class="css-vertical-text">Adquisición</p>
 
@@ -149,7 +149,7 @@
 
                 <div class="span6">
                     Concepto
-                    <g:textField name="observaciones" value="${adquisicion?.observaciones ?: 'Adquisición interna'}" class="span12" readonly=""/>
+                    <g:textField name="observaciones" value="${adquisicion?.observaciones ?: 'Adquisición interna'}" class="span12" />
                 </div>
 
                 <div class="span1" style="width: 80px;">

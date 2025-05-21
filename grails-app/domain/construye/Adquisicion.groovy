@@ -16,6 +16,7 @@ class Adquisicion {
     double subtotal
     double iva
     double total
+    String  tipo
 
     static auditable = true
     static mapping = {
@@ -36,6 +37,7 @@ class Adquisicion {
             subtotal column: 'adqcsbtt'
             iva column: 'adqc_iva'
             total column: 'adqctotl'
+            tipo column: 'adqctipo'
         }
     }
     static constraints = {
@@ -49,5 +51,6 @@ class Adquisicion {
         subtotal(blank: true, nullable: true, attributes: [title: 'fecha pago'])
         iva(blank: true, nullable: true, attributes: [title: 'fecha pago'])
         total(blank: true, nullable: true, attributes: [title: 'fecha pago'])
+        tipo(blank: true, nullable: true)
     }
 }

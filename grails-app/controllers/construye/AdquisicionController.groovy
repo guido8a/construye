@@ -298,7 +298,7 @@ class AdquisicionController {
             adquisicion = Adquisicion.get(params.id)
         }else{
 
-            def existen = Adquisicion.findAllByEstadoAndProveedor('N', proveedor)
+            def existen = Adquisicion.findAllByEstadoAndProveedorAndTipo("N", proveedor, 'E')
 
             if(existen){
                 adquisicion = existen[0]
