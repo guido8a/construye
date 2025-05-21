@@ -1,17 +1,10 @@
-<%--
-  Created by IntelliJ IDEA.
-  User: fabricio
-  Date: 02/08/21
-  Time: 14:53
---%>
-
 <%@ page import="janus.Grupo" %>
 <!doctype html>
 <html>
 <head>
     <meta name="layout" content="main">
     <title>
-        Adquisiciones
+        Adquisiciones de bodega
     </title>
     <script src="${resource(dir: 'js/jquery/plugins/jquery-validation-1.9.0', file: 'jquery.validate.min.js')}"></script>
     <script src="${resource(dir: 'js/jquery/plugins/jquery-validation-1.9.0', file: 'messages_es.js')}"></script>
@@ -32,27 +25,25 @@
 </div>
 
 <div class="span12 btn-group" role="navigation" style="background-color: #a8a8a8; padding: 5px; border-radius: 4px; width: 93%">
-    <a href="#" class="btn  " id="btn_lista">
+    <a href="#" class="btn  btn-info" id="btn_lista">
         <i class="icon-list-ul"></i>
         Lista
     </a>
-    <a href="${g.createLink(controller: 'adquisicion', action: 'adquisicion')}" class="btn btn-ajax btn-new">
+    <a href="${g.createLink(controller: 'adquisicion', action: 'adquisicionBodega')}" class="btn btn-ajax btn-new">
         <i class="icon-file-alt"></i>
         Nuevo
     </a>
     <g:if test="${adquisicion?.estado == 'N' || adquisicion.estado == null}">
-        <a href="#" class="btn btn-ajax btn-new" id="guardar">
+        <a href="#" class="btn btn-new" id="guardar">
             <i class="icon-save"></i>
             Guardar
         </a>
     </g:if>
     <g:if test="${adquisicion?.id}">
-%{--        <g:if test="${consumo?.estado != 'A'}">--}%
-            <a href="#" class="btn btn-ajax btn-new" id="borrar">
-                <i class="icon-trash"></i>
-                Anular
-            </a>
-%{--        </g:if>--}%
+        <a href="#" class="btn btn-ajax btn-new" id="borrar">
+            <i class="icon-trash"></i>
+            Anular
+        </a>
     </g:if>
     <a href="${g.createLink(controller: 'adquisicion', action: 'adquisicion')}" class="btn btn-ajax btn-new">
         <i class="icon-remove"></i>
@@ -60,7 +51,7 @@
     </a>
     <g:if test="${adquisicion?.estado == 'N'}">
         <g:if test="${adquisicion?.id >= 0}">
-            <a href="#" class="btn btn-ajax btn-new" id="btnRegistrar">
+            <a href="#" class="btn btn-primary btn-new" id="btnRegistrar">
                 <i class="icon-check"></i>
                 Registrar
             </a>
@@ -76,16 +67,16 @@
             </g:if>
         </g:if>
     </g:else>
-    <a href="${createLink(controller: 'proveedor', action: 'proveedor', params: [id: adquisicion?.id >= 0 ?: null])}" class="btn">
-        <i class="icon-user"></i>
-        Proveedor
-    </a>
+%{--    <a href="${createLink(controller: 'proveedor', action: 'proveedor', params: [id: adquisicion?.id >= 0 ?: null])}" class="btn">--}%
+%{--        <i class="icon-user"></i>--}%
+%{--        Proveedor--}%
+%{--    </a>--}%
 </div>
 
 <g:if test="${band}">
     <div class="span12" style="margin-top: 5px">
         <div class="alert alert-info" style="text-align: center; font-size: 14px">
-            <i class="fa fa-exclamation-triangle fa-2x"></i>  Ya existe una adquisición no registrada en el sistema
+            <i class="fa fa-exclamation-triangle fa-2x"></i>  Ya existe una adquisición interna no registrada en el sistema
         </div>
     </div>
 </g:if>
@@ -95,46 +86,61 @@
     <div style="border-bottom: 1px solid black;padding-left: 50px;position: relative;">
         <g:form name="frmAdquisicion" action="save" style="height: 100px;">
             <input type="hidden" id="adquisicion__id" name="id" value="${adquisicion?.id}">
-            <input type="hidden" name="proveedor" id="proveedor_id" value="${adquisicion?.proveedor?.id ?: ''}">
+            <input type="hidden" name="proveedor" id="proveedor_id" value="${janus.pac.Proveedor.findByNombre("Consugez")?.id ?: ''}">
+            <g:hiddenField name="tipo" value="1"/>
 
             <p class="css-vertical-text">Adquisición</p>
 
             <div class="linea" style="height: 100px;"></div>
 
             <div class="row-fluid">
-                <div class="span10" style="width: 480px;">
+                <div class="span3">
                     Proveedor
 
-                    <input type="text" name="proveedor_name" class="span20 allCaps required input-small"
-                           value="${adquisicion?.id >= 0 ? (adquisicion?.proveedor?.ruc + " - " + adquisicion?.proveedor?.nombre) : ''}"
-                           id="proveedor_nombre" maxlength="30"  readonly="" minlength="2">
+                    <g:textField name="proveedor_nombre" class="" value="${janus.pac.Proveedor.findByNombre("Consugez")}" readonly="" />
+
+                    %{--                    <input type="text" name="proveedor_name" class="span20 allCaps required input-small"--}%
+                    %{--                           value="${adquisicion?.id >= 0 ? (adquisicion?.proveedor?.ruc + " - " + adquisicion?.proveedor?.nombre) : ''}"--}%
+                    %{--                           id="proveedor_nombre" maxlength="30"  readonly="" minlength="2">--}%
 
                     <p class="help-block ui-helper-hidden"></p>
                 </div>
 
-                <g:if test="${adquisicion?.estado == 'N' || adquisicion?.estado == null}">
-                    <div class="span1" style="margin-top: 20px; width: 80px">
-                        <a class="btn btn-small btn-primary btn-ajax" href="#" rel="tooltip" title="Agregar" id="input_codigo">
-                            <i class="icon-search"></i> Buscar
-                        </a>
-                    </div>
-                </g:if>
+                %{--                <g:if test="${adquisicion?.estado == 'N' || adquisicion?.estado == null}">--}%
+                %{--                    <div class="span1" style="margin-top: 20px; width: 80px">--}%
+                %{--                        <a class="btn btn-small btn-primary btn-ajax" href="#" rel="tooltip" title="Agregar" id="input_codigo">--}%
+                %{--                            <i class="icon-search"></i> Buscar--}%
+                %{--                        </a>--}%
+                %{--                    </div>--}%
+                %{--                </g:if>--}%
 
-                <div class="span3">
+                <div class="span3" style="margin-left: -10px">
                     Bodega
                     <g:select name="bodega" id="bodega" from="${bodegas}" class="span12" optionKey="id"
                               optionValue="descripcion"
                               value="${adquisicion?.bodega?.id}" noSelection="[null: '--Seleccione--']"/>
                 </div>
 
-                <div class="span2" style="width: 105px; margin-left: 10px">
+                <div class="span2" style="width: 100px; margin-left: 10px; margin-right: 20px">
                     Fecha
-                    <elm:datepicker name="fecha" class="span24" value="${adquisicion?.fecha ?: new Date()}" id="fecha"/>
+                    %{--                    <g:hiddenField name="fecha" value="${adquisicion?.fecha ?: new Date().parse("dd-mm-yyyy", "26-05-2025")}" id="fecha"/>--}%
+                    <g:hiddenField name="fecha" value="${adquisicion?.fecha ?: "26-05-2025"}" id="fecha"/>
+                    %{--                    <elm:datepicker name="fecha" class="span24" value="${adquisicion?.fecha ?: new Date().parse("dd-mm-yyyy", "26-05-2025")}" id="fecha" readonly=""/>--}%
+                    <g:textField name="fechaName" value="${"26-05-2025"}" readonly="" style="width: 100px;" />
                 </div>
 
-                <div class="span2" style="width: 105px; margin-left: 10px">
+                <div class="span2" style="width: 100px; margin-left: 10px;">
                     Fecha Pago
-                    <elm:datepicker name="fechaPago" class="span24" value="${adquisicion?.fechaPago ?: new Date()}" id="fechaPago"/>
+                    %{--                    <g:hiddenField name="fechaPago" value="${adquisicion?.fechaPago ?: new Date().parse("dd-mm-yyyy", "26-05-2025")}" id="fechaPago"/>--}%
+                    <g:hiddenField name="fechaPago" value="${adquisicion?.fechaPago ?: "26-05-2025"}" id="fechaPago"/>
+                    %{--                    <elm:datepicker name="fechaPago" class="span24" value="${adquisicion?.fechaPago ?: new Date().parse("dd-mm-yyyy", "26-05-2025")}" id="fechaPago"/>--}%
+                    <g:textField name="fechaPagoName" value="${"26-05-2025"}" readonly="" style="width: 100px;" />
+                </div>
+
+                <div class="span1" style="width: 50px; color: #01a">
+                    Estado
+                    <g:textField name="estado" value="${adquisicion?.estado ?: 'N'}" readonly="true"
+                                 title="${adquisicion?.estado == 'R' ? 'Registrado' : 'Ingresado'}" class="span12"/>
                 </div>
 
             </div>
@@ -143,38 +149,25 @@
 
                 <div class="span6">
                     Concepto
-                    <g:textField name="observaciones" value="${adquisicion?.observaciones}" maxlength="127"
-                                 title="${adquisicion?.observaciones}" class="span12"/>
+                    <g:textField name="observaciones" value="${adquisicion?.observaciones ?: 'Adquisición interna'}" class="span12" readonly=""/>
                 </div>
 
                 <div class="span1" style="width: 80px;">
                     IVA
-                    %{--<g:textField name="iva" value="${adquisicion?.iva}"  title="IVA" class="span12"/>--}%
-                    <g:textField name="iva"  title="IVA" class="span12"
-                                 value="${g.formatNumber(number: adquisicion?.iva, maxFractionDigits: 2, minFractionDigits: 2,
+                    <g:textField name="iva"  title="IVA" class="span12"   value="${g.formatNumber(number: adquisicion?.iva ?: 0, maxFractionDigits: 2, minFractionDigits: 2,
                                          format: '##,##0', locale: 'ec')}" />
                 </div>
 
                 <div class="span1" style="width: 150px;">
                     Subtotal
-                    %{--<g:textField name="subtotal" value="${adquisicion?.subtotal}" title="Subtotal" class="span12"/>--}%
-                    <g:textField name="subtotal"  title="Subtotal" class="span12"
-                                 value="${g.formatNumber(number: adquisicion?.subtotal, maxFractionDigits: 2, minFractionDigits: 2,
+                    <g:textField name="subtotal"  title="Subtotal" class="span12"  value="${g.formatNumber(number: adquisicion?.subtotal ?: 0, maxFractionDigits: 2, minFractionDigits: 2,
                                          format: '##,##0', locale: 'ec')}"/>
                 </div>
 
                 <div class="span1" style="width: 150px;">
                     Total
-                    %{--<g:textField name="total" value="${adquisicion?.total}" readonly="" title="Total" class="span12"/>--}%
-                    <g:textField name="total" readonly="" title="Total" class="span12"
-                                 value="${g.formatNumber(number: adquisicion?.total, maxFractionDigits: 2, minFractionDigits: 2,
+                    <g:textField name="total" title="Total" class="span12" value="${g.formatNumber(number: adquisicion?.total ?: 0, maxFractionDigits: 2, minFractionDigits: 2,
                                          format: '##,##0', locale: 'ec')}"/>
-                </div>
-
-                <div class="span1" style="width: 50px; color: #01a">
-                    Estado
-                    <g:textField name="estado" value="${adquisicion?.estado ?: 'N'}" readonly="true"
-                                 title="${adquisicion?.estado == 'R' ? 'Registrado' : 'Ingresado'}" class="span12"/>
                 </div>
             </div>
         </g:form>
@@ -587,14 +580,14 @@
                             success: function (msg) {
                                 $("#dlgLoad").dialog("close");
                                 var parts = msg.split("_");
-                                if (parts[0] == 'ok') {
+                                if (parts[0] === 'ok') {
                                     $("#spanOk").html("Adquisición registrada correctamente");
                                     $("#divOk").show();
                                     setTimeout(function () {
-                                        location.reload(true)
+                                        location.reload()
                                     }, 1000);
                                 } else {
-                                    if(parts[0] == 'er'){
+                                    if(parts[0] === 'er'){
                                         $.box({
                                             imageClass: "box_info",
                                             text: parts[1],
@@ -973,9 +966,9 @@
             data: $("#frmAdquisicion").serialize(),
             success: function (msg) {
                 $("#dlgLoad").dialog("close");
-                var parts = msg.split("_")
-                if (parts[0] == 'ok') {
-                    location.href = "${createLink(controller: 'adquisicion', action: 'adquisicion')}/" + parts[1]
+                var parts = msg.split("_");
+                if (parts[0] === 'ok') {
+                    location.href = "${createLink(controller: 'adquisicion', action: 'adquisicionBodega')}/" + parts[1]
                 } else {
                     $.box({
                         imageClass: "box_info",

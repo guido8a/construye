@@ -82,9 +82,25 @@ class AdquisicionController {
 
         params.fecha = fecha
         params.fechaPago = fechaPago
-        params.iva = params.iva.replaceAll(',', '')
-        params.subtotal = params.subtotal.replaceAll(',', '')
-        params.total = params.total.replaceAll(',', '')
+
+        if(params.iva){
+            params.iva = params.iva.replaceAll(',', '')
+        }else{
+            params.iva = 0
+        }
+
+        if(params.subtotal){
+            params.subtotal = params.subtotal.replaceAll(',', '')
+        }else{
+            params.subtotal = 0
+        }
+
+        if(params.total){
+            params.total = params.total.replaceAll(',', '')
+        }else{
+            params.total = 0
+        }
+
         adquisicion.properties = params
         adquisicion.bodega = bodega
         adquisicion.proveedor = proveedor
@@ -267,6 +283,41 @@ class AdquisicionController {
             cn.execute(sql);
             render "ok"
         }
+    }
+
+    def adquisicionBodega(){
+
+        def adquisicion
+        def bodegas = Bodega.findAllByTipoNotEqual('T',[sort: 'nombre'])
+        def listaAdqc = [1: 'Proveedor', 2: 'fecha', 3: 'Estado']
+        def listaItems = [1: 'Nombre', 2: 'Código']
+        def band = false
+        def proveedor = Proveedor.findByNombre("Consugez")
+
+        if(params.id){
+            adquisicion = Adquisicion.get(params.id)
+        }else{
+
+            def existen = Adquisicion.findAllByEstadoAndProveedor('N', proveedor)
+
+            if(existen){
+                adquisicion = existen[0]
+                band = true
+            }else{
+                adquisicion = new Adquisicion()
+            }
+        }
+
+        println "adqc: ${adquisicion?.id}"
+        def detalles = []
+        if(adquisicion?.id >= 0){
+            println "...1"
+            detalles = DetalleAdquisicion.findAllByAdquisicion(adquisicion).sort{it.item.nombre}
+        }
+
+        println "detalle: ${detalles.size()}"
+
+        return[adquisicion: adquisicion, bodegas: bodegas, detalles:detalles, listaAdqc: listaAdqc, listaItems: listaItems, band: band]
     }
 
 
