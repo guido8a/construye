@@ -144,7 +144,7 @@ class AdquisicionController {
         def cn = dbConnectionService.getConnection()
         datos = cn.rows(sqlTx)
 //        println "data: ${datos[0]}"
-        [data: datos]
+        [data: datos, tipo: params.tipo]
     }
 
     def guardarDetalleAdquisicion_ajax(){
@@ -209,25 +209,23 @@ class AdquisicionController {
         [data: datos]
     }
 
-    def listaItem_old() {
-        println "listaItem" + params
-        def listaItems = ['itemnmbr', 'itemcdgo']
+    def listaItemsInterna() {
+        println("interna params " + params)
+        def listaItems = ['item.itemnmbr', 'item.itemcdgo']
         def datos;
-        def select = "select item.item__id, itemcdgo, itemnmbr, unddcdgo " +
-                "from item, undd, dprt, sbgr "
-        def txwh = "where tpit__id = 1 and undd.undd__id = item.undd__id and dprt.dprt__id = item.dprt__id and " +
-                "sbgr.sbgr__id = dprt.sbgr__id "
+        def select = "select * from rp_exst(${params.grupo}, ${params.bodega}) rp, item "
+        def txwh = "where item.item__id = rp.item__id "
         def sqlTx = ""
         def bsca = listaItems[params.buscarPor.toInteger()-1]
         def ordn = listaItems[params.ordenar.toInteger()-1]
-        txwh += " and $bsca ilike '%${params.criterio}%' and grpo__id = ${params.grupo}"
+        txwh += " and $bsca ilike '%${params.criterio}%' "
 
         sqlTx = "${select} ${txwh} order by ${ordn} limit 100 ".toString()
         println "sql: $sqlTx"
 
         def cn = dbConnectionService.getConnection()
         datos = cn.rows(sqlTx)
-        println "data: ${datos[0]}"
+//        println "data: ${datos[0]}"
         [data: datos]
     }
 

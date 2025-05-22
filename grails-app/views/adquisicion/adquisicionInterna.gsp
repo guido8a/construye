@@ -497,11 +497,11 @@
                             },
                             success: function (msg) {
                                 $("#dlgLoad").dialog("close");
-                                if (msg == 'ok') {
+                                if (msg === 'ok') {
                                     $("#spanOk").html("Se ha eliminado el item correctamente");
                                     $("#divOk").show();
                                     setTimeout(function () {
-                                        location.reload(true)
+                                        location.reload()
                                     }, 1000);
                                 } else {
                                     $("#spanError").html("Error al eliminar el item");
@@ -643,7 +643,7 @@
                             success: function (msg) {
                                 $("#dlgLoad").dialog("close");
                                 var parts = msg.split("_");
-                                if (parts[0] == 'ok') {
+                                if (parts[0] === 'ok') {
                                     $("#spanOk").html("Estado cambiado correctamente");
                                     $("#divOk").show();
                                     setTimeout(function () {
@@ -663,9 +663,7 @@
                 }
             }
         });
-    })
-
-
+    });
 
     $("#btn_lista").click(function () {
         $("#listaAdq").dialog("open");
@@ -737,14 +735,16 @@
         var criterio = $(".criterio").val();
         var ordenar = $("#ordenar").val();
         var grupo = $("#buscarGrupo").val();
+        var bodega = $("#bodega option:selected").val();
         $.ajax({
             type: "POST",
-            url: "${createLink(controller: 'adquisicion', action:'listaItem')}",
+            url: "${createLink(controller: 'adquisicion', action:'listaItemsInterna')}",
             data: {
                 buscarPor: buscarPor,
                 criterio: criterio,
                 ordenar: ordenar,
-                grupo: grupo
+                grupo: grupo,
+                bodega: bodega
             },
             success: function (msg) {
                 $("#divTabla").html(msg);
@@ -807,8 +807,8 @@
                             data: "id=${adquisicion?.id}",
                             success: function (msg) {
                                 $("#dlgLoad").dialog("close");
-                                if (msg == "ok") {
-                                    location.href = "${createLink(controller: 'adquisicion', action: 'adquisicion')}"
+                                if (msg === "ok") {
+                                    location.href = "${createLink(controller: 'adquisicion', action: 'adquisicionInterna')}"
                                 } else {
                                     $.box({
                                         imageClass: "box_info",
@@ -1007,7 +1007,7 @@
             success: function (msg) {
                 $("#dlgLoad").dialog("close");
                 if (msg == 'ok') {
-                    location.href = "${createLink(controller: 'adquisicion', action: 'adquisicion')}/" + '${adquisicion?.id}'
+                    location.href = "${createLink(controller: 'adquisicion', action: 'adquisicionInterna')}/" + '${adquisicion?.id}'
                 } else {
                     $.box({
                         imageClass: "box_info",

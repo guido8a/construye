@@ -1,10 +1,3 @@
-<%--
-  Created by IntelliJ IDEA.
-  User: fabricio
-  Date: 05/08/21
-  Time: 10:36
---%>
-
 <table class="table table-bordered table-striped table-hover table-condensed" id="tabla">
     <thead>
     <tr>
@@ -43,14 +36,15 @@
     </table>
 </div>
 
-
-
-
-
 <script type="text/javascript">
     $(".selecciona").click(function () {
         var ad = $(this).data("id");
-        location.href = "${g.createLink(controller: 'adquisicion', action: 'adquisicion')}/" + ad
+        <g:if test="${tipo == 'E'}">
+        location.href = "${g.createLink(controller: 'adquisicion', action: 'adquisicionInterna')}/" + ad;
+        </g:if>
+        <g:else>
+        location.href = "${g.createLink(controller: 'adquisicion', action: 'adquisicion')}/" + ad;
+        </g:else>
     });
 </script>
 
