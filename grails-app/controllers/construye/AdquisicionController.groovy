@@ -152,11 +152,21 @@ class AdquisicionController {
         def detalle
         def item = Item.get(params.item)
         def adquisicion = Adquisicion.get(params.adquisicion)
+        def totales = 0
+        def iva = 0
+        def subTotales = 0
 
         if(params.id){
             detalle = DetalleAdquisicion.get(params.id)
         }else{
-            detalle = new DetalleAdquisicion()
+            def existe = DetalleAdquisicion.findAllByAdquisicionAndItem(adquisicion, item)
+
+            if(existe){
+                render "no_El item ya se encuentra agregado a la composición"
+                return
+            }else{
+                detalle = new DetalleAdquisicion()
+            }
         }
 
         params.precioUnitario = params.precioUnitario.toDouble()
@@ -168,8 +178,23 @@ class AdquisicionController {
 
         if(!detalle.save(flush:true)){
             println("error al guardar el detalle de adquisicion " + detalle.errors)
-            render "no"
+            render "no_Error al agregar el item"
         }else{
+
+            def detalles = DetalleAdquisicion.findAllByAdquisicion(adquisicion)
+            detalles.each {
+                totales += it.precioUnitario
+            }
+
+            iva = ((totales * 12) /100)
+            subTotales = totales - iva
+
+            adquisicion.total = totales
+            adquisicion.iva = iva
+            adquisicion.subtotal = subTotales
+
+            adquisicion.save(flush:true)
+
             render "ok"
         }
     }
@@ -177,9 +202,28 @@ class AdquisicionController {
     def eliminarItem_ajax(){
 //        println("params " + params)
         def item = DetalleAdquisicion.get(params.id)
+        def adquisicion = item.adquisicion
+        def totales = 0
+        def iva = 0
+        def subTotales = 0
 
         try{
             item.delete(flush:true)
+
+            def detalles = DetalleAdquisicion.findAllByAdquisicion(adquisicion)
+            detalles.each {
+                totales += it.precioUnitario
+            }
+
+            iva = ((totales * 15) /100)
+            subTotales = totales - iva
+
+            adquisicion.total = totales
+            adquisicion.iva = iva
+            adquisicion.subtotal = subTotales
+
+            adquisicion.save(flush:true)
+
             render "ok"
         }catch(e){
             println("error al borrar el item " + item.errors)
@@ -260,10 +304,10 @@ class AdquisicionController {
         def ivas = adquisicion.iva.toDouble()
         println "Total: ${adquisicion.total}, subtotal: ${adquisicion.subtotal}, iva: ${adquisicion.iva}, ivaDt: $ivaDetalles, totalDetalles: $totalDetalles"
 
-        if(adquisicion.total != totalDetalles){
+        if(adquisicion?.total?.toDouble() != totalDetalles?.toDouble()){
             render "er_El total de la adquisición es diferente del total de los items"
         }else{
-            if(Math.abs(ivaDetalles - adquisicion.iva) <= 0.01){
+            if(Math.abs(ivaDetalles?.toDouble() - adquisicion?.iva?.toDouble()) <= 0.01){
                 adquisicion.estado = 'R'
                 if(!adquisicion.save(flush:true)){
                     println("error al registrar la adquisicion " + adquisicion.errors)
@@ -320,14 +364,24 @@ class AdquisicionController {
 
         println "adqc: ${adquisicion?.id}"
         def detalles = []
+        def totales = 0
+        def subTotales = 0
+        def iva = 0
         if(adquisicion?.id >= 0){
             println "...1"
             detalles = DetalleAdquisicion.findAllByAdquisicion(adquisicion).sort{it.item.nombre}
+            if(detalles.size() > 0){
+                detalles.each {
+                    totales += it.precioUnitario
+                }
+                iva = ((totales * 15) /100)
+                subTotales = totales - iva
+            }
         }
 
         println "detalle: ${detalles.size()}"
 
-        return[adquisicion: adquisicion, bodegas: bodegas, detalles:detalles, listaAdqc: listaAdqc, listaItems: listaItems, band: band]
+        return[adquisicion: adquisicion, bodegas: bodegas, detalles:detalles, listaAdqc: listaAdqc, listaItems: listaItems, band: band, totales: totales, iva:iva, subtotal: subTotales]
     }
 
 

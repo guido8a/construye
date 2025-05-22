@@ -67,10 +67,6 @@
             </g:if>
         </g:if>
     </g:else>
-%{--    <a href="${createLink(controller: 'proveedor', action: 'proveedor', params: [id: adquisicion?.id >= 0 ?: null])}" class="btn">--}%
-%{--        <i class="icon-user"></i>--}%
-%{--        Proveedor--}%
-%{--    </a>--}%
 </div>
 
 <g:if test="${band}">
@@ -98,42 +94,24 @@
                     Proveedor
 
                     <g:textField name="proveedor_nombre" class="" value="${janus.pac.Proveedor.findByNombre("Consugez")}" readonly="" />
-
-                    %{--                    <input type="text" name="proveedor_name" class="span20 allCaps required input-small"--}%
-                    %{--                           value="${adquisicion?.id >= 0 ? (adquisicion?.proveedor?.ruc + " - " + adquisicion?.proveedor?.nombre) : ''}"--}%
-                    %{--                           id="proveedor_nombre" maxlength="30"  readonly="" minlength="2">--}%
-
                     <p class="help-block ui-helper-hidden"></p>
                 </div>
-
-                %{--                <g:if test="${adquisicion?.estado == 'N' || adquisicion?.estado == null}">--}%
-                %{--                    <div class="span1" style="margin-top: 20px; width: 80px">--}%
-                %{--                        <a class="btn btn-small btn-primary btn-ajax" href="#" rel="tooltip" title="Agregar" id="input_codigo">--}%
-                %{--                            <i class="icon-search"></i> Buscar--}%
-                %{--                        </a>--}%
-                %{--                    </div>--}%
-                %{--                </g:if>--}%
 
                 <div class="span3" style="margin-left: -10px">
                     Bodega
                     <g:select name="bodega" id="bodega" from="${bodegas}" class="span12" optionKey="id"
-                              optionValue="descripcion"
-                              value="${adquisicion?.bodega?.id}" noSelection="[null: '--Seleccione--']"/>
+                              optionValue="descripcion" value="${adquisicion?.bodega?.id}" noSelection="[null: '--Seleccione--']"/>
                 </div>
 
                 <div class="span2" style="width: 100px; margin-left: 10px; margin-right: 20px">
                     Fecha
-                    %{--                    <g:hiddenField name="fecha" value="${adquisicion?.fecha ?: new Date().parse("dd-mm-yyyy", "26-05-2025")}" id="fecha"/>--}%
                     <g:hiddenField name="fecha" value="${adquisicion?.fecha ?: "26-05-2025"}" id="fecha"/>
-                    %{--                    <elm:datepicker name="fecha" class="span24" value="${adquisicion?.fecha ?: new Date().parse("dd-mm-yyyy", "26-05-2025")}" id="fecha" readonly=""/>--}%
                     <g:textField name="fechaName" value="${"26-05-2025"}" readonly="" style="width: 100px;" />
                 </div>
 
                 <div class="span2" style="width: 100px; margin-left: 10px;">
                     Fecha Pago
-                    %{--                    <g:hiddenField name="fechaPago" value="${adquisicion?.fechaPago ?: new Date().parse("dd-mm-yyyy", "26-05-2025")}" id="fechaPago"/>--}%
                     <g:hiddenField name="fechaPago" value="${adquisicion?.fechaPago ?: "26-05-2025"}" id="fechaPago"/>
-                    %{--                    <elm:datepicker name="fechaPago" class="span24" value="${adquisicion?.fechaPago ?: new Date().parse("dd-mm-yyyy", "26-05-2025")}" id="fechaPago"/>--}%
                     <g:textField name="fechaPagoName" value="${"26-05-2025"}" readonly="" style="width: 100px;" />
                 </div>
 
@@ -142,11 +120,9 @@
                     <g:textField name="estado" value="${adquisicion?.estado ?: 'N'}" readonly="true"
                                  title="${adquisicion?.estado == 'R' ? 'Registrado' : 'Ingresado'}" class="span12"/>
                 </div>
-
             </div>
 
             <div class="row-fluid">
-
                 <div class="span6">
                     Concepto
                     <g:textField name="observaciones" value="${adquisicion?.observaciones ?: 'Adquisición interna'}" class="span12" />
@@ -154,20 +130,20 @@
 
                 <div class="span1" style="width: 80px;">
                     IVA
-                    <g:textField name="iva"  title="IVA" class="span12"   value="${g.formatNumber(number: adquisicion?.iva ?: 0, maxFractionDigits: 2, minFractionDigits: 2,
-                                         format: '##,##0', locale: 'ec')}" />
+                    <g:textField name="iva"  title="IVA" class="span12"   value="${g.formatNumber(number: adquisicion?.iva ?  adquisicion?.iva  : ( iva ?: 0), maxFractionDigits: 2, minFractionDigits: 2,
+                            format: '##,##0', locale: 'ec')}" />
                 </div>
 
                 <div class="span1" style="width: 150px;">
                     Subtotal
-                    <g:textField name="subtotal"  title="Subtotal" class="span12"  value="${g.formatNumber(number: adquisicion?.subtotal ?: 0, maxFractionDigits: 2, minFractionDigits: 2,
-                                         format: '##,##0', locale: 'ec')}"/>
+                    <g:textField name="subtotal"  title="Subtotal" class="span12"  value="${g.formatNumber(number: adquisicion?.subtotal ?   adquisicion?.subtotal  : (subtotal ?: 0), maxFractionDigits: 2, minFractionDigits: 2,
+                            format: '##,##0', locale: 'ec')}"/>
                 </div>
 
                 <div class="span1" style="width: 150px;">
                     Total
-                    <g:textField name="total" title="Total" class="span12" value="${g.formatNumber(number: adquisicion?.total ?: 0, maxFractionDigits: 2, minFractionDigits: 2,
-                                         format: '##,##0', locale: 'ec')}"/>
+                    <g:textField name="total" title="Total" class="span12" value="${g.formatNumber(number: adquisicion?.total ?  adquisicion?.total : (totales ?: 0), maxFractionDigits: 2, minFractionDigits: 2,
+                            format: '##,##0', locale: 'ec')}"/>
                 </div>
             </div>
         </g:form>
@@ -433,9 +409,11 @@
                           style="width: 100%" optionKey="key"
                           optionValue="value"/></div>
 
-            <div class="span2" style="margin-left: 60px"><button class="btn btn-info" id="btn-consultar"><i
-                    class="icon-check"></i> Consultar
-            </button></div>
+            <div class="span2" style="margin-left: 60px">
+                <button class="btn btn-info" id="btn-consultar"><i
+                        class="icon-check"></i> Consultar
+                </button>
+            </div>
 
         </div>
     </fieldset>
@@ -446,10 +424,7 @@
     </fieldset>
 </div>
 
-
 <script type="text/javascript">
-
-
 
     function validarNumDec(ev) {
         /*
@@ -466,8 +441,8 @@
          */
         return ((ev.keyCode >= 48 && ev.keyCode <= 57) ||
             (ev.keyCode >= 96 && ev.keyCode <= 105) ||
-            ev.keyCode == 8 || ev.keyCode == 46 || ev.keyCode == 9 ||
-            ev.keyCode == 37 || ev.keyCode == 39 || ev.keyCode == 190 || ev.keyCode == 110);
+            ev.keyCode === 8 || ev.keyCode === 46 || ev.keyCode === 9 ||
+            ev.keyCode === 37 || ev.keyCode === 39 || ev.keyCode === 190 || ev.keyCode === 110);
     }
 
     $("#iva, #subtotal, #item_cantidad, #item_precio").keydown(function (ev) {
@@ -526,7 +501,7 @@
         var precio = $(this).data("precio");
         var codigo = $(this).data("codigo");
         var unidad = $(this).data("unidad");
-        var lugar = $(this).data("lugar")
+        var lugar = $(this).data("lugar");
         $("#idItems").val(id);
         $("#item_id_original").val(comp);
         $("#item_cantidad").val(cantidad);
@@ -548,7 +523,7 @@
         $("#item_precio").val(1);
         $("#lugar").val(0);
         $("#item_unidad").val("").removeClass("readonly");
-        $("#cdgo_buscar").val("")
+        $("#cdgo_buscar").val("");
         $("#btn_guardarItem").addClass("hidden");
         $("#btn_agregarItem").removeClass("hidden")
         // $("#btnCancelarEdicion").addClass("hidden")
@@ -706,8 +681,6 @@
     }
 
     <g:if test="${adquisicion?.id}">
-
-    // $("#cdgo_buscar").dblclick(function () {
     $("#btnBuscarItem").click(function () {
         $("#busqueda").dialog("open");
         $(".ui-dialog-titlebar-close").html("x");
@@ -991,7 +964,7 @@
     }
 
     function guardarDetalleAdquisición(id) {
-        var lugar = $("#lugar option:selected").val()
+        var lugar = $("#lugar option:selected").val();
         $("#dlgLoad").dialog("open");
         $.ajax({
             type: 'POST',
@@ -1006,12 +979,13 @@
             },
             success: function (msg) {
                 $("#dlgLoad").dialog("close");
-                if (msg == 'ok') {
+                var parts = msg.split("_");
+                if (parts[0] === 'ok') {
                     location.href = "${createLink(controller: 'adquisicion', action: 'adquisicionInterna')}/" + '${adquisicion?.id}'
                 } else {
                     $.box({
                         imageClass: "box_info",
-                        text: "Error al agregar el item",
+                        text: parts[1],
                         title: "Error",
                         iconClose: false,
                         dialog: {
