@@ -117,31 +117,22 @@ class AdquisicionController {
     }
 
     def listaAdquisiciones(){
-//        println("params " + params)
-//        def crit = params.buscarPor == '1' ? 'nombre' : 'ruc'
-//        def orden = params.ordernar == '1' ? 'nombre' : 'ruc'
-//        def usuario = Persona.get(session.usuario.id)
-//        def empresa = usuario.empresa
-//        def adquisiciones = Adquisicion.withCriteria {
-//            eq("empresa", empresa)
-//            and{
-//                proveedor{
-//                    ilike(crit, "%" + params.criterio + "%")
-//                    order(orden)
-//                }
-//            }
-//        }
-//        return[adquisiciones: adquisiciones]
-
 
         println "listaAdquisiciones" + params
         def datos;
         def listaAdqc = ['prvenmbr', 'adqcfcha', 'adqcetdo']
+        def tp = ''
+
+        if(params.tipo){
+            tp = " and adqc.adqctipo = '${params.tipo}' "
+        }else{
+            tp = " and adqc.adqctipo is null "
+        }
 
         def select = "select adqc__id, prvenmbr, adqcfcha, adqcfcpg, adqcetdo, bdganmbr, adqcobsr " +
                 "from adqc, prve, bdga "
         def txwh = "where prve.prve__id = adqc.prve__id and bdga.bdga__id = adqc.bdga__id and " +
-                "adqc__id >= 0 "
+                "adqc__id >= 0  ${tp}"
         def sqlTx = ""
         def bsca = listaAdqc[params.buscarPor.toInteger()-1]
         def ordn = listaAdqc[params.ordenar.toInteger()-1]
@@ -154,7 +145,6 @@ class AdquisicionController {
         datos = cn.rows(sqlTx)
 //        println "data: ${datos[0]}"
         [data: datos]
-
     }
 
     def guardarDetalleAdquisicion_ajax(){

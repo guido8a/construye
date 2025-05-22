@@ -691,14 +691,15 @@
         var buscarPor = $("#buscarPorCnsm").val();
         var criterio = $("#criterioCnsm").val();
         var ordenar = $("#ordenarCnsm").val();
+        var tipo = $("#tipo").val();
         $.ajax({
             type: "POST",
             url: "${createLink(controller: 'adquisicion', action:'listaAdquisiciones')}",
             data: {
                 buscarPor: buscarPor,
                 criterio: criterio,
-                ordenar: ordenar
-
+                ordenar: ordenar,
+                tipo: tipo
             },
             success: function (msg) {
                 $("#divTablaAdqc").html(msg);
