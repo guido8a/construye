@@ -23,9 +23,19 @@
 
 <body>
 
-<div style="text-align: center; margin-bottom:20px">
-    <h3>Existencias en Bodega</h3>
+<div class="row">
+    <div class="col-md-3">
+        <a href="${createLink(controller: 'adquisicion', action: 'adquisicionInterna')}" class="btn btn-ajax btn-new">
+            <i class="icon-file"></i>
+            Ingresar existencias de Bodega
+        </a>
+    </div>
+    <div class="col-md-8" style="text-align: center; margin-top:-40px">
+        <h3>Existencias en Bodega</h3>
+    </div>
 </div>
+
+
 <g:if test="${flash.message}">
     <div class="alert ${flash.clase ?: 'alert-info'}" role="status">
         <a class="close" data-dismiss="alert" href="#">×</a>
@@ -135,46 +145,6 @@ como máximo 30
     </div><!-- /.modal-dialog -->
 </div>
 
-%{--Dialogo solicitudes--}%
-%{--<div class="modal fade col-md-12 col-xs-12" id="solicitud" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">--}%
-%{--    <div class="modal-dialog">--}%
-%{--        <div class="modal-content">--}%
-%{--            <div class="modal-header">--}%
-%{--                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>--}%
-%{--                <h4 class="modal-title" id="modalsolicitud">Generar cartas solicitando pagos</h4>--}%
-%{--            </div>--}%
-
-%{--            <div class="modal-body" id="bodysolicitud">--}%
-%{--                <div class="modal-body">--}%
-%{--                    <div class="row">--}%
-%{--                        <div class="col-md-1 col-xs-1">--}%
-%{--                        </div>--}%
-%{--                        <div class="col-md-3 col-xs-3">--}%
-%{--                            <label>Generar para deudas con </label>--}%
-%{--                        </div>--}%
-%{--                        <div class="col-md-7 col-xs-7">--}%
-%{--                            <g:select from="${['1':'Valores superiores a 1 alícuota',--}%
-%{--                                               '2':'Valores superiores a 2 alícuotas',--}%
-%{--                                               '3':'Valores superiores a 3 alícuotas']}"--}%
-%{--                                      optionValue="value" optionKey="key" name="mesesHasta_name"--}%
-%{--                                      id="valorHasta" class="form-control"/>--}%
-%{--                        </div>--}%
-%{--                        <div class="col-md-1 col-xs-1">--}%
-%{--                        </div>--}%
-
-%{--                    </div>--}%
-%{--                </div>--}%
-%{--            </div>--}%
-
-%{--            <div class="modal-footer">--}%
-%{--                <button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-times"></i> Cancelar--}%
-%{--                </button>--}%
-%{--                <button type="button" class="btn btnSolicitud btn-success" data-dismiss="modal"><i class="fa fa-print"></i> Aceptar--}%
-%{--                </button>--}%
-%{--            </div>--}%
-%{--        </div>--}%
-%{--    </div>--}%
-%{--</div>--}%
 
 <div class="modal hide fade" id="modal-showProveedor" style="width: 600px;">
     <div class="modal-header" id="modalHeaderShow">
@@ -241,106 +211,6 @@ como máximo 30
         }
     });
 
-    %{--function createContextMenu(node) {--}%
-    %{--    var $tr = $(node);--}%
-    %{--    var items = {--}%
-    %{--        header: {--}%
-    %{--            label: "Acciones",--}%
-    %{--            header: true--}%
-    %{--        }--}%
-    %{--    };--}%
-
-    %{--    var id = $tr.data("id");--}%
-    %{--    var deuda = $tr.data("deuda");--}%
-    %{--    var ingr = $tr.data("ingr");--}%
-    %{--    var codigo = $tr.data("p");--}%
-
-    %{--    var perfil = {--}%
-    %{--        label: " Asignar Perfil",--}%
-    %{--        icon: "fa fa-user-o",--}%
-    %{--        action : function ($element) {--}%
-    %{--            var id = $element.data("id");--}%
-    %{--            asignarPerfil(id);--}%
-    %{--        }--}%
-    %{--    };--}%
-
-    %{--    var editar = {--}%
-    %{--        label: " Editar Persona",--}%
-    %{--        icon: "fa fa-id-card-o",--}%
-    %{--        action : function ($element) {--}%
-    %{--            var id = $element.data("id");--}%
-    %{--            createEditRow(id);--}%
-    %{--        }--}%
-    %{--    };--}%
-
-    %{--    var alicuota = {--}%
-    %{--        label: "Alícuota",--}%
-    %{--        icon: "fa fa-money",--}%
-    %{--        action : function ($element) {--}%
-    %{--            var id = $element.data("id");--}%
-    %{--            tablaAlicuotas(id)--}%
-    %{--        }--}%
-    %{--    };--}%
-
-    %{--    var ingresos = {--}%
-    %{--        label: "Registro de Pagos",--}%
-    %{--        icon: "fa fa-money",--}%
-    %{--        action : function ($element) {--}%
-    %{--            var id = $element.data("id");--}%
-    %{--            pagoAlicuota(id);--}%
-    %{--        }--}%
-    %{--    };--}%
-
-    %{--    var certificado = {--}%
-    %{--        label: "Certificado Expensas",--}%
-    %{--        icon: "fa fa-print",--}%
-    %{--        action : function ($element) {--}%
-    %{--            var id = $element.data("id");--}%
-    %{--            location.href='${createLink(controller: 'reportes', action: 'expensas')}?id=' + id;--}%
-    %{--        }--}%
-    %{--    };--}%
-
-    %{--    var propiedades = {--}%
-    %{--        label: "Propiedades",--}%
-    %{--        icon: "fa fa-home",--}%
-    %{--        separator_before : true,--}%
-    %{--        action : function ($element) {--}%
-    %{--            var id = $element.data("id");--}%
-    %{--            location.href='${createLink(controller: 'propiedad', action: 'list')}?id=' + id;--}%
-    %{--        }--}%
-    %{--    };--}%
-
-    %{--    var detalle = {--}%
-    %{--        label: "Detalle Pagos",--}%
-    %{--        icon: "fa fa-print",--}%
-    %{--        separator_before : true,--}%
-    %{--        action : function ($element) {--}%
-    %{--            var id = $element.data("id");--}%
-    %{--            cargarFechas(id);--}%
-    %{--        }--}%
-    %{--    };--}%
-
-    %{--    var solicitudPago = {--}%
-    %{--        label: "Solicitud de Pago",--}%
-    %{--        icon: "fa fa-print",--}%
-    %{--        separator_before : true,--}%
-    %{--        action : function ($element) {--}%
-    %{--            var id = $element.data("id");--}%
-    %{--            seleccionarAlicuotas(id);--}%
-    %{--        }--}%
-    %{--    };--}%
-
-    %{--    var solicitudMonitorio = {--}%
-    %{--        label: "Solicitud de Monitorio",--}%
-    %{--        icon: "fa fa-print",--}%
-    %{--        separator_before : true,--}%
-    %{--        action : function ($element) {--}%
-    %{--            var id = $element.data("id");--}%
-    %{--        }--}%
-    %{--    };--}%
-
-    %{--    return items--}%
-    %{--}--}%
 
     $("#btnLimpiarBusqueda").click(function () {
         $(".fechaD, .fechaH, #criterio_con").val('');

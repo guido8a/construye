@@ -1,22 +1,4 @@
 <%@ page import="janus.construye.Bodega; janus.Item" %>
-%{--
-<table class="table table-bordered table-striped table-hover table-condensed" id="tabla">
-
-    <thead>
-    <tr>
-        <th style="width: 10%">Código</th>
-        <th style="width: 54%">Descripción</th>
-        <th style="width: 15%">Cantidad</th>
-        <th style="width: 12%">Precio U.</th>
-        <th style="width: 9%">Seleccionar</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    </tbody>
-
-</table>
---}%
 
 <div class="" style="width: 99.7%;height: 420px; overflow-y: auto;float: right; margin-top: 0px">
 %{--    <table class="table-bordered table-condensed table-hover" style="width: 100%">--}%
@@ -34,10 +16,10 @@
                 <td style="width: 8%; text-align: right">${dt.exstvlor}</td>
                 <td style="width: 4%; text-align: center; font-weight: bold">${construye.Retazo.findAllByItemAndBodegaAndEstado(janus.Item.get(dt.item__id), janus.construye.Bodega.get(params.bdga), 'A').size()}</td>
                 <td style="width: 10%; text-align: center">
-                    <a href="#" class="btn btn-primary btn-small btnRetazo" data-id="${dt?.item__id}"
-                       data-krdx="${dt?.krdx__id}" title="Generar Retazo del Item">
-                        <i class="fa fa-puzzle-piece"></i>
-                    </a>
+                    %{--<a href="#" class="btn btn-primary btn-small btnRetazo" data-id="${dt?.item__id}"--}%
+                       %{--data-krdx="${dt?.krdx__id}" title="Generar Retazo del Item">--}%
+                        %{--<i class="fa fa-puzzle-piece"></i>--}%
+                    %{--</a>--}%
                     <g:if test="${dt?.exstpcun == 0.0001}">
                         <a href="#" class="btn btn-success btn-small btnCambiar" data-id="${dt?.item__id}"
                            data-krdx="${dt?.krdx__id}" title="Cambiar el precio unitario del Item">
@@ -46,11 +28,6 @@
                     </g:if>
 
                 </td>
-                %{--<td style="width: 8%"><div style="text-align: center" class="seleccionaItem" id="reg_${i}"--}%
-                                           %{--regId="${dt?.item__id}" regNmbr="${dt?.itemnmbr}" regCdgo="${dt?.itemcdgo}"--}%
-                                           %{--regUn="${dt?.unddcdgo}" regPc="${dt?.exstpcun}" data-id="${dt?.item__id}">--}%
-                    %{--<button class="btn btn-small btn-success"><i class="icon-check"></i></button>--}%
-                %{--</div></td>--}%
             </tr>
         </g:each>
     </table>

@@ -155,6 +155,7 @@ class AdquisicionController {
         def totales = 0
         def iva = 0
         def subTotales = 0
+        def ivaParametros =  Parametros.get(1)?.iva?.toInteger() / 100
 
         if(params.id){
             detalle = DetalleAdquisicion.get(params.id)
@@ -183,13 +184,14 @@ class AdquisicionController {
 
             def detalles = DetalleAdquisicion.findAllByAdquisicion(adquisicion)
             detalles.each {
-                totales += it.precioUnitario
+                totales += it.precioUnitario * it.cantidad
             }
 
-            iva = ((totales * 12) /100)
-            subTotales = totales - iva
+            println "total: $totales"
+            iva = (totales * ivaParametros)
+            subTotales = totales
 
-            adquisicion.total = totales
+            adquisicion.total = totales + iva
             adquisicion.iva = iva
             adquisicion.subtotal = subTotales
 
@@ -206,16 +208,17 @@ class AdquisicionController {
         def totales = 0
         def iva = 0
         def subTotales = 0
+        def ivaParametros =  Parametros.get(1)?.iva?.toInteger() / 100
 
         try{
             item.delete(flush:true)
 
             def detalles = DetalleAdquisicion.findAllByAdquisicion(adquisicion)
             detalles.each {
-                totales += it.precioUnitario
+                totales += it.precioUnitario * it.cantidad
             }
 
-            iva = ((totales * 15) /100)
+            iva = (totales * ivaParametros)
             subTotales = totales - iva
 
             adquisicion.total = totales
@@ -300,11 +303,13 @@ class AdquisicionController {
         def totalDetalles = Math.round(detalles.subtotal.sum() * 100) / 100
         println("total detalles " + totalDetalles)
         println("iva parametros " + ivaParametros)
-        def ivaDetalles = Math.round(totalDetalles/(1+ ivaParametros) * (ivaParametros) *100)/100
-        def ivas = adquisicion.iva.toDouble()
+
+        def ivaDetalles = Math.round(totalDetalles * ivaParametros *100)/100
+        println("iva detalles " + ivaDetalles)
+       // def ivas = adquisicion.iva.toDouble()
         println "Total: ${adquisicion.total}, subtotal: ${adquisicion.subtotal}, iva: ${adquisicion.iva}, ivaDt: $ivaDetalles, totalDetalles: $totalDetalles"
 
-        if(adquisicion?.total?.toDouble() != totalDetalles?.toDouble()){
+        if(adquisicion?.subtotal?.toDouble() != totalDetalles?.toDouble()){
             render "er_El total de la adquisición es diferente del total de los items"
         }else{
             if(Math.abs(ivaDetalles?.toDouble() - adquisicion?.iva?.toDouble()) <= 0.01){
@@ -315,10 +320,12 @@ class AdquisicionController {
                 }else{
                     def sql = "select * from bdga_kardex('${adquisicion?.id}',null,null,1)"
                     def cn = dbConnectionService.getConnection()
+                    println "sql: $sql"
                     cn.execute(sql);
                     render "ok"
                 }
             }else{
+                println "IVA: ${ivaDetalles?.toDouble()} - ${adquisicion?.iva?.toDouble()}"
                 render "er_El iva de la adquisición no es igual al iva de los items"
             }
         }
@@ -347,6 +354,7 @@ class AdquisicionController {
         def listaItems = [1: 'Nombre', 2: 'Código']
         def band = false
         def proveedor = Proveedor.findByNombre("Consugez")
+        def ivaParametros =  Parametros.get(1)?.iva?.toInteger() / 100
 
         if(params.id){
             adquisicion = Adquisicion.get(params.id)
@@ -374,7 +382,7 @@ class AdquisicionController {
                 detalles.each {
                     totales += it.precioUnitario
                 }
-                iva = ((totales * 15) /100)
+                iva = (totales * ivaParametros)
                 subTotales = totales - iva
             }
         }

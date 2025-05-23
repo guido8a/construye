@@ -70,9 +70,11 @@
 </div>
 
 <g:if test="${band}">
-    <div class="span12" style="margin-top: 5px">
-        <div class="alert alert-info" style="text-align: center; font-size: 14px">
-            <i class="fa fa-exclamation-triangle fa-2x"></i>  Ya existe una adquisición interna no registrada en el sistema
+    <div class="col-md-12" style="margin-top: 45px">
+        <div class="alert alert-info alert-dismissible" style="text-align: center; font-size: 14px">
+            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+            <i class="fa fa-exclamation-triangle fa-2x"></i>Existe una adquisición interna no registrada en el sistema,
+        para crear otras debe primero Registrar la existente.
         </div>
     </div>
 </g:if>
