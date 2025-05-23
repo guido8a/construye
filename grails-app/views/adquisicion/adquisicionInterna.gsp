@@ -45,7 +45,7 @@
             Anular
         </a>
     </g:if>
-    <a href="${g.createLink(controller: 'adquisicion', action: 'adquisicion')}" class="btn btn-ajax btn-new">
+    <a href="${g.createLink(controller: 'adquisicion', action: 'adquisicionInterna')}" class="btn btn-ajax btn-new">
         <i class="icon-remove"></i>
         Cancelar
     </a>
