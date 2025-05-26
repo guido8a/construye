@@ -309,9 +309,11 @@ class AdquisicionController {
        // def ivas = adquisicion.iva.toDouble()
         println "Total: ${adquisicion.total}, subtotal: ${adquisicion.subtotal}, iva: ${adquisicion.iva}, ivaDt: $ivaDetalles, totalDetalles: $totalDetalles"
 
-        if(adquisicion?.subtotal?.toDouble() != totalDetalles?.toDouble()){
+        println "diferencia: ${Math.abs(adquisicion?.subtotal?.toDouble() - totalDetalles?.toDouble())}"
+        if( Math.abs(adquisicion?.subtotal?.toDouble() - totalDetalles?.toDouble()) > 0.01 ){
             render "er_El total de la adquisición es diferente del total de los items"
         }else{
+            println "---ok"
             if(Math.abs(ivaDetalles?.toDouble() - adquisicion?.iva?.toDouble()) <= 0.01){
                 adquisicion.estado = 'R'
                 if(!adquisicion.save(flush:true)){
