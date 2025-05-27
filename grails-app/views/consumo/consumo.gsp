@@ -143,14 +143,14 @@
                     <p class="help-block ui-helper-hidden"></p>
                 </div>
 
-%{--                <g:if test="${items?.size() == 0}">--}%
-                    <g:if test="${consumo?.estado == 'N' || consumo?.estado == null}">
-                        <div class="span1" style="margin-top: 20px; width: 80px">
-                            <a class="btn btn-small btn-primary btn-ajax" href="#" rel="tooltip" title="Agregar" id="buscar_codigo">
-                                <i class="icon-search"></i> Buscar
-                            </a>
-                        </div>
-%{--                    </g:if>--}%
+            %{--                <g:if test="${items?.size() == 0}">--}%
+                <g:if test="${consumo?.estado == 'N' || consumo?.estado == null}">
+                    <div class="span1" style="margin-top: 20px; width: 80px">
+                        <a class="btn btn-small btn-primary btn-ajax" href="#" rel="tooltip" title="Agregar" id="buscar_codigo">
+                            <i class="icon-search"></i> Buscar
+                        </a>
+                    </div>
+                %{--                    </g:if>--}%
                 </g:if>
 
                 <div class="span8" style="margin-left: 10px">
@@ -193,14 +193,14 @@
 
                 <div class="span1" style="width: 220px; color: #01a; margin-top: 10px">
                     <table class="table table-bordered table-striped table-condensed table-hover" style="margin-top: 10px;">
-                       <thead>
-                       <tr>
-                           <th>N: Proceso</th>
-                           <th>P: Aprobado</th>
-                           <th>R: Entregado</th>
-                       </tr>
-                       </thead>
-                   </table>
+                        <thead>
+                        <tr>
+                            <th>N: Proceso</th>
+                            <th>P: Aprobado</th>
+                            <th>R: Entregado</th>
+                        </tr>
+                        </thead>
+                    </table>
                 </div>
             </div>
             <div class="row-fluid">
@@ -300,9 +300,10 @@
                     <th style="width: 6%">Unidad</th>
                     <th style="width: 8%">Presupuestado</th>
                     <th style="width: 8%">Usado</th>
+                    <th style="width: 8%">Saldo</th>
                     <th style="width: 8%">Cantidad</th>
-                    <th class="col_rend" style="width: 8%">C. Unitario</th>
-                    <th class="col_rend" style="width: 10%">C. Total</th>
+                    %{--                    <th class="col_rend" style="width: 8%">C. Unitario</th>--}%
+                    %{--                    <th class="col_rend" style="width: 10%">C. Total</th>--}%
                     <th style="width: 8%" class="col_delete"></th>
                 </tr>
                 </thead>
@@ -322,24 +323,28 @@
                                             maxFractionDigits="2" locale="ec"/>
                         </td>
                         <td style="text-align: right" class="cant">
-                            <g:formatNumber number="${item.dtcscntd}" format="##,###0" minFractionDigits="2"
+                            <g:formatNumber number="${item.compcntd?.toDouble() - item.cnsmacml?.toDouble()}" format="##,###0" minFractionDigits="2"
                                             maxFractionDigits="2" locale="ec"/>
                         </td>
                         <td style="text-align: right" class="cant">
-                            <g:formatNumber number="${item.dtcspcun}" format="##,#####0" minFractionDigits="5"
-                                            maxFractionDigits="5" locale="ec"/>
+                            <g:formatNumber number="${item.dtcscntd}" format="##,###0" minFractionDigits="2"
+                                            maxFractionDigits="2" locale="ec"/>
                         </td>
-                        <td style="text-align: right" class="cant">
-                            <g:formatNumber number="${item.dtcscntd * item.dtcspcun}" format="##,#####0"
-                                            minFractionDigits="5" maxFractionDigits="5" locale="ec"/>
-                        </td>
+                        %{--                        <td style="text-align: right" class="cant">--}%
+                        %{--                            <g:formatNumber number="${item.dtcspcun}" format="##,#####0" minFractionDigits="5"--}%
+                        %{--                                            maxFractionDigits="5" locale="ec"/>--}%
+                        %{--                        </td>--}%
+                        %{--                        <td style="text-align: right" class="cant">--}%
+                        %{--                            <g:formatNumber number="${item.dtcscntd * item.dtcspcun}" format="##,#####0"--}%
+                        %{--                                            minFractionDigits="5" maxFractionDigits="5" locale="ec"/>--}%
+                        %{--                        </td>--}%
                         <td style="width: 50px;text-align: center" class="col_delete">
                             <g:if test="${consumo?.estado == 'N'}">
                                 <a class="btn btn-small btn-primary editarItem" href="#" rel="tooltip" title="Editar"
                                    data-id="${item.dtcs__id}"
                                    data-cant="${item.dtcscntd}" data-nombre="${item.itemnmbr}"
                                    data-precio="${item.dtcspcun}"
-                                   %{--data-unidad="${item.unddcdgo}" data-item="${item.comp__id}"--}%
+                                %{--data-unidad="${item.unddcdgo}" data-item="${item.comp__id}"--}%
                                    data-unidad="${item.unddcdgo}"
                                    data-codigo="${item.itemcdgo}">
                                     <i class="icon-edit"></i>
@@ -353,16 +358,16 @@
                     </tr>
                     <g:set var="total" value="${total + (item.dtcspcun * item.dtcscntd)}"/>
                 </g:each>
-                <g:if test="${items.size() > 0}">
-                    <tr class="item_row ">
-                        <td class="col_hora" style="text-align: left" colspan="6"></td>
-                        <td class="col_hora" style="text-align: right; font-weight: bold">TOTAL:</td>
-                        <td style="text-align: right; font-weight: bold" class="cant">
-                            <g:formatNumber number="${total}" format="##,#####0" minFractionDigits="5" maxFractionDigits="5" locale="ec"/>
-                        </td>
-                        <td class="col_hora" style="text-align: left"></td>
-                    </tr>
-                </g:if>
+%{--                <g:if test="${items.size() > 0}">--}%
+%{--                    <tr class="item_row ">--}%
+%{--                        <td class="col_hora" style="text-align: left" colspan="6"></td>--}%
+%{--                        <td class="col_hora" style="text-align: right; font-weight: bold">TOTAL:</td>--}%
+%{--                        <td style="text-align: right; font-weight: bold" class="cant">--}%
+%{--                            <g:formatNumber number="${total}" format="##,#####0" minFractionDigits="5" maxFractionDigits="5" locale="ec"/>--}%
+%{--                        </td>--}%
+%{--                        <td class="col_hora" style="text-align: left"></td>--}%
+%{--                    </tr>--}%
+%{--                </g:if>--}%
                 </tbody>
             </table>
 
@@ -748,7 +753,7 @@
         $.box({
             imageClass: "box_info",
             text: "Está seguro de cambiar el estado de este" + '<p style="margin-left: 42px">' + "consumo a " +
-              '<strong style="color: #1a7031">' + "REGISTRADO" + "?" + '</strong>' + '</p>',
+                '<strong style="color: #1a7031">' + "REGISTRADO" + "?" + '</strong>' + '</p>',
             title: "Registrar consumo",
             dialog: {
                 resizable: false,
@@ -832,138 +837,220 @@
 
     });
 
-        $("#btn_lista").click(function () {
-            $("#listaConsumo").dialog("open");
-            $(".ui-dialog-titlebar-close").html("x")
+    $("#btn_lista").click(function () {
+        $("#listaConsumo").dialog("open");
+        $(".ui-dialog-titlebar-close").html("x")
+    });
+
+    $("#listaConsumo").dialog({
+        autoOpen: false,
+        resizable: false,
+        modal: true,
+        draggable: false,
+        width: 1000,
+        height: 600,
+        position: 'center',
+        title: 'Requisiciones'
+    });
+
+    $("#btn-consumos").click(function () {
+        buscaConsumos();
+    });
+
+    function buscaConsumos() {
+        var buscarPor = $("#buscarPorCnsm").val();
+        var criterio = $("#criterioCnsm").val();
+        var ordenar = $("#ordenarCnsm").val();
+        $.ajax({
+            type: "POST",
+            url: "${createLink(controller: 'consumo', action:'listaConsumo')}",
+            data: {
+                buscarPor: buscarPor,
+                criterio: criterio,
+                ordenar: ordenar
+
+            },
+            success: function (msg) {
+                $("#divTablaCnsm").html(msg);
+            }
         });
+    }
 
-        $("#listaConsumo").dialog({
-            autoOpen: false,
-            resizable: false,
-            modal: true,
-            draggable: false,
-            width: 1000,
-            height: 600,
-            position: 'center',
-            title: 'Requisiciones'
+    <g:if test="${consumo?.id}">
+
+    // $("#cdgo_buscar").dblclick(function () {
+    $("#btnBuscarItem").click(function () {
+        $("#busqueda").dialog("open");
+        $(".ui-dialog-titlebar-close").html("x")
+        return false;
+    });
+    </g:if>
+
+    $("#busqueda").dialog({
+        autoOpen: false,
+        resizable: false,
+        modal: true,
+        draggable: false,
+        width: 1000,
+        height: 600,
+        position: 'center',
+        title: 'Materiales y Equipos a Entregar'
+    });
+
+    $("#btn-consultar").click(function () {
+        busqueda();
+    });
+
+    function busqueda() {
+        var buscarPor = $("#buscarPor").val();
+        var criterio = $(".criterio").val();
+        var ordenar = $("#ordenar").val();
+        var grupo = $("#buscarGrupo").val();
+        var bdga = $("#bodega").val();
+        var obra = $("#obra__id").val();
+        $.ajax({
+            type: "POST",
+            url: "${createLink(controller: 'consumo', action:'listaItem')}",
+            data: {
+                buscarPor: buscarPor,
+                criterio: criterio,
+                ordenar: ordenar,
+                grupo: grupo,
+                bdga: bdga,
+                obra: obra
+            },
+            success: function (msg) {
+                $("#divTabla").html(msg);
+            }
         });
+    }
 
-        $("#btn-consumos").click(function () {
-            buscaConsumos();
+    $("#buscar_codigo").click(function () {
+        $("#buscarObra").dialog("open");
+        $(".ui-dialog-titlebar-close").html("x")
+        return false;
+    });
+
+    $("#buscarObra").dialog({
+        autoOpen: false,
+        resizable: false,
+        modal: true,
+        draggable: false,
+        width: 1000,
+        height: 600,
+        position: 'center',
+        title: 'Obras'
+    });
+
+    $("#btn-obras").click(function () {
+        buscarObras();
+    });
+
+    function buscarObras() {
+        var buscarPor = $("#buscarPor").val();
+        var criterio = $("#criterioObra").val();
+        var ordenar = $("#ordenar").val();
+        $.ajax({
+            type: "POST",
+            url: "${createLink(controller: 'consumo', action:'listaObra')}",
+            data: {
+                buscarPor: buscarPor,
+                criterio: criterio,
+                ordenar: ordenar,
+                tipo: 1
+            },
+            success: function (msg) {
+                $("#divTablaObra").html(msg);
+            }
         });
+    }
 
-        function buscaConsumos() {
-            var buscarPor = $("#buscarPorCnsm").val();
-            var criterio = $("#criterioCnsm").val();
-            var ordenar = $("#ordenarCnsm").val();
-            $.ajax({
-                type: "POST",
-                url: "${createLink(controller: 'consumo', action:'listaConsumo')}",
-                data: {
-                    buscarPor: buscarPor,
-                    criterio: criterio,
-                    ordenar: ordenar
-
-                },
-                success: function (msg) {
-                    $("#divTablaCnsm").html(msg);
+    $("#borrar").click(function () {
+        $.box({
+            imageClass: "box_info",
+            text: "Desea anular la Requisición,<br>¿Está Seguro?",
+            title: "Alerta",
+            iconClose: false,
+            dialog: {
+                resizable: false,
+                draggable: false,
+                buttons: {
+                    "Aceptar": function () {
+                        $("#dlgLoad").dialog("open");
+                        $.ajax({
+                            type: "POST", url: "${g.createLink(controller: 'consumo',action:'anularDevolucion')}",
+                            data: "id=${consumo?.id}",
+                            success: function (msg) {
+                                $("#dlgLoad").dialog("close");
+                                if (msg == "ok") {
+                                    location.href = "${createLink(controller: 'consumo', action: 'consumo')}/" + '${consumo?.id}'
+                                } else {
+                                    $.box({
+                                        imageClass: "box_info",
+                                        text: "No se puede anular la requisición, tiene detalles asociados",
+                                        title: "Alerta",
+                                        iconClose: false,
+                                        dialog: {
+                                            resizable: false,
+                                            draggable: false,
+                                            buttons: {
+                                                "Aceptar": function () {
+                                                }
+                                            },
+                                            // width: 700
+                                        }
+                                    });
+                                }
+                            }
+                        });
+                    },
+                    "Cancelar": function () {
+                    }
                 }
-            });
+            }
+        });
+    });
+
+
+    $("#cdgo_buscar").keydown(function (ev) {
+
+        if (ev.keyCode * 1 != 9 && (ev.keyCode * 1 < 37 || ev.keyCode * 1 > 40)) {
+            $("#item_tipoLista").val("")
+            $("#item_id").val("")
+            $("#item_desc").val("")
+            $("#item_unidad").val("")
+        } else {
+//                ////console.log("no reset")
         }
+    });
 
-        <g:if test="${consumo?.id}">
-
-        // $("#cdgo_buscar").dblclick(function () {
-        $("#btnBuscarItem").click(function () {
-            $("#busqueda").dialog("open");
-            $(".ui-dialog-titlebar-close").html("x")
-            return false;
-        });
-        </g:if>
-
-        $("#busqueda").dialog({
-            autoOpen: false,
-            resizable: false,
-            modal: true,
-            draggable: false,
-            width: 1000,
-            height: 600,
-            position: 'center',
-            title: 'Materiales y Equipos a Entregar'
-        });
-
-        $("#btn-consultar").click(function () {
-            busqueda();
-        });
-
-        function busqueda() {
-            var buscarPor = $("#buscarPor").val();
-            var criterio = $(".criterio").val();
-            var ordenar = $("#ordenar").val();
-            var grupo = $("#buscarGrupo").val();
-            var bdga = $("#bodega").val();
-            var obra = $("#obra__id").val();
-            $.ajax({
-                type: "POST",
-                url: "${createLink(controller: 'consumo', action:'listaItem')}",
-                data: {
-                    buscarPor: buscarPor,
-                    criterio: criterio,
-                    ordenar: ordenar,
-                    grupo: grupo,
-                    bdga: bdga,
-                    obra: obra
-                },
-                success: function (msg) {
-                    $("#divTabla").html(msg);
-                }
-            });
+    $("#consumo_registro").click(function () {
+        if ($(this).hasClass("active")) {
+            if (confirm("Esta seguro de desregistrar este consumo?")) {
+                $("#registrado").val("N")
+                $("#fechaReg").val("")
+            }
+        } else {
+            if (confirm("Esta seguro de registrar este consumo?")) {
+                $("#registrado").val("R")
+                var fecha = new Date()
+                $("#fechaReg").val(fecha.toString("dd/mm/yyyy"))
+            }
         }
+    });
 
-        $("#buscar_codigo").click(function () {
-            $("#buscarObra").dialog("open");
-            $(".ui-dialog-titlebar-close").html("x")
-            return false;
-        });
+    $("#guardar").click(function () {
+        var obra = $("#obra__id").val()
+        var bdga = $("#bodega").val()
+        var rcbe = $("#recibe").val()
+        var trnp = $("#transporta").val()
+        var tipo = $("#tipoConsumo").val()
+        var obr = $("#observaciones").val()
 
-        $("#buscarObra").dialog({
-            autoOpen: false,
-            resizable: false,
-            modal: true,
-            draggable: false,
-            width: 1000,
-            height: 600,
-            position: 'center',
-            title: 'Obras'
-        });
-
-        $("#btn-obras").click(function () {
-            buscarObras();
-        });
-
-        function buscarObras() {
-            var buscarPor = $("#buscarPor").val();
-            var criterio = $("#criterioObra").val();
-            var ordenar = $("#ordenar").val();
-            $.ajax({
-                type: "POST",
-                url: "${createLink(controller: 'consumo', action:'listaObra')}",
-                data: {
-                    buscarPor: buscarPor,
-                    criterio: criterio,
-                    ordenar: ordenar,
-                    tipo: 1
-                },
-                success: function (msg) {
-                    $("#divTablaObra").html(msg);
-                }
-            });
-        }
-
-        $("#borrar").click(function () {
+        if (obra == '' || obra == null) {
             $.box({
                 imageClass: "box_info",
-                text: "Desea anular la Requisición,<br>¿Está Seguro?",
+                text: "Seleccione una obra",
                 title: "Alerta",
                 iconClose: false,
                 dialog: {
@@ -971,81 +1058,15 @@
                     draggable: false,
                     buttons: {
                         "Aceptar": function () {
-                            $("#dlgLoad").dialog("open");
-                            $.ajax({
-                                type: "POST", url: "${g.createLink(controller: 'consumo',action:'anularDevolucion')}",
-                                data: "id=${consumo?.id}",
-                                success: function (msg) {
-                                    $("#dlgLoad").dialog("close");
-                                    if (msg == "ok") {
-                                        location.href = "${createLink(controller: 'consumo', action: 'consumo')}/" + '${consumo?.id}'
-                                    } else {
-                                        $.box({
-                                            imageClass: "box_info",
-                                            text: "No se puede anular la requisición, tiene detalles asociados",
-                                            title: "Alerta",
-                                            iconClose: false,
-                                            dialog: {
-                                                resizable: false,
-                                                draggable: false,
-                                                buttons: {
-                                                    "Aceptar": function () {
-                                                    }
-                                                },
-                                                // width: 700
-                                            }
-                                        });
-                                    }
-                                }
-                            });
-                        },
-                        "Cancelar": function () {
                         }
                     }
                 }
             });
-        });
-
-
-        $("#cdgo_buscar").keydown(function (ev) {
-
-            if (ev.keyCode * 1 != 9 && (ev.keyCode * 1 < 37 || ev.keyCode * 1 > 40)) {
-                $("#item_tipoLista").val("")
-                $("#item_id").val("")
-                $("#item_desc").val("")
-                $("#item_unidad").val("")
-            } else {
-//                ////console.log("no reset")
-            }
-        });
-
-        $("#consumo_registro").click(function () {
-            if ($(this).hasClass("active")) {
-                if (confirm("Esta seguro de desregistrar este consumo?")) {
-                    $("#registrado").val("N")
-                    $("#fechaReg").val("")
-                }
-            } else {
-                if (confirm("Esta seguro de registrar este consumo?")) {
-                    $("#registrado").val("R")
-                    var fecha = new Date()
-                    $("#fechaReg").val(fecha.toString("dd/mm/yyyy"))
-                }
-            }
-        });
-
-        $("#guardar").click(function () {
-            var obra = $("#obra__id").val()
-            var bdga = $("#bodega").val()
-            var rcbe = $("#recibe").val()
-            var trnp = $("#transporta").val()
-            var tipo = $("#tipoConsumo").val()
-            var obr = $("#observaciones").val()
-
-            if (obra == '' || obra == null) {
+        } else {
+            if (bdga == 'null') {
                 $.box({
                     imageClass: "box_info",
-                    text: "Seleccione una obra",
+                    text: "Seleccione una bodega",
                     title: "Alerta",
                     iconClose: false,
                     dialog: {
@@ -1058,10 +1079,10 @@
                     }
                 });
             } else {
-                if (bdga == 'null') {
+                if (rcbe == 'null') {
                     $.box({
                         imageClass: "box_info",
-                        text: "Seleccione una bodega",
+                        text: "Seleccione quien recibe",
                         title: "Alerta",
                         iconClose: false,
                         dialog: {
@@ -1074,10 +1095,10 @@
                         }
                     });
                 } else {
-                    if (rcbe == 'null') {
+                    if (trnp == 'null') {
                         $.box({
                             imageClass: "box_info",
-                            text: "Seleccione quien recibe",
+                            text: "Seleccione quien transporta",
                             title: "Alerta",
                             iconClose: false,
                             dialog: {
@@ -1090,10 +1111,10 @@
                             }
                         });
                     } else {
-                        if (trnp == 'null') {
+                        if (obr == 'null' || obr == '') {
                             $.box({
                                 imageClass: "box_info",
-                                text: "Seleccione quien transporta",
+                                text: "Ingrese las observaciones",
                                 title: "Alerta",
                                 iconClose: false,
                                 dialog: {
@@ -1106,51 +1127,52 @@
                                 }
                             });
                         } else {
-                            if (obr == 'null' || obr == '') {
-                                $.box({
-                                    imageClass: "box_info",
-                                    text: "Ingrese las observaciones",
-                                    title: "Alerta",
-                                    iconClose: false,
-                                    dialog: {
-                                        resizable: false,
-                                        draggable: false,
-                                        buttons: {
-                                            "Aceptar": function () {
-                                            }
-                                        }
-                                    }
-                                });
-                            } else {
-                                $("#frmRubro").submit()
-                            }
+                            $("#frmRubro").submit()
                         }
                     }
-
                 }
-            }
-        });
 
-        function guardarDetalleConsumo(id) {
-            $("#dlgLoad").dialog("open");
-            $.ajax({
-                type: 'POST',
-                url: '${createLink(controller: 'consumo', action: 'guardarDetalleConsumo_ajax')}',
-                data: {
-                    id: $("#idItems").val(),
-                    composicion: id,
-                    cantidad: $("#item_cantidad").val(),
-                    precioUnitario: $("#item_precio").val(),
-                    consumo: '${consumo?.id}',
-                    bodega: $("#bodega option:selected").val()
-                },
-                success: function (msg) {
-                    $("#dlgLoad").dialog("close");
-                    var parts = msg.split("_");
-                    if (parts[0] == 'ok') {
-                        location.href = "${createLink(controller: 'consumo', action: 'consumo')}/" + '${consumo?.id}'
-                    } else {
-                        if(parts[0] == 'ms'){
+            }
+        }
+    });
+
+    function guardarDetalleConsumo(id) {
+        $("#dlgLoad").dialog("open");
+        $.ajax({
+            type: 'POST',
+            url: '${createLink(controller: 'consumo', action: 'guardarDetalleConsumo_ajax')}',
+            data: {
+                id: $("#idItems").val(),
+                composicion: id,
+                cantidad: $("#item_cantidad").val(),
+                precioUnitario: $("#item_precio").val(),
+                consumo: '${consumo?.id}',
+                bodega: $("#bodega option:selected").val()
+            },
+            success: function (msg) {
+                $("#dlgLoad").dialog("close");
+                var parts = msg.split("_");
+                if (parts[0] == 'ok') {
+                    location.href = "${createLink(controller: 'consumo', action: 'consumo')}/" + '${consumo?.id}'
+                } else {
+                    if(parts[0] == 'ms'){
+                        $.box({
+                            imageClass: "box_info",
+                            text: parts[1],
+                            title: "Alerta",
+                            iconClose: false,
+                            dialog: {
+                                resizable: false,
+                                draggable: false,
+                                buttons: {
+                                    "Aceptar": function () {
+                                        location.reload(true)
+                                    }
+                                }
+                            }
+                        });
+                    }else{
+                        if(parts[0] == 'er'){
                             $.box({
                                 imageClass: "box_info",
                                 text: parts[1],
@@ -1161,58 +1183,58 @@
                                     draggable: false,
                                     buttons: {
                                         "Aceptar": function () {
-                                            location.reload(true)
                                         }
                                     }
                                 }
                             });
                         }else{
-                            if(parts[0] == 'er'){
-                                $.box({
-                                    imageClass: "box_info",
-                                    text: parts[1],
-                                    title: "Alerta",
-                                    iconClose: false,
-                                    dialog: {
-                                        resizable: false,
-                                        draggable: false,
-                                        buttons: {
-                                            "Aceptar": function () {
-                                            }
+                            $.box({
+                                imageClass: "box_info",
+                                text: "Error al guardar el detalle de la requisición",
+                                title: "Error",
+                                iconClose: false,
+                                dialog: {
+                                    resizable: false,
+                                    draggable: false,
+                                    buttons: {
+                                        "Aceptar": function () {
                                         }
                                     }
-                                });
-                            }else{
-                                $.box({
-                                    imageClass: "box_info",
-                                    text: "Error al guardar el detalle de la requisición",
-                                    title: "Error",
-                                    iconClose: false,
-                                    dialog: {
-                                        resizable: false,
-                                        draggable: false,
-                                        buttons: {
-                                            "Aceptar": function () {
-                                            }
-                                        }
-                                    }
-                                });
-                            }
+                                }
+                            });
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    <g:if test="${consumo}">
+
+    $("#btn_agregarItem, #btn_guardarItem").click(function () {
+//            console.log("valor:" + $('#item_desc').val().length);
+        var id = $("#item_id").val();
+        if ($('#item_desc').val().length == 0) {
+            $.box({
+                imageClass: "box_info",
+                text: "No hay item que agregar al APU",
+                title: "Alerta",
+                iconClose: false,
+                dialog: {
+                    resizable: false,
+                    draggable: false,
+                    buttons: {
+                        "Aceptar": function () {
                         }
                     }
                 }
             });
-        }
-
-        <g:if test="${consumo}">
-
-        $("#btn_agregarItem, #btn_guardarItem").click(function () {
-//            console.log("valor:" + $('#item_desc').val().length);
-            var id = $("#item_id").val();
-            if ($('#item_desc').val().length == 0) {
+            return false
+        }else{
+            if($("#item_cantidad").val() == '' || $("#item_cantidad").val() == null || $("#item_cantidad").val() == 0){
                 $.box({
                     imageClass: "box_info",
-                    text: "No hay item que agregar al APU",
+                    text: "Ingrese una cantidad",
                     title: "Alerta",
                     iconClose: false,
                     dialog: {
@@ -1224,12 +1246,11 @@
                         }
                     }
                 });
-                return false
             }else{
-                if($("#item_cantidad").val() == '' || $("#item_cantidad").val() == null || $("#item_cantidad").val() == 0){
+                if($("#item_precio").val() == '' || $("#item_precio").val() == null || $("#item_precio").val() == 0){
                     $.box({
                         imageClass: "box_info",
-                        text: "Ingrese una cantidad",
+                        text: "Ingrese un precio",
                         title: "Alerta",
                         iconClose: false,
                         dialog: {
@@ -1242,47 +1263,31 @@
                         }
                     });
                 }else{
-                    if($("#item_precio").val() == '' || $("#item_precio").val() == null || $("#item_precio").val() == 0){
-                        $.box({
-                            imageClass: "box_info",
-                            text: "Ingrese un precio",
-                            title: "Alerta",
-                            iconClose: false,
-                            dialog: {
-                                resizable: false,
-                                draggable: false,
-                                buttons: {
-                                    "Aceptar": function () {
-                                    }
-                                }
-                            }
-                        });
-                    }else{
-                        guardarDetalleConsumo(id);
-                    }
+                    guardarDetalleConsumo(id);
                 }
             }
+        }
+    });
+    </g:if>
+    <g:else>
+    $("#btn_agregarItem, #btn_guardarItem").click(function () {
+        $.box({
+            imageClass: "box_info",
+            text: "Primero guarde el consumo o seleccione uno para editar",
+            title: "Alerta",
+            iconClose: false,
+            dialog: {
+                resizable: false,
+                draggable: false,
+                buttons: {
+                    "Aceptar": function () {
+                    }
+                },
+                width: 500
+            }
         });
-        </g:if>
-        <g:else>
-        $("#btn_agregarItem, #btn_guardarItem").click(function () {
-            $.box({
-                imageClass: "box_info",
-                text: "Primero guarde el consumo o seleccione uno para editar",
-                title: "Alerta",
-                iconClose: false,
-                dialog: {
-                    resizable: false,
-                    draggable: false,
-                    buttons: {
-                        "Aceptar": function () {
-                        }
-                    },
-                    width: 500
-                }
-            });
-        });
-        </g:else>
+    });
+    </g:else>
 
 
     $("#criterioCnsm").keyup(function (ev) {
