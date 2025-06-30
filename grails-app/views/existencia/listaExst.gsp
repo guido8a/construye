@@ -16,10 +16,10 @@
                 <td style="width: 8%; text-align: right">${dt.exstvlor}</td>
                 <td style="width: 4%; text-align: center; font-weight: bold">${construye.Retazo.findAllByItemAndBodegaAndEstado(janus.Item.get(dt.item__id), janus.construye.Bodega.get(params.bdga), 'A').size()}</td>
                 <td style="width: 10%; text-align: center">
-                    %{--<a href="#" class="btn btn-primary btn-small btnRetazo" data-id="${dt?.item__id}"--}%
-                       %{--data-krdx="${dt?.krdx__id}" title="Generar Retazo del Item">--}%
-                        %{--<i class="fa fa-puzzle-piece"></i>--}%
-                    %{--</a>--}%
+                    <a href="#" class="btn btn-primary btn-small btnRetazo" data-id="${dt?.item__id}"
+                       data-krdx="${dt?.krdx__id}" title="Generar Retazo del Item">
+                        <i class="fa fa-puzzle-piece"></i>
+                    </a>
                     <g:if test="${dt?.exstpcun == 0.0001}">
                         <a href="#" class="btn btn-success btn-small btnCambiar" data-id="${dt?.item__id}"
                            data-krdx="${dt?.krdx__id}" title="Cambiar el precio unitario del Item">
