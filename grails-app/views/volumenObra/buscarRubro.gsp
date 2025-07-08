@@ -23,86 +23,86 @@
 </div>
 
 <div id="busqueda" style="overflow: hidden">
-    <fieldset class="borde" style="border-radius: 4px">
+%{--    <fieldset class="borde" style="border-radius: 4px">--}%
 
         <div class="row-fluid">
-            <div class="span12">
-                <div class="span1"> <label> Subpresupuesto de la obra</label> </div>
-                <div class="span6">
-                    <span class="span10">
+%{--            <div class="span12">--}%
+                <div class="span2"> <label> Subpresupuesto en el cual se ingresará el rubro:</label> </div>
+%{--                <div class="span6">--}%
+                    <span class="span5">
                         <g:hiddenField name="subpresupuestoBusqueda" value="" />
-                        <g:textField name="subPresupuestoName" readonly="" class="form-control" value=""/>
+                        <g:textField name="subPresupuestoName" readonly="" class="form-control span12" value=""/>
                     </span>
                     <span class="span2">
                         <a href="#" class="btn btn-info" id="btnBuscarSubPresupuesto" title="Buscar subpresupuesto">
                             <i class="fa fa-search"></i> Buscar
                         </a>
                     </span>
-                </div>
+%{--                </div>--}%
 
-                <div class="span1"> <label> Tipo Contrato</label> </div>
-                <div class="span2">
-                    <g:select name="tipoRubroName" id="tipoRubro" class="form-control btn-success" from="${['N': 'Normal', 'C':  'Complementario']}"
-                              optionKey="key" optionValue="value" />
-                </div>
+%{--                <div class="span1"> <label> Tipo Contrato</label> </div>--}%
+%{--                <div class="span2">--}%
+%{--                    <g:select name="tipoRubroName" id="tipoRubro" class="form-control btn-success" from="${['N': 'Normal', 'C':  'Complementario']}"--}%
+%{--                              optionKey="key" optionValue="value" />--}%
+%{--                </div>--}%
 
-            </div>
+%{--            </div>--}%
         </div>
 
-        <div class="row-fluid" style="margin-top: 50px !important;">
-            <div class="col-md-12">
-                <div class="col-md-7">
-                    <div class="col-md-1"> <label> Buscar Por </label> </div>
-                    <div class="col-md-2">
-                        <g:select name="buscarPor" class="buscarPor form-control" from="${[1: 'Nombre', 2: 'Código']}"
+        <div class="row-fluid" style="margin-top: 20px !important;">
+%{--            <div class="span12">--}%
+%{--                <div class="span7">--}%
+                    <div class="span1"> <label> Buscar Por </label> </div>
+                    <div class="span2">
+                        <g:select name="buscarPor" class="span12 buscarPor form-control" from="${[1: 'Nombre', 2: 'Código']}"
                                   optionKey="key" optionValue="value"/>
                     </div>
-                    <div class="col-md-1"> <label> Criterio </label> </div>
-                    <div class="col-md-3">
-                        <g:textField name="criterio" class="criterio form-control"/>
+                    <div class="span1"> <label> Criterio </label> </div>
+                    <div class="span3">
+                        <g:textField name="criterio" class="span12 criterio form-control"/>
                     </div>
-                    <div class="col-md-1"> <label> Ordenado por </label> </div>
-                    <div class="col-md-2">
-                        <g:select name="ordenar" class="ordenar form-control" from="${[1: 'Nombre', 2: 'Código']}"  optionKey="key"
+                    <div class="span1"> <label> Ordenado por </label> </div>
+                    <div class="span2">
+                        <g:select name="ordenar" class="span12 ordenar form-control" from="${[1: 'Nombre', 2: 'Código']}"  optionKey="key"
                                   optionValue="value"/>
                     </div>
-                    <div class="col-md-2 btn-group">
+                    <div class="span2 btn-group">
                         <button class="btn btn-info" id="btnBuscar"><i class="fa fa-search"></i></button>
                         <button class="btn btn-warning" id="btnLimpiar" title="Limpiar Búsqueda">
                             <i class="fa fa-eraser"></i></button>
                     </div>
-                </div>
+%{--                </div>--}%
 
-            </div>
+%{--            </div>--}%
 
         </div>
-    </fieldset>
+%{--    </fieldset>--}%
 
-    <fieldset class="borde col-md-12">
-        <div class="col-md-7" id="divTabla">
+%{--    <fieldset class="borde span12">--}%
+        <div class="span6" id="divTabla">
         </div>
 
-        <div class="col-md-5">
+        <div class="span5">
 
             <div class="alert alert-info" style="margin-top: 10px; text-align: center">
                 <i class="fa fa-list"></i> <strong style="font-size: 16px"> Rubros en volúmenes de obra</strong>
             </div>
 
-            <div class="row-fluid">
-                <div class="col-md-12">
-                    <div class="col-md-3"> <label> Ver rubros del Subpresupuesto </label> </div>
-                    <div class="col-md-9" id="divSubpresupuestoSeleccionado">
+%{--            <div class="row-fluid">--}%
+%{--                <div class="span12">--}%
+                    <div class="span3"> <label> Ver rubros del Subpresupuesto </label> </div>
+                    <div class="span9" id="divSubpresupuestoSeleccionado">
 
                     </div>
-                </div>
-            </div>
+%{--                </div>--}%
+%{--            </div>--}%
 
-            <div class="col-md-12" id="divTablaSeleccionados" >
+            <div class="span5" id="divTablaSeleccionados" >
 
             </div>
         </div>
 
-    </fieldset>
+%{--    </fieldset>--}%
 </div>
 
 <script type="text/javascript">
@@ -119,6 +119,7 @@
                 bcsb2 = bootbox.dialog({
                     id      : "dlgBuscarSubPresupuesto",
                     title   : "Buscar subpresupuesto",
+                    className: 'large',
                     message : msg,
                     buttons : {
                         cancelar : {
@@ -244,6 +245,7 @@
             }
         });
     }
+
 
 </script>
 

@@ -14,8 +14,7 @@
     %{--<script src="${resource(dir: 'js/jquery/js', file: 'jquery-ui-1.9.1.custom.min.js')}"></script>--}%
     <script src="${resource(dir: 'js/jquery/js', file: 'jquery-1.9.1.js')}"></script>
     <script src="${resource(dir: 'js/jquery/js', file: 'jquery-ui-1.10.2.custom.min.js')}"></script>
-
-
+    <script src="${resource(dir: 'js/jquery/plugins', file: 'bootbox.js')}"></script>
 
     %{--<script src="${resource(dir: 'js/jquery/plugins/jquery.countdown', file: 'jquery.countdown.min.js')}"></script>--}%
     <script src="${resource(dir: 'js/jquery/plugins/jquery.countdown', file: 'jquery.countdown.js')}"></script>
@@ -140,7 +139,7 @@
         $.ajax({
             url     : '${createLink(controller: "login")}',
             success : function (msg) {
-                if (msg == "NO") {
+                if (msg === "NO") {
                     location.href = "${g.createLink(controller: 'login', action: 'login')}";
                 } else {
                     resetTimer();

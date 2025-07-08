@@ -7,7 +7,7 @@ table {
 th, td {
     overflow: hidden;
     text-overflow: ellipsis;
-    word-wrap: break-word;
+    word-break: break-word;
 }
 
 </style>
@@ -15,11 +15,11 @@ th, td {
 <div role="main" style="margin-top: 5px;">
     <table class="table table-bordered table-striped table-condensed table-hover">
         <thead>
-        <tr>
+        <tr style="width: 100%">
             <th style="width: 15%">Código</th>
-            <th style="width: 63%">Descripción</th>
+            <th style="width: 67%">Descripción</th>
             <th style="width: 10%">Unidad</th>
-            <th style="width: 11%">Seleccionar</th>
+            <th style="width: 12%">Seleccionar</th>
             <th style="width: 1%"></th>
         </tr>
         </thead>
@@ -31,11 +31,11 @@ th, td {
         <tbody>
         <g:if test="${data}">
             <g:each in="${data}" var="dt" status="i">
-                <tr>
-                    <td style="width: 15%">${dt.itemcdgo}</td>
-                    <td style="width: 63%">${dt.itemnmbr}</td>
-                    <td style="width: 11%; text-align: center">${dt.unddcdgo}</td>
-                    <td style="width: 10%; text-align: center">
+                <tr style="width: 100%">
+                    <td style="width: 15%;">${dt.itemcdgo}</td>
+                    <td style="width: 60%">${dt.itemnmbr}</td>
+                    <td style="width: 10%; text-align: center">${dt.unddcdgo}</td>
+                    <td style="width: 12%; text-align: center">
                         <g:if test="${obra.estado!='R' && duenoObra == 1}">
                             <a href="#" class="btn btn-success btn-xs btnSeleccionar" data-id="${dt?.item__id}"><i class="fa fa-check"></i></a>
                         </g:if>
@@ -57,7 +57,6 @@ th, td {
 <script type="text/javascript">
 
     function editarFormVolObra(id, rubro) {
-        // var subpresupuesto = $("#subpresupuestoBusqueda option:selected").val();
         var subpresupuesto = $("#subpresupuestoBusqueda").val();
         $.ajax({
             type    : "POST",
@@ -133,7 +132,6 @@ th, td {
 
     function verificarEstadoVO(rubro){
         var valor = false;
-        // var subpresupuesto = $("#subpresupuestoBusqueda option:selected").val();
         var subpresupuesto = $("#subpresupuestoBusqueda").val();
         $.ajax({
             type    : "POST",
@@ -157,7 +155,6 @@ th, td {
     }
 
     function formVolObraExistente(rubro) {
-        // var subpresupuesto = $("#subpresupuestoBusqueda option:selected").val();
         var subpresupuesto = $("#subpresupuestoBusqueda").val();
         $.ajax({
             type    : "POST",
@@ -199,7 +196,6 @@ th, td {
         var subpresupuesto = $("#subpresupuestoBusqueda").val();
 
         if(subpresupuesto){
-
             if(existe){
                 formVolObraExistente(rubro)
             }else{

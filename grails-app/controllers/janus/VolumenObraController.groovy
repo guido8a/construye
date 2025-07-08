@@ -617,7 +617,7 @@ class VolumenObraController extends janus.seguridad.Shield {
 
     def tablaBusqueda_ajax(){
 
-        println("params bu " + params)
+//        println("params bu " + params)
 
         def obra = Obra.get(params.obra)
         def duenoObra = esDuenoObra(obra)? 1 : 0
@@ -656,6 +656,86 @@ class VolumenObraController extends janus.seguridad.Shield {
         def obra = Obra.get(params.obra)
         def subPresupuestos = VolumenesObra.findAllByObra(obra, [sort: "orden"]).subPresupuesto.unique()
         return [subPresupuestos: subPresupuestos, seleccionado: params.seleccionado]
+    }
+
+    def verificarEstado_ajax(){
+        println("pve " + params)
+
+        def obra = Obra.get(params.obra)
+        def rubro = Item.get(params.rubro)
+        def subpresupuesto = SubPresupuesto.get(params.subpresupuesto)
+
+        def existe = VolumenesObra.findAllByObraAndItemAndSubPresupuesto(obra, rubro, subpresupuesto)
+
+        if(existe.size() > 0){
+            render "si"
+        }else{
+            render "no"
+        }
+    }
+
+    def formRubroVolObra_ajax(){
+        println("params fvo " + params)
+        def cn = dbConnectionService.getConnection()
+        def subpresupuesto
+        def obra
+        def volumenObra
+        def rubro
+
+        if(params.id){
+            volumenObra = VolumenesObra.get(params.id)
+            rubro = volumenObra?.item
+            subpresupuesto = volumenObra?.subPresupuesto
+            obra = volumenObra?.obra
+        }else{
+            volumenObra = new VolumenesObra()
+            rubro = Item.get(params.rubro)
+            subpresupuesto = SubPresupuesto.get(params.subpresupuesto)
+            obra = Obra.get(params.obra)
+        }
+
+        def sql = "select max(vlobordn) from rbro_pcun_v2(" + obra?.id + ")"
+        def datos = cn.rows(sql.toString())
+        def maximo = (datos[0].max)
+
+        println("maximo " + maximo)
+        println("volobra " + volumenObra)
+
+        return [volumenObra: volumenObra, obra: obra, subpresupuesto: subpresupuesto, rubro: rubro, tipo: params.tipo, max: maximo]
+    }
+
+    def buscarRubroEditar_ajax(){
+
+    }
+
+
+    def tablaBuscadorRubroEditar_ajax(){
+
+        def datos;
+        def listaRbro = ['itemnmbr', 'itemcdgo']
+        def listaItems = ['itemnmbr', 'itemcdgo']
+
+        def select = "select item__id, itemnmbr, itemcdgo, unddcdgo " +
+                "from item, undd, dprt, sbgr "
+        def txwh = "where tpit__id = 2 and undd.undd__id = item.undd__id and dprt.dprt__id = item.dprt__id and " +
+                "sbgr.sbgr__id = dprt.sbgr__id and itemcdgo not ilike 'H%' "
+        def sqlTx = ""
+        def bsca = listaItems[params.buscarPor.toInteger()-1]
+
+        txwh += " and $bsca ilike '%${params.criterio}%'"
+        sqlTx = "${select} ${txwh} limit 100 ".toString()
+
+        def cn = dbConnectionService.getConnection()
+        datos = cn.rows(sqlTx)
+        [data: datos]
+    }
+
+    def formVolObraExistente_ajax(){
+        def subpresupuesto = SubPresupuesto.get(params.subpresupuesto)
+        def obra = Obra.get(params.obra)
+        def rubro = Item.get(params.rubro)
+        def volumenObra = VolumenesObra.findByObraAndSubPresupuestoAndItem(obra,subpresupuesto,rubro)
+        return [volumenObra: volumenObra, obra: obra, subpresupuesto: subpresupuesto, rubro: rubro]
     }
 
 

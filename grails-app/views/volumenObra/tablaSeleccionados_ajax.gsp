@@ -87,10 +87,7 @@ th, td {
                             d.modal("hide");
                             if(msg === "ok"){
                                 log("Rubro borrado correctamente", "success");
-                                // cargarSubpresuspuestosObra();
-                                // setTimeout(function () {
                                 cargarTablaSeleccionados();
-                                // }, 800);
                             }else{
                                 bootbox.alert('<i class="fa fa-exclamation-triangle text-info fa-3x"></i> ' + '<strong style="font-size: 14px">' + msg +'</strong>');
                             }

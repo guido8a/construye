@@ -1,28 +1,28 @@
 <div id="listaRbro" style="overflow: hidden">
-    <fieldset class="borde" style="border-radius: 4px">
-        <div class="row-fluid" style="margin-left: 10px">
-            <span class="grupo">
-                <label class="col-md-1 control-label text-info">
-                    Tipo
-                </label>
-                <span class="col-md-4">
-                    <g:select name="buscadorPor" class="form-control" from="${grupos}" optionKey="id" optionValue="descripcion"/>
-                </span>
-                <label class="col-md-1 control-label text-info">
-                    Criterio
-                </label>
-                <span class="col-md-4">
-                    <g:textField name="buscadorCriterio" id="buscadorCriterio" class="form-control"/>
-                </span>
+    %{--    <fieldset class="borde" style="border-radius: 4px">--}%
+    <div class="row-fluid" style="margin-left: 10px">
+        <span class="span12">
+            <label class="span1 control-label text-info">
+                Tipo
+            </label>
+            <span class="span3">
+                <g:select name="buscadorPor" class="span12 form-control" from="${grupos}" optionKey="id" optionValue="descripcion"/>
             </span>
-            <div class="col-md-1" style="margin-top: 1px">
+            <label class="span1 control-label text-info">
+                Criterio
+            </label>
+            <span class="span4">
+                <g:textField name="span12 buscadorCriterio" id="buscadorCriterio" class="form-control"/>
+            </span>
+            <span class="span1" style="margin-top: 1px; ">
                 <button class="btn btn-info" id="btnBuscadorSubpre"><i class="fa fa-search"></i></button>
-            </div>
-        </div>
-    </fieldset>
+            </span>
+        </span>
+    </div>
+    %{--    </fieldset>--}%
 
     <fieldset class="borde" style="border-radius: 4px">
-        <div id="divTablaBuscadorSub" style="height: 460px; overflow: auto; margin-top: 5px">
+        <div id="divTablaBuscadorSub" style="height: 350px; overflow: auto; margin-top: 5px">
         </div>
     </fieldset>
 </div>
