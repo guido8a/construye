@@ -620,5 +620,7 @@
         }
     });
 
+    calcularSiempre();
+
 
 </script>

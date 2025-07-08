@@ -47,11 +47,13 @@
     </div>
 </div>
 
-<div style=" font-size: 14px;  color: #0088CC;">
+
+<div class="span12" style="font-size: 14px;  color: #0088CC; text-align: center">
     Volúmenes de la obra: <strong>${"( Código: " + obra.codigo + ") " + obra.nombre}</strong>
     <input type="hidden" id="override" value="0">
 </div>
-<div style="height: 25px; margin-bottom:10px; border-bottom: 1px solid rgba(148, 148, 148, 1);">
+
+<div class="breadcrumb" style="height: 25px; margin-bottom:10px;">
     <div class="span2" style="margin-left: 150px;">
         <b>Memo:</b> ${obra?.memoCantidadObra}
     </div>
@@ -69,27 +71,30 @@
 </div>
 
 <div class="row">
-    <div class="span6 btn-group" role="navigation" style="margin-left: 35px;">
-        <a href="${g.createLink(controller: 'obra', action: 'registroObra', params: [obra: obra?.id])}" class="btn btn-ajax btn-new" id="atras" title="Regresar a la obra">
+    <div class="span2 btn-group" role="navigation" style="margin-left: 35px;">
+        <a href="${g.createLink(controller: 'obra', action: 'registroObra', params: [obra: obra?.id])}" class="btn btn-ajax btn-primary" id="atras" title="Regresar a la obra">
             <i class="icon-arrow-left"></i>
             Regresar
         </a>
-        <a href="#" class="btn btn-ajax btn-new" id="calcular" title="Calcular precios">
-            <i class="icon-table"></i>
-            Calcular
-        </a>
+        %{--        <a href="#" class="btn btn-ajax btn-new" id="calcular" title="Calcular precios">--}%
+        %{--            <i class="icon-table"></i>--}%
+        %{--            Calcular--}%
+        %{--        </a>--}%
+
+    </div>
+
+    <div class="span2"></div>
+
+    <div class="span8 btn-group" role="navigation" style="margin-left: 5px;">
         <a href="#" class="btn btn-ajax btn-new" id="reporteGrupos" title="Reporte Grupos/Subgrupos" style="display: none">
             <i class="icon-print"></i>
             Reporte Grupos/Subgrupos
         </a>
-    </div>
-
-    <div class="span6 btn-group" role="navigation" style="margin-left: 5px;">
         <a href="#" class="btn  " id="copiar_rubros" title="Copiar rubros desde un subpresupuesto">
             <i class="icon-copy"></i>
             Copiar Rubros desde un subpresupuesto
         </a>
-        <a href="#" class="btn btn-ajax btn-primary" id="btnCopiarRubroObra" title="Copiar rubros de una obra">
+        <a href="#" class="btn btn-ajax" id="btnCopiarRubroObra" title="Copiar rubros de una obra">
             <i class="fa fa-copy"></i>
             Copiar Rubros desde otra Obra
         </a>
@@ -114,7 +119,7 @@
 </g:if>
 
 <div id="list-grupo" class="span12" role="main" style="margin-top: 10px;margin-left: 0px">
-    <div class="borde_abajo" style="padding-left: 5px;position: relative; height: 92px">
+    <div class="borde_abajo" style="padding-left: 5px;position: relative; height: 55px">
 
         <div class="row-fluid" style="margin-left: 0px">
             <div class="span3" style="width: 185px; ">
@@ -123,7 +128,7 @@
             </div>
 
             <div class="row-fluid" style="margin-left: 0px">
-                <div class="span4" style="width: 400px">
+                <div class="span5">
                     <b>Crear Subpresupuesto / Ingresar Rubros:</b>
                     <span id="sp">
                         <span id="div_cmb_sub">
@@ -144,48 +149,55 @@
                     </g:if>
                 </div>
 
-                <div class="span1" style="margin-left: 0px; width: 100px;">
-                    <b>Código</b>
-                    <input type="text" style="width: 100px;;font-size: 10px" id="item_codigo" class="allCaps" readonly="true">
-                    <input type="hidden" id="item_id">
-                </div>
-
-                <div class="span1" style="margin-top: 20px; width: 80px">
-                    <a class="btn btn-small btn-primary btn-ajax" href="#" rel="tooltip" title="Agregar" id="btnRubro">
-                        <i class="icon-search"></i> Buscar
+                <div class="span4" style="margin-top: 20px">
+                    <a href="#" class="btn btn-primary" id="btnAgregarRubros" title="Agregar rubros">
+                        <i class="fa fa-plus-square"></i>
+                        Agregar rubros
                     </a>
                 </div>
 
-                <div class="span4" style="margin-left: 0px;">
-                    <b>Rubro</b>
-                    <input type="text" style="width: 350px;font-size: 10px" id="item_nombre" readonly="true">
-                </div>
+                %{--                <div class="span1" style="margin-left: 0px; width: 100px;">--}%
+                %{--                    <b>Código</b>--}%
+                %{--                    <input type="text" style="width: 100px;;font-size: 10px" id="item_codigo" class="allCaps" readonly="true">--}%
+                %{--                    <input type="hidden" id="item_id">--}%
+                %{--                </div>--}%
 
-                <div class="span2" style="margin-left: 0px; width: 780px;">
-                    <b>Descripción:</b>
-                    <input type="text" style="width: 680px" id="item_descripcion" value="">
-                </div>
-                <div class="span2" style="margin-left: 20px; width: 180px;" id="lbl_cntd">
-                    <b>Cantidad:</b>
-                    <input type="text" style="width: 90px;text-align: right" id="item_cantidad" value="">
-                </div>
+                %{--                <div class="span1" style="margin-top: 20px; width: 80px">--}%
+                %{--                    <a class="btn btn-small btn-primary btn-ajax" href="#" rel="tooltip" title="Agregar" id="btnRubro">--}%
+                %{--                        <i class="icon-search"></i> Buscar--}%
+                %{--                    </a>--}%
+                %{--                </div>--}%
 
-                <div class="span1" style="margin-left: 20px; width: 90px;">
-                    <b>Orden:</b>
-                    <input type="text" style="width: 30px;text-align: right" id="item_orden" value="${(volumenes?.size() > 0) ? volumenes.size() + 1 : 1}">
-                </div>
+                %{--                <div class="span4" style="margin-left: 0px;">--}%
+                %{--                    <b>Rubro</b>--}%
+                %{--                    <input type="text" style="width: 350px;font-size: 10px" id="item_nombre" readonly="true">--}%
+                %{--                </div>--}%
 
-                <div class="span2" style="margin-left: 10px;padding-top:0px; width: 65px;">
-                    <input type="hidden" value="" id="vol_id">
-                    <g:if test="${obra?.estado != 'R' && duenoObra == 1}">
-                        <a href="#" class="btn btn-small btn-primary" title="Guardar item" id="item_agregar">
-                            <i class="icon-plus"></i>
-                        </a>
-                        <a href="#" class="btn btn-small btn-primary" title="Cancelar" id="btnCancelar">
-                            <i class="fa fa-times"></i>
-                        </a>
-                    </g:if>
-                </div>
+                %{--                <div class="span2" style="margin-left: 0px; width: 780px;">--}%
+                %{--                    <b>Descripción:</b>--}%
+                %{--                    <input type="text" style="width: 680px" id="item_descripcion" value="">--}%
+                %{--                </div>--}%
+                %{--                <div class="span2" style="margin-left: 20px; width: 180px;" id="lbl_cntd">--}%
+                %{--                    <b>Cantidad:</b>--}%
+                %{--                    <input type="text" style="width: 90px;text-align: right" id="item_cantidad" value="">--}%
+                %{--                </div>--}%
+
+                %{--                <div class="span1" style="margin-left: 20px; width: 90px;">--}%
+                %{--                    <b>Orden:</b>--}%
+                %{--                    <input type="text" style="width: 30px;text-align: right" id="item_orden" value="${(volumenes?.size() > 0) ? volumenes.size() + 1 : 1}">--}%
+                %{--                </div>--}%
+
+                %{--                <div class="span2" style="margin-left: 10px;padding-top:0px; width: 65px;">--}%
+                %{--                    <input type="hidden" value="" id="vol_id">--}%
+                %{--                    <g:if test="${obra?.estado != 'R' && duenoObra == 1}">--}%
+                %{--                        <a href="#" class="btn btn-small btn-primary" title="Guardar item" id="item_agregar">--}%
+                %{--                            <i class="icon-plus"></i>--}%
+                %{--                        </a>--}%
+                %{--                        <a href="#" class="btn btn-small btn-primary" title="Cancelar" id="btnCancelar">--}%
+                %{--                            <i class="fa fa-times"></i>--}%
+                %{--                        </a>--}%
+                %{--                    </g:if>--}%
+                %{--                </div>--}%
             </div>
         </div>
 
@@ -194,12 +206,15 @@
 
             <div class="linea" style="height: 98%;"></div>
 
-            <div style="width: 99.7%;height: 500px;overflow-y: auto;float: right;" id="detalle"></div>
+            <div style="width: 99.7%;height: 600px;overflow-y: auto;float: right;" id="detalle"></div>
 
-            <div style="width: 99.7%;height: 30px;overflow-y: auto;float: right;text-align: right" id="total">
-                <b>TOTAL:</b>
-
-                <div id="divTotal" style="width: 150px;float: right;height: 30px;font-weight: bold;font-size: 12px;margin-right: 20px"></div>
+            <div class="span11 breadcrumb" style="height: 20px;overflow-y: auto;float: right;text-align: right; font-size: 14px; margin-top: 10px" id="total">
+                <div class="span9">
+                    <b>TOTAL:</b>
+                </div>
+                <div class="span1" >
+                    <div id="divTotal" style="float: left;font-weight: bold;font-size: 14px;margin-right: 20px"></div>
+                </div>
             </div>
         </div>
     </div>
@@ -257,11 +272,11 @@
         </div>
 
         <div class="row-fluid" style="margin-left: 20px">
-%{--
-            <div class="span2">
-                <g:select name="buscarGrupo_name"  id="buscarGrupo" from="['1': 'Materiales', '2': 'Mano de Obra', '3': 'Equipos']"
-                          style="width: 100%" optionKey="key" optionValue="value"/></div>
---}%
+            %{--
+                        <div class="span2">
+                            <g:select name="buscarGrupo_name"  id="buscarGrupo" from="['1': 'Materiales', '2': 'Mano de Obra', '3': 'Equipos']"
+                                      style="width: 100%" optionKey="key" optionValue="value"/></div>
+            --}%
 
             <div class="span2"><g:select name="buscarPor" class="buscarPor" from="${[1: 'Nombre', 2: 'Código']}"
                                          style="width: 100%" optionKey="key"
@@ -292,6 +307,9 @@
 
 <script type="text/javascript">
 
+    $("#btnAgregarRubros").click(function () {
+        location.href="${createLink(controller: 'volumenObra', action: 'buscarRubro')}/" + '${obra?.id}';
+    });
 
     $("#btnRubro").click(function () {
         $("#busqueda").dialog("open");
@@ -342,7 +360,7 @@
         $(".col_precio").hide();
         $(".col_total").hide();
         $("#divTotal").html("");
-        $("#vol_id").val('');   /* gdo: id del registro a editar */
+        $("#vol_id").val('');
         $("#item_codigo").val('');
         $("#item_id").val('');
         $("#subPres").val(1);
@@ -372,6 +390,39 @@
             y++
         }, 500);
         return interval
+    }
+
+
+    function calcularSiempre(){
+
+        if ($(this).hasClass("active")) {
+            $(this).removeClass("active");
+            $(".col_delete").show();
+            $(".col_precio").hide();
+            $(".col_total").hide();
+            $("#divTotal").html("")
+        } else {
+            $(this).addClass("active");
+            // $(".col_delete").hide();
+            $(".col_precio").show();
+            $(".col_total").show();
+            var total = 0;
+
+            $(".total").each(function () {
+                total += parseFloat(str_replace(",", "", $(this).html()))
+            });
+
+            if ($("#subPres_desc").val() === "-1") {
+                $.ajax({
+                    type    : "POST",
+                    url : "${g.createLink(controller: 'volumenObra', action:'setMontoObra')}",
+                    data    : "obra=${obra?.id}&monto=" + total,
+                    success : function (msg) {
+                    }
+                });
+            }
+            $("#divTotal").html(number_format(total, 4, ".", ","))
+        }
     }
 
     function cargarTabla() {
@@ -410,37 +461,37 @@
         cargarTabla();
         $("#vol_id").val("")
 
-        $("#calcular").click(function () {
-            if ($(this).hasClass("active")) {
-                $(this).removeClass("active")
-                $(".col_delete").show()
-                $(".col_precio").hide()
-                $(".col_total").hide()
-                $("#divTotal").html("")
-            } else {
-                $(this).addClass("active")
-                $(".col_delete").hide()
-                $(".col_precio").show()
-                $(".col_total").show()
-                var total = 0
+        %{--$("#calcular").click(function () {--}%
+        %{--    if ($(this).hasClass("active")) {--}%
+        %{--        $(this).removeClass("active")--}%
+        %{--        $(".col_delete").show()--}%
+        %{--        $(".col_precio").hide()--}%
+        %{--        $(".col_total").hide()--}%
+        %{--        $("#divTotal").html("")--}%
+        %{--    } else {--}%
+        %{--        $(this).addClass("active")--}%
+        %{--        $(".col_delete").hide()--}%
+        %{--        $(".col_precio").show()--}%
+        %{--        $(".col_total").show()--}%
+        %{--        var total = 0--}%
 
-                $(".total").each(function () {
-                    total += parseFloat(str_replace(",", "", $(this).html()))
-                });
+        %{--        $(".total").each(function () {--}%
+        %{--            total += parseFloat(str_replace(",", "", $(this).html()))--}%
+        %{--        });--}%
 
-                if ($("#subPres_desc").val() == "-1") {
-                    $.ajax({
-                        type    : "POST",
-                        url : "${g.createLink(controller: 'volumenObra', action:'setMontoObra')}",
-                        data    : "obra=${obra?.id}&monto=" + total,
-                        success : function (msg) {
+        %{--        if ($("#subPres_desc").val() == "-1") {--}%
+        %{--            $.ajax({--}%
+        %{--                type    : "POST",--}%
+        %{--                url : "${g.createLink(controller: 'volumenObra', action:'setMontoObra')}",--}%
+        %{--                data    : "obra=${obra?.id}&monto=" + total,--}%
+        %{--                success : function (msg) {--}%
 
-                        }
-                    });
-                }
-                $("#divTotal").html(number_format(total, 2, ".", ","))
-            }
-        });
+        %{--                }--}%
+        %{--            });--}%
+        %{--        }--}%
+        %{--        $("#divTotal").html(number_format(total, 2, ".", ","))--}%
+        %{--    }--}%
+        %{--});--}%
 
         // $("#item_codigo").dblclick(function () {
         // $("#btnRubro").click(function () {
@@ -779,27 +830,27 @@
                                 }
                             });
                         }else{
-                           if(parts[0] == 'error'){
-                               $.box({
-                                   imageClass : "box_info",
-                                   text       : "Error al agregar el volumen de obra",
-                                   title      : "Alerta",
-                                   iconClose  : false,
-                                   dialog     : {
-                                       resizable : false,
-                                       draggable : false,
-                                       width     : 600,
-                                       buttons   : {
-                                           "Aceptar" : function () {
-                                               limpiar();
-                                           }
-                                       }
-                                   }
-                               });
-                           }else{
-                               cargarTabla();
-                               limpiar();
-                           }
+                            if(parts[0] == 'error'){
+                                $.box({
+                                    imageClass : "box_info",
+                                    text       : "Error al agregar el volumen de obra",
+                                    title      : "Alerta",
+                                    iconClose  : false,
+                                    dialog     : {
+                                        resizable : false,
+                                        draggable : false,
+                                        width     : 600,
+                                        buttons   : {
+                                            "Aceptar" : function () {
+                                                limpiar();
+                                            }
+                                        }
+                                    }
+                                });
+                            }else{
+                                cargarTabla();
+                                limpiar();
+                            }
                         }
 
 
@@ -865,12 +916,12 @@
 
         function limpiar(){
             $("#vol_id").val("");
-                $("#item_codigo").val("");
-                $("#item_id").val("");
-                $("#item_nombre").val("");
-                $("#item_cantidad").val("");
-                $("#item_descripcion").val("");
-                $("#item_orden").val($("#item_orden").val() * 1 + 1);
+            $("#item_codigo").val("");
+            $("#item_id").val("");
+            $("#item_nombre").val("");
+            $("#item_cantidad").val("");
+            $("#item_descripcion").val("");
+            $("#item_orden").val($("#item_orden").val() * 1 + 1);
         }
 
         $(document).ready(function () {

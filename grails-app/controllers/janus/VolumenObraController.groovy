@@ -564,9 +564,8 @@ class VolumenObraController extends janus.seguridad.Shield {
         render "_" + (copiados?.size() > 0 ? copiados.join('<br>') : 0)  + "_" + (existe?.size() > 0 ? existe.join("<br>") : 0) + "_" + (errores?.size() > 0 ? errores.join("<br>") : 0)
     }
 
-
     def listaItem() {
-        println "listaItem" + params
+//        println "listaItem" + params
         def usuario = Persona.get(session.usuario.id)
         def empresa = usuario.empresa
         def listaItems = ['itemnmbr', 'itemcdgo']
@@ -578,17 +577,87 @@ class VolumenObraController extends janus.seguridad.Shield {
         def sqlTx = ""
         def bsca = listaItems[params.buscarPor.toInteger()-1]
         def ordn = listaItems[params.ordenar.toInteger()-1]
-//        txwh += " and $bsca ilike '%${params.criterio}%' and grpo__id = ${params.grupo}"
         txwh += " and $bsca ilike '%${params.criterio}%' "
 
         sqlTx = "${select} ${txwh} order by ${ordn} limit 100 ".toString()
-        println "sql: $sqlTx"
+//        println "sql: $sqlTx"
 
         def cn = dbConnectionService.getConnection()
         datos = cn.rows(sqlTx)
-        println "data: ${datos[0]}"
+//        println "data: ${datos[0]}"
         [data: datos]
     }
+
+    def buscarRubro(){
+        def obra = Obra.get(params.id)
+        def subPresupuestos = VolumenesObra.findAllByObra(obra, [sort: "orden"]).subPresupuesto.unique()
+        def tipos = Grupo.findAllByCodigoNotIlikeAndCodigoNotIlikeAndCodigoNotIlike('1', '2', '3').sort{it.descripcion};
+        return [obra: obra, subPresupuestos: subPresupuestos, tipos: tipos]
+    }
+
+    def buscarSubpresupuestoRubro_ajax(){
+        def grupos= Grupo.findAllByCodigoNotIlikeAndCodigoNotIlikeAndCodigoNotIlike('1', '2', '3').sort{it.descripcion};
+        return [grupos: grupos, tipo: params.tipo]
+    }
+
+    def tablaBuscadorSub_ajax(){
+        def grupo = Grupo.get(params.buscarPor)
+        def subpresupuestos = SubPresupuesto.findAllByGrupoAndDescripcionIlike(grupo, '%' + params.criterio +'%', [sort: 'descripcion'])
+        return [subpresupuestos: subpresupuestos, tipo: params.tipo]
+    }
+
+    def subpresupuestos_ajax() {
+        def grupo = Grupo.get(params.id)
+//        def obra = Obra.get(params.obra)
+//        def listaSubpresupuestos = SubPresupuesto.findAllByGrupo(grupo,[sort:"descripcion"])
+        def subpresupuestos = SubPresupuesto.findAllByGrupo(grupo,[sort:"descripcion"])
+//        def subpresupuestos = VolumenesObra.findAllByObraAndSubPresupuestoInList(obra, listaSubpresupuestos, [sort: "orden"]).subPresupuesto.unique()
+        [subpresupuestos: subpresupuestos]
+    }
+
+    def tablaBusqueda_ajax(){
+
+        println("params bu " + params)
+
+        def obra = Obra.get(params.obra)
+        def duenoObra = esDuenoObra(obra)? 1 : 0
+        def datos;
+        def listaRbro = ['itemnmbr', 'itemcdgo']
+        def listaItems = ['itemnmbr', 'itemcdgo']
+
+        def select = "select item__id, itemnmbr, itemcdgo, unddcdgo " +
+                "from item, undd, dprt, sbgr "
+        def txwh = "where tpit__id = 2 and undd.undd__id = item.undd__id and dprt.dprt__id = item.dprt__id and " +
+                "sbgr.sbgr__id = dprt.sbgr__id and itemcdgo not ilike 'H%' "
+        def sqlTx = ""
+        def bsca = listaItems[params.buscarPor.toInteger()-1]
+        def ordn = listaRbro[params.ordenar.toInteger()-1]
+
+        txwh += " and $bsca ilike '%${params.criterio}%'"
+        sqlTx = "${select} ${txwh} order by ${ordn} limit 100 ".toString()
+//        println "sql: $sqlTx"
+
+        def cn = dbConnectionService.getConnection()
+        datos = cn.rows(sqlTx)
+        [data: datos, obra: obra, duenoObra: duenoObra,]
+
+    }
+
+    def tablaSeleccionados_ajax(){
+//        println("params ts " + params )
+        def obra = Obra.get(params.obra)
+        def subpresupuesto = SubPresupuesto.get(params.subpresupuesto)
+        def valores = preciosService.rbro_pcun_v5(obra.id,subpresupuesto?.id, "asc")
+        def duenoObra = esDuenoObra(obra)? 1 : 0
+        return [valores: valores, duenoObra: duenoObra, obra: obra]
+    }
+
+    def subpresupuestosObra_ajax () {
+        def obra = Obra.get(params.obra)
+        def subPresupuestos = VolumenesObra.findAllByObra(obra, [sort: "orden"]).subPresupuesto.unique()
+        return [subPresupuestos: subPresupuestos, seleccionado: params.seleccionado]
+    }
+
 
 
 }
