@@ -43,6 +43,9 @@
 
     <link href="${resource(dir: 'css', file: 'mobile2.css')}" rel="stylesheet">
     <script src="${resource(dir: 'js/jquery/plugins', file: 'jquery.highlight.js')}"></script>
+    <script src="${resource(dir: 'js/jquery/plugins/', file: 'jquery.livequery.js')}"></script>
+    <script src="${resource(dir: 'js/jquery/plugins/box/js', file: 'jquery.luz.box.js')}"></script>
+    <link href="${resource(dir: 'js/jquery/plugins/box/css', file: 'jquery.luz.box.css')}" rel="stylesheet">
     <style>
 
     .hasCountdown {
@@ -147,6 +150,8 @@
             }
         });
     }
+
+
 
     function highlight(periods) {
         if ((periods[5] == 5 && periods[6] == 0) || (periods[5] < 5)) {

@@ -12,7 +12,7 @@
     </table>
 </div>
 
-<div class="" style="width: 99.7%;height: 600px; overflow-y: auto;float: right; margin-top: -20px">
+<div class="" style="width: 99.7%;height: 300px; overflow-y: auto;float: right; margin-top: -20px">
     <table class="table-bordered table-striped table-condensed table-hover">
         <tbody>
         <g:if test="${data}">

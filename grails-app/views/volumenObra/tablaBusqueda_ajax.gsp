@@ -98,16 +98,16 @@ th, td {
         var $form = $("#frmRubroVolObra");
         if ($form.valid()) {
             var data = $form.serialize();
-            var dialog = cargarLoader("Guardando...");
+            // var dialog = cargarLoader("Guardando...");
             $.ajax({
                 type    : "POST",
                 url     : $form.attr("action"),
                 data    : data,
                 success : function (msg) {
-                    dialog.modal('hide');
+                    // dialog.modal('hide');
                     var parts = msg.split("_");
                     if(parts[0] === 'ok'){
-                        log(parts[1], "success");
+                        caja(parts[1], "Guardado");
                         var idCombo = parts[2];
                         cargarTablaBusqueda();
                         cargarSubpresuspuestosObra(idCombo);
@@ -119,7 +119,7 @@ th, td {
                             bootbox.alert('<i class="fa fa-exclamation-triangle text-danger fa-3x"></i> ' + '<strong style="font-size: 14px">' + parts[1] + '</strong>');
                             return false;
                         }else{
-                            log(parts[1], "error");
+                            caja(parts[1], "Error");
                             return false;
                         }
                     }

@@ -134,7 +134,7 @@
             .attr('aria-hidden', false)
             .focus()
 
-          that.enforceFocus()
+          // that.enforceFocus()
 
           transition ?
             that.$element.one($.support.transition.end, function () { that.$element.trigger('shown') }) :
@@ -171,14 +171,14 @@
           this.hideModal()
       }
 
-    , enforceFocus: function () {
-        var that = this
-        $(document).on('focusin.modal', function (e) {
-          if (that.$element[0] !== e.target && !that.$element.has(e.target).length) {
-            that.$element.focus()
-          }
-        })
-      }
+    // , enforceFocus: function () {
+    //     var that = this
+    //     $(document).on('focusin.modal', function (e) {
+    //       if (that.$element[0] !== e.target && !that.$element.has(e.target).length) {
+    //         that.$element.focus()
+    //       }
+    //     })
+    //   }
 
     , escape: function () {
         var that = this

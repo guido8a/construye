@@ -76,17 +76,17 @@ th, td {
             },
             callback: function (result) {
                 if(result){
-                    var d = cargarLoader("Borrando...");
+                    // var d = cargarLoader("Borrando...");
                     $.ajax({
                         type : "POST",
-                        url : "${g.createLink(controller: 'volumenObra',action:'eliminarRubro')}",
+                        url : "${g.createLink(controller: 'volumenObra',action:'eliminarRubroNuevo')}",
                         data     : {
                             id: id
                         },
                         success  : function (msg) {
-                            d.modal("hide");
+                            // d.modal("hide");
                             if(msg === "ok"){
-                                log("Rubro borrado correctamente", "success");
+                                caja("Rubro borrado correctamente", "Borrado");
                                 cargarTablaSeleccionados();
                             }else{
                                 bootbox.alert('<i class="fa fa-exclamation-triangle text-info fa-3x"></i> ' + '<strong style="font-size: 14px">' + msg +'</strong>');

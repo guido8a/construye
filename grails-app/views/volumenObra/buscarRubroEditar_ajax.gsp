@@ -1,29 +1,27 @@
 <div id="listaRbro" style="overflow: hidden">
-    <fieldset class="borde" style="border-radius: 4px">
         <div class="row-fluid" style="margin-left: 10px">
-            <span class="grupo">
-                <label class="col-md-1 control-label text-info">
+            <span class="span12 grupo">
+                <label class="span1 control-label text-info">
                     Buscar por
                 </label>
-                <span class="col-md-4">
-                    <g:select name="buscarPorRubros" class="buscarPorRubros form-control" from="${[1: 'Nombre', 2: 'Código']}"
+                <span class="span3">
+                    <g:select name="buscarPorRubros" class="span12 buscarPorRubros form-control" from="${[1: 'Nombre', 2: 'Código']}"
                               optionKey="key" optionValue="value"/>
                 </span>
-                <label class="col-md-1 control-label text-info">
+                <label class="span1 control-label text-info">
                     Criterio
                 </label>
-                <span class="col-md-4">
-                    <g:textField name="buscadorCriterioRubros" id="buscadorCriterioRubros" class="form-control"/>
+                <span class="span3">
+                    <g:textField name="buscadorCriterioRubros" id="buscadorCriterioRubros" class="span12 form-control"/>
+                </span>
+                <span class="span1" style="margin-top: 1px">
+                    <button class="btn btn-info" id="btnBuscadorRubros"><i class="fa fa-search"></i></button>
                 </span>
             </span>
-            <div class="col-md-1" style="margin-top: 1px">
-                <button class="btn btn-info" id="btnBuscadorRubros"><i class="fa fa-search"></i></button>
-            </div>
-        </div>
-    </fieldset>
+          </div>
 
     <fieldset class="borde" style="border-radius: 4px">
-        <div id="divTablaRubrosEditar">
+        <div id="divTablaRubrosEditar" style="height: 350px; overflow: auto; margin-top: 5px">
         </div>
     </fieldset>
 </div>

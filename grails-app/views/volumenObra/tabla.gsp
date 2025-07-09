@@ -8,7 +8,7 @@
     </g:if>
     <div class="span-6" style="margin-bottom: 5px">
         <b>Subpresupuesto:</b>
-        <g:select name="subpresupuesto" from="${subPres}" optionKey="id" optionValue="descripcion"
+        <g:select name="subpresupuesto" from="${subPres}" optionKey="${{it.id}}" optionValue="${{it.descripcion}}"
                   style="width: 260px;font-size: 10px" id="subPres_desc" value="${subPre}"
                   noSelection="['-1': 'TODOS']" class="selector"/>
 
@@ -387,100 +387,203 @@
 
     var datos = "?fecha=${obra.fechaPreciosRubros?.format('dd-MM-yyyy')}Wid=" + $(".item_row").attr("id") + "Wobra=${obra.id}";
 
-    // $(".item_row").dblclick(function () {
+    %{--$(".editarItem").click(function () {--}%
+    %{--    $("#calcular").removeClass("active");--}%
+    %{--    $(".col_delete").show();--}%
+    %{--    $(".col_precio").hide();--}%
+    %{--    $(".col_total").hide();--}%
+    %{--    $("#divTotal").html("");--}%
+    %{--    $("#vol_id").val($(this).attr("iden"));--}%
+    %{--    $("#item_codigo").val($(this).data("cod"));--}%
+    %{--    $("#item_id").val($(this).attr("item"));--}%
+    %{--    $("#subPres").val($(this).data("idSub"));--}%
+    %{--    $("#item_descripcion").val($(this).attr("dscr"));--}%
+    %{--    $("#item_orden").val($(this).data("orden"));--}%
+    %{--    $("#item_nombre").val($(this).data("nom"));--}%
+    %{--    $("#item_cantidad").val($(this).data("can"));--}%
+
+    %{--    $.ajax({--}%
+    %{--        type: "POST",--}%
+    %{--        url: "${g.createLink(controller: 'volumenObra',action:'cargaCombosEditar')}",--}%
+    %{--        data: "id=" + $(this).attr("sub"),--}%
+    %{--        success: function (msg) {--}%
+    %{--            $("#div_cmb_sub").html(msg)--}%
+    %{--        }--}%
+    %{--    });--}%
+    %{--});--}%
+
     $(".editarItem").click(function () {
-        $("#calcular").removeClass("active");
-        $(".col_delete").show();
-        $(".col_precio").hide();
-        $(".col_total").hide();
-        $("#divTotal").html("");
-        // $("#vol_id").val($(this).attr("id"));   /* gdo: id del registro a editar */
-        $("#vol_id").val($(this).attr("iden"));   /* gdo: id del registro a editar */
-        $("#item_codigo").val($(this).data("cod"));
-        $("#item_id").val($(this).attr("item"));
-        $("#subPres").val($(this).data("idSub"));
-        $("#item_descripcion").val($(this).attr("dscr"));
-        $("#item_orden").val($(this).data("orden"));
-        $("#item_nombre").val($(this).data("nom"));
-        $("#item_cantidad").val($(this).data("can"));
-
-
-        // $("#item_nombre").val($(".item_row").find(".nombre").html());
-        // $("#item_cantidad").val($(".item_row").find(".cant").html().toString().trim());
-        // $("#item_orden").val($(".item_row").find(".orden").html());
-
-        $.ajax({
-            type: "POST",
-            url: "${g.createLink(controller: 'volumenObra',action:'cargaCombosEditar')}",
-            data: "id=" + $(this).attr("sub"),
-            success: function (msg) {
-                $("#div_cmb_sub").html(msg)
-            }
-        });
+        var id = $(this).attr("iden");
+        editarFormRubro(id);
     });
+
+    function editarFormRubro(id) {
+        $.ajax({
+            type    : "POST",
+            url: "${createLink(controller: 'volumenObra', action:'formRubroVolObra_ajax')}",
+            data    : {
+                id: id
+            },
+            success : function (msg) {
+                var er = bootbox.dialog({
+                    id      : "dlgEditRubroVO",
+                    title   : "Editar rubro",
+                    message : msg,
+                    buttons : {
+                        cancelar : {
+                            label     : "Cancelar",
+                            className : "btn-primary",
+                            callback  : function () {
+                            }
+                        },
+                        guardar  : {
+                            id        : "btnSave",
+                            label     : "<i class='fa fa-save'></i> Guardar",
+                            className : "btn-success",
+                            callback  : function () {
+                                return submitFormRubro();
+                            } //callback
+                        } //guardar
+                    } //buttons
+                }); //dialog
+            } //success
+        }); //ajax
+    } //createEdit
+
+    function submitFormRubro() {
+        var $form = $("#frmRubroVolObra");
+        if ($form.valid()) {
+            var data = $form.serialize();
+            // var dialog = cargarLoader("Guardando...");
+            $.ajax({
+                type    : "POST",
+                url     : $form.attr("action"),
+                data    : data,
+                success : function (msg) {
+                    // dialog.modal('hide');
+                    var parts = msg.split("_");
+                    if(parts[0] === 'ok'){
+                        caja(parts[1], "Guardado");
+                        cargarTabla();
+                    }else{
+                        if(parts[0] === 'err'){
+                            bootbox.alert('<i class="fa fa-exclamation-triangle text-danger fa-3x"></i> ' + '<strong style="font-size: 14px">' + parts[1] + '</strong>');
+                            return false;
+                        }else{
+                            caja(parts[1], "Error");
+                            return false;
+                        }
+                    }
+                }
+            });
+        } else {
+            return false;
+        }
+    }
 
     $(".borrarItem").click(function () {
         var id = $(this).attr("iden");
-        $.box({
-            imageClass: "box_info",
-            text: "Está seguro de eliminar el rubro?",
-            title: "Alerta",
-            iconClose: false,
-            dialog: {
-                resizable: false,
-                draggable: false,
-                buttons: {
-                    "Aceptar": function () {
-                        $("#dlgLoad").dialog("open");
-                        $.ajax({
-                            type: "POST",
-                            url: "${g.createLink(controller: 'volumenObra',action:'eliminarRubro')}",
-                            data: {
-                                id: id
-                            },
-                            success: function (msg) {
-                                $("#dlgLoad").dialog("close");
-                                if(msg == 'ok'){
-                                    $.box({
-                                        imageClass: "box_info",
-                                        text: "Rubro borrado correctamente",
-                                        title: "Alerta",
-                                        iconClose: false,
-                                        dialog: {
-                                            resizable: false,
-                                            draggable: false,
-                                            buttons: {
-                                                "Aceptar": function () {
-                                                    cargarTabla();
-                                                }
-                                            }
-                                        }
-                                    });
-                                }else{
-                                    $.box({
-                                        imageClass: "box_info",
-                                        text: "Error al borrar el rubro",
-                                        title: "Error",
-                                        iconClose: false,
-                                        dialog: {
-                                            resizable: false,
-                                            draggable: false,
-                                            buttons: {
-                                                "Aceptar": function () {
-                                                }
-                                            }
-                                        }
-                                    });
-                                }
+        bootbox.confirm({
+            title: "Eliminar",
+            message: "<i class='fa fa-exclamation-triangle text-info fa-3x'></i> <strong style='font-size: 14px'> Está seguro de eliminar este rubro?</strong> ",
+            buttons: {
+                cancel: {
+                    label: '<i class="fa fa-times"></i> Cancelar',
+                    className: 'btn-primary'
+                },
+                confirm: {
+                    label: '<i class="fa fa-trash"></i> Borrar',
+                    className: 'btn-danger'
+                }
+            },
+            callback: function (result) {
+                if(result){
+                    // var d = cargarLoader("Borrando...");
+                    $.ajax({
+                        type : "POST",
+                        url : "${g.createLink(controller: 'volumenObra',action:'eliminarRubroNuevo')}",
+                        data     : {
+                            id: id
+                        },
+                        success  : function (msg) {
+                            // d.modal("hide");
+                            if(msg === "ok"){
+                                caja("Rubro borrado correctamente", "Borrado");
+                                cargarTabla()
+                            }else{
+                                bootbox.alert('<i class="fa fa-exclamation-triangle text-info fa-3x"></i> ' + '<strong style="font-size: 14px">' + msg +'</strong>');
                             }
-                        });
-                    },
-                    "Cancelar": function () {
-                    }
+                        }
+                    });
                 }
             }
         });
     });
+
+
+
+    %{--$(".borrarItem").click(function () {--}%
+    %{--    var id = $(this).attr("iden");--}%
+    %{--    $.box({--}%
+    %{--        imageClass: "box_info",--}%
+    %{--        text: "Está seguro de eliminar el rubro?",--}%
+    %{--        title: "Alerta",--}%
+    %{--        iconClose: false,--}%
+    %{--        dialog: {--}%
+    %{--            resizable: false,--}%
+    %{--            draggable: false,--}%
+    %{--            buttons: {--}%
+    %{--                "Aceptar": function () {--}%
+    %{--                    $("#dlgLoad").dialog("open");--}%
+    %{--                    $.ajax({--}%
+    %{--                        type: "POST",--}%
+    %{--                        url: "${g.createLink(controller: 'volumenObra',action:'eliminarRubro')}",--}%
+    %{--                        data: {--}%
+    %{--                            id: id--}%
+    %{--                        },--}%
+    %{--                        success: function (msg) {--}%
+    %{--                            $("#dlgLoad").dialog("close");--}%
+    %{--                            if(msg == 'ok'){--}%
+    %{--                                $.box({--}%
+    %{--                                    imageClass: "box_info",--}%
+    %{--                                    text: "Rubro borrado correctamente",--}%
+    %{--                                    title: "Alerta",--}%
+    %{--                                    iconClose: false,--}%
+    %{--                                    dialog: {--}%
+    %{--                                        resizable: false,--}%
+    %{--                                        draggable: false,--}%
+    %{--                                        buttons: {--}%
+    %{--                                            "Aceptar": function () {--}%
+    %{--                                                cargarTabla();--}%
+    %{--                                            }--}%
+    %{--                                        }--}%
+    %{--                                    }--}%
+    %{--                                });--}%
+    %{--                            }else{--}%
+    %{--                                $.box({--}%
+    %{--                                    imageClass: "box_info",--}%
+    %{--                                    text: "Error al borrar el rubro",--}%
+    %{--                                    title: "Error",--}%
+    %{--                                    iconClose: false,--}%
+    %{--                                    dialog: {--}%
+    %{--                                        resizable: false,--}%
+    %{--                                        draggable: false,--}%
+    %{--                                        buttons: {--}%
+    %{--                                            "Aceptar": function () {--}%
+    %{--                                            }--}%
+    %{--                                        }--}%
+    %{--                                    }--}%
+    %{--                                });--}%
+    %{--                            }--}%
+    %{--                        }--}%
+    %{--                    });--}%
+    %{--                },--}%
+    %{--                "Cancelar": function () {--}%
+    %{--                }--}%
+    %{--            }--}%
+    %{--        }--}%
+    %{--    });--}%
+    %{--});--}%
 
     $("#copiar_rubros").click(function () {
         location.href = "${createLink(controller: 'volumenObra', action: 'copiarRubros', id: obra?.id)}?obra=" +

@@ -1,4 +1,4 @@
-<g:form class="form-horizontal" name="frmRubroVolObra" role="form" controller="volumenObra" action="addItem" method="POST">
+<g:form class="form-horizontal" name="frmRubroVolObra" role="form" controller="volumenObra" action="addItemNuevo" method="POST">
 
     <div class="alert alert-info">
         <i class="fa fa-exclamation-triangle text-warning fa-3x"></i><strong style="font-size: 14px"> El rubro seleccionado ya se encuentra en el subpresupuesto, desea modificar la cantidad? </strong>
@@ -10,24 +10,24 @@
     <g:hiddenField name="item" value="${rubro?.id}" />
     <g:hiddenField name="cod" value="${rubro?.codigo}" />
 
-    <div class="form-group">
+    <div class="row-fluid form-group" style="margin-bottom: 5px">
         <span class="grupo">
-            <label for="itemName" class="col-md-1 control-label text-info">
+            <label for="itemName" class="span2 control-label text-info">
                 Rubro
             </label>
-            <span class="col-md-11">
-                <g:textArea name="itemName" readonly="" class="form-control" value="${(rubro?.codigo + " - "  + rubro?.nombre) ?: ''}" style="resize: none"/>
+            <span class="span8">
+                <g:textArea name="itemName" readonly="" class="span12 form-control" value="${(rubro?.codigo + " - "  + rubro?.nombre) ?: ''}" style="resize: none; height: 90px"/>
             </span>
         </span>
     </div>
 
-    <div class="form-group ${hasErrors(bean: volumenObra, field: 'cantidad', 'error')} required">
+    <div class="row-fluid form-group ${hasErrors(bean: volumenObra, field: 'cantidad', 'error')} required">
         <span class="grupo">
-            <label for="cantidad" class="col-md-1 control-label text-info">
+            <label for="cantidad" class="span2 control-label text-info">
                 Cantidad
             </label>
-            <span class="col-md-3">
-                <g:textField name="cantidad" required="" class="form-control required" value="${volumenObra?.cantidad ?: 1}"/>
+            <span class="span3">
+                <g:textField name="cantidad" required="" class="span12 form-control required" value="${volumenObra?.cantidad ?: 1}"/>
             </span>
         </span>
     </div>
@@ -59,7 +59,7 @@
         return validarNum(ev);
     });
 
-    $("#frmRubro").validate({
+    $("#frmRubroVolObra").validate({
         errorClass     : "help-block",
         errorPlacement : function (error, element) {
             if (element.parent().hasClass("input-group")) {

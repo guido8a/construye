@@ -382,7 +382,7 @@
         y = 0;
         $("#" + div).html("<div class='tituloChevere' id='loading'>Sistema Cargando, Espere por favor</div>");
         var interval = setInterval(function () {
-            if (y == 30) {
+            if (y === 30) {
                 $("#detalle").html("<div class='tituloChevere' id='loading'>Cargando, Espere por favor</div>");
                 y = 0
             }
@@ -426,8 +426,8 @@
     }
 
     function cargarTabla() {
-        var interval = loading("detalle")
-        var datos = ""
+        var interval = loading("detalle");
+        var datos = "";
         if ($("#subPres_desc").val() * 1 > 0) {
             datos = "obra=${obra.id}&sub=" + $("#subPres_desc").val() + "&ord=" + 1
         } else {
@@ -436,12 +436,31 @@
         $.ajax({type : "POST", url : "${g.createLink(controller: 'volumenObra', action:'tabla')}",
             data     : datos,
             success  : function (msg) {
-                clearInterval(interval)
+                clearInterval(interval);
                 $("#detalle").html(msg);
                 $("#reporteGrupos").show()
             }
         });
     }
+
+    function caja(texto, titulo){
+        return $.box({
+            imageClass: "box_info",
+            text: texto,
+            title: titulo,
+            iconClose: false,
+            dialog: {
+                resizable: false,
+                draggable: false,
+                width: 350,
+                buttons: {
+                    "Aceptar": function () {
+                    }
+                }
+            }
+        });
+    }
+
     $(function () {
         $("#grupos").change(function () {
             cargarSub();
@@ -459,7 +478,7 @@
         }
 
         cargarTabla();
-        $("#vol_id").val("")
+        $("#vol_id").val("");
 
         %{--$("#calcular").click(function () {--}%
         %{--    if ($(this).hasClass("active")) {--}%
@@ -508,12 +527,12 @@
         });
 
         $("#item_codigo").blur(function () {
-            if ($("#item_id").val() == "" && $("#item_codigo").val() != "") {
+            if ($("#item_id").val() === "" && $("#item_codigo").val() !== "") {
                 $.ajax({type : "POST", url : "${g.createLink(controller: 'volumenObra',action:'buscarRubroCodigo')}",
                     data     : "codigo=" + $("#item_codigo").val(),
                     success  : function (msg) {
                         // console.log("msg "+msg)
-                        if (msg != "-1") {
+                        if (msg !== "-1") {
                             var parts = msg.split("&&");
                             $("#item_id").val(parts[0]);
                             $("#item_nombre").val(parts[2])
@@ -527,7 +546,7 @@
         });
 
         $("#item_codigo").keydown(function (ev) {
-            if (ev.keyCode * 1 != 9 && (ev.keyCode * 1 < 37 || ev.keyCode * 1 > 40)) {
+            if (ev.keyCode * 1 !== 9 && (ev.keyCode * 1 < 37 || ev.keyCode * 1 > 40)) {
                 $("#item_id").val("");
                 $("#item_nombre").val("")
             } else {
@@ -560,7 +579,7 @@
                                     var p = msg.split("_");
                                     var alerta;
 
-                                    if (p[0] != "NO") {
+                                    if (p[0] !== "NO") {
                                         $.box({
                                             imageClass : "box_info",
                                             text       : p[1],
@@ -798,7 +817,7 @@
             if (rubro * 1 < 1)
                 msn = "seleccione un rubro";
 
-            if (msn.length == 0) {
+            if (msn.length === 0) {
                 var datos = "rubro=" + rubro + "&cantidad=" + cantidad + "&orden=" + orden + "&sub=" + sub +
                     "&obra=${obra.id}" + "&cod=" + cod + "&ord=" + '1&override=' + $("#override").val() +
                     "&dscr=" + dscr + "&";
@@ -812,7 +831,7 @@
                     success  : function (msg) {
                         var parts = msg.split("_");
 
-                        if(parts[0] == 'er'){
+                        if(parts[0] === 'er'){
                             $.box({
                                 imageClass : "box_info",
                                 text       : parts[1],
@@ -830,7 +849,7 @@
                                 }
                             });
                         }else{
-                            if(parts[0] == 'error'){
+                            if(parts[0] === 'error'){
                                 $.box({
                                     imageClass : "box_info",
                                     text       : "Error al agregar el volumen de obra",
@@ -944,7 +963,7 @@
         }
 
         $("#item_cantidad").focus(function () {
-            if (($("#item_nombre").val()) && ($("#item_codigo").val().substr(0, 2) == 'TR') && !aviso) {
+            if (($("#item_nombre").val()) && ($("#item_codigo").val().substr(0, 2) === 'TR') && !aviso) {
                 aviso = true;
                 alerta("Rubro para transporte", "Debe registrar la distancia de desalojo en Variables de " +
                     "la obra, en la sección Transporte Especial");

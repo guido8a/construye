@@ -1,4 +1,4 @@
-<g:form class="form-horizontal" name="frmRubroVolObra" role="form" controller="volumenObra" action="addItem" method="POST">
+<g:form class="form-horizontal" name="frmRubroVolObra" role="form" controller="volumenObra" action="addItemNuevo" method="POST">
     <g:hiddenField name="id" value="${volumenObra?.id}" />
     <g:hiddenField name="obra" value="${obra?.id}" />
 
@@ -6,110 +6,110 @@
         <g:hiddenField name="sub" value="${subpresupuesto?.id}" />
     </g:if>
     <g:else>
-        <div class="form-group ${hasErrors(bean: volumenObra, field: 'subPresupuesto', 'error')} required">
+        <span class="row-fluid form-group ${hasErrors(bean: volumenObra, field: 'subPresupuesto', 'error')} required">
             <span class="grupo">
-                <label for="subPresupuestoName" class="col-md-2 control-label text-info">
+                <label for="subPresupuestoName" class="span3 control-label text-info">
                     Subpresupuesto
                 </label>
-                <span class="col-md-8">
+                <span class="span7">
                     <g:hiddenField name="sub" value="${subpresupuesto?.id}" />
-                    <g:textField name="subPresupuestoName" required="" readonly="" class="form-control required" value="${ volumenObra?.subPresupuesto?.grupo?.descripcion ? (volumenObra?.subPresupuesto?.grupo?.descripcion + " - " +  volumenObra?.subPresupuesto?.descripcion) : ''}"/>
+                    <g:textField name="subPresupuestoName" required="" readonly="" class="span12 form-control required" value="${ volumenObra?.subPresupuesto?.grupo?.descripcion ? (volumenObra?.subPresupuesto?.grupo?.descripcion + " - " +  volumenObra?.subPresupuesto?.descripcion) : ''}"/>
                 </span>
-                <span class="col-md-2">
-                    <a href="#" class="btn btn-info" id="btnBuscarSub" title="Buscar subpresupuesto">
-                        <i class="fa fa-search"></i> Buscar
+                <span class="span2">
+                    <a href="#" class="btn btn-info" id="btnBuscarSubPresupuestoForm" title="Buscar subpresupuesto">
+                      Buscar
                     </a>
                 </span>
             </span>
-        </div>
+        </span>
     </g:else>
 
     <g:if test="${tipo == '1'}">
         <g:hiddenField name="item" value="${rubro?.id}" />
         <g:hiddenField name="cod" value="${rubro?.codigo}" />
 
-        <div class="form-group ">
+        <span class="form-group row-fluid">
             <span class="grupo">
-                <label for="subPresupuestoName" class="col-md-2 control-label text-info">
+                <label for="subPresupuestoName" class="span3 control-label text-info">
                     Subpresupuesto
                 </label>
-                <span class="col-md-10">
-                    <g:textField name="subPresupuestoName" required="" readonly="" class="form-control" value="${ (subpresupuesto?.grupo?.descripcion + " - " +  subpresupuesto?.descripcion) ?: ''}"/>
+                <span class="span8">
+                    <g:textField name="subPresupuestoName" required="" readonly="" class="span12 form-control" value="${ (subpresupuesto?.grupo?.descripcion + " - " +  subpresupuesto?.descripcion) ?: ''}"/>
                 </span>
             </span>
-        </div>
+        </span>
 
-        <div class="form-group">
+        <div class="form-group row-fluid" style="margin-bottom: 5px">
             <span class="grupo">
-                <label for="itemName" class="col-md-2 control-label text-info">
+                <label for="itemName" class="span3 control-label text-info">
                     Rubro
                 </label>
-                <span class="col-md-10">
-                    <g:textArea name="itemName" readonly="" class="form-control" value="${(rubro?.codigo + " - "  + rubro?.nombre) ?: ''}" style="resize: none"/>
+                <span class="span8">
+                    <g:textArea name="itemName" readonly="" class="span12 form-control" value="${(rubro?.codigo + " - "  + rubro?.nombre) ?: ''}" style="resize: none; height: 90px"/>
                 </span>
             </span>
         </div>
     </g:if>
     <g:else>
-        <div class="form-group ${hasErrors(bean: volumenObra, field: 'rubro', 'error')} required">
+        <div class="row-fluid form-group ${hasErrors(bean: volumenObra, field: 'rubro', 'error')} required" style="margin-bottom: 5px">
             <span class="grupo">
-                <label for="itemName" class="col-md-2 control-label text-info">
+                <label for="itemName" class="span3 control-label text-info">
                     Rubro
                 </label>
-                <span class="col-md-8">
+                <span class="span7">
                     <g:hiddenField name="item" value="${rubro?.id}" />
                     <g:hiddenField name="cod" value="${rubro?.codigo}" />
-                    <g:textArea name="itemName" required="" readonly="" style="resize: none" class="form-control required" value="${ (volumenObra?.item?.codigo + " "  + volumenObra?.item?.nombre) ?: ''}"/>
+                    <g:textArea name="itemName" required="" readonly="" style="resize: none; height: 90px" class="span12 form-control required" value="${ (volumenObra?.item?.codigo + " "  + volumenObra?.item?.nombre) ?: ''}"/>
                 </span>
-                <span class="col-md-2">
+                <span class="span1">
                     <a href="#" class="btn btn-info" id="btnBuscarRubroEditar" title="Buscar rubro">
-                        <i class="fa fa-search"></i> Buscar
+                        Buscar
                     </a>
                 </span>
             </span>
         </div>
     </g:else>
 
-    <div class="form-group">
+    <div class="form-group row-fluid">
         <span class="grupo">
-            <label for="unidadName" class="col-md-2 control-label text-info">
+            <label for="unidadName" class="span3 control-label text-info">
                 Unidad
             </label>
-            <span class="col-md-3">
-                <g:textField name="unidadName" readonly="" class="form-control" value="${volumenObra?.item?.unidad?.codigo ?: rubro?.unidad?.codigo}"/>
+            <span class="span3">
+                <g:textField name="unidadName" readonly="" class="span12 form-control" value="${volumenObra?.item?.unidad?.codigo ?: rubro?.unidad?.codigo}"/>
             </span>
         </span>
     </div>
 
-    <div class="form-group ${hasErrors(bean: volumenObra, field: 'cantidad', 'error')} required">
+    <div class="row-fluid form-group ${hasErrors(bean: volumenObra, field: 'cantidad', 'error')} required">
         <span class="grupo">
-            <label for="cantidad" class="col-md-2 control-label text-info">
+            <label for="cantidad" class="span3 control-label text-info">
                 Cantidad
             </label>
-            <span class="col-md-3">
-                <g:textField name="cantidad" required="" class="form-control required" value="${volumenObra?.cantidad ?: 1}"/>
+            <span class="span3">
+                <g:textField name="cantidad" required="" class="span12 form-control required" value="${volumenObra?.cantidad ?: 1}"/>
             </span>
         </span>
     </div>
 
-    <div class="form-group ${hasErrors(bean: volumenObra, field: 'orden', 'error')} required">
+    <div class="row-fluid form-group ${hasErrors(bean: volumenObra, field: 'orden', 'error')} required">
         <span class="grupo">
-            <label for="orden" class="col-md-2 control-label text-info">
+            <label for="orden" class="span3 control-label text-info">
                 Orden
             </label>
-            <span class="col-md-3">
-                <g:textField name="orden" required="" class="form-control required" value="${volumenObra?.id ?  volumenObra?.orden  : ((max ?: 0) + 1)}"/>
+            <span class="span3">
+                <g:textField name="orden" required="" class="span12 form-control required" value="${volumenObra?.id ?  volumenObra?.orden  : ((max ?: 0) + 1)}"/>
             </span>
         </span>
     </div>
 
-    <div class="form-group ${hasErrors(bean: volumenObra, field: 'descripcion', 'error')} ">
+    <div class="row-fluid form-group ${hasErrors(bean: volumenObra, field: 'descripcion', 'error')} ">
         <span class="grupo">
-            <label for="dscr" class="col-md-2 control-label text-info">
+            <label for="dscr" class="span3 control-label text-info">
                 Descripción
             </label>
-            <span class="col-md-10">
-                <g:textArea name="dscr" class="form-control" value="${volumenObra?.descripcion}" style="resize: none" />
+            <span class="span8">
+                <g:textArea name="dscr" class="span12 form-control" value="${volumenObra?.descripcion}" style="resize: none" />
             </span>
         </span>
     </div>
@@ -120,7 +120,7 @@
 
     var bcsb, bcru;
 
-    $("#btnBuscarSub").click(function () {
+    $("#btnBuscarSubPresupuestoForm").click(function () {
         $.ajax({
             type    : "POST",
             url: "${createLink(controller: 'volumenObra', action:'buscarSubpresupuestoRubro_ajax')}",
@@ -128,8 +128,9 @@
             },
             success : function (msg) {
                 bcsb = bootbox.dialog({
-                    id      : "dlgBuscarSub",
+                    id      : "dlgBuscarSubForm",
                     title   : "Buscar subpresupuesto",
+                    className: 'large',
                     message : msg,
                     buttons : {
                         cancelar : {
@@ -158,6 +159,7 @@
                 bcru = bootbox.dialog({
                     id      : "dlgBuscarRubro",
                     title   : "Buscar rubro",
+                    className: 'large',
                     message : msg,
                     buttons : {
                         cancelar : {
@@ -211,19 +213,19 @@
         return validarNumEntero(ev);
     });
 
-    // $("#frmRubroVolObra").validate({
-    //     errorClass     : "help-block",
-    //     errorPlacement : function (error, element) {
-    //         if (element.parent().hasClass("input-group")) {
-    //             error.insertAfter(element.parent());
-    //         } else {
-    //             error.insertAfter(element);
-    //         }
-    //         element.parents(".grupo").addClass('has-error');
-    //     },
-    //     success        : function (label) {
-    //         label.parents(".grupo").removeClass('has-error');
-    //     }
-    // });
+    var validator = $("#frmRubroVolObra").validate({
+        errorClass     : "help-block",
+        errorPlacement : function (error, element) {
+            if (element.parent().hasClass("input-group")) {
+                error.insertAfter(element.parent());
+            } else {
+                error.insertAfter(element);
+            }
+            element.parents(".grupo").addClass('has-error');
+        },
+        success        : function (label) {
+            label.parents(".grupo").removeClass('has-error');
+        }
 
+    });
 </script>

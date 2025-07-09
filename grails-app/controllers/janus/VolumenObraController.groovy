@@ -739,5 +739,75 @@ class VolumenObraController extends janus.seguridad.Shield {
     }
 
 
+    def addItemNuevo() {
+        println "addItem " + params
+        def obra = Obra.get(params.obra)
+        def rubro = Item.findByCodigoIlike(params.cod)
+        def sbpr = SubPresupuesto.get(params.sub)
+        def volumen
+        def msg = ""
+        if (params.id)
+            volumen = VolumenesObra.get(params.id)
+        else {
+            volumen = new VolumenesObra()
+            def v = VolumenesObra.findAllByObraAndItemAndSubPresupuesto(obra, rubro, sbpr)
+            if (v.size() > 0) {
+                v = v.pop()
+                v.cantidad = params.cantidad.toDouble()
+                if(!v.save(flush:true)){
+                    println("error al guardar " + v.errors)
+                    render "no_Error al guardar"
+                    return
+                }else{
+                    render "ok_Guardado correctamente"
+                    return
+                }
+            }
+        }
+        volumen.cantidad = params.cantidad.toDouble()
+        volumen.orden = params.orden.toInteger()
+        volumen.subPresupuesto = SubPresupuesto.get(params.sub)
+        volumen.obra = obra
+        volumen.item = rubro
+        volumen.descripcion = params.dscr
+
+        if (!volumen.save(flush: true)) {
+            println "error volumen obra " + volumen.errors
+            render "no_Error al guardar"
+        } else {
+            preciosService.actualizaOrden(volumen, "insert")
+            render "ok_Guardado correctamente_${sbpr?.id}"
+        }
+    }
+
+    def eliminarRubroNuevo() {
+        println "elm rubro " + params
+        def vol = VolumenesObra.get(params.id)
+        def obra = vol.obra
+        def orden = vol.orden
+        def msg = "ok"
+        def cronos = Cronograma.findAllByVolumenObra(vol)
+        cronos.each { c ->
+            if (c.porcentaje == 0) {
+                c.delete(flush: true)
+            } else {
+                msg = "Error no se puede borrar el rubro porque esta presente en el cronograma con un valor diferente de cero."
+            }
+        }
+
+        try {
+            if (msg == "ok") {
+                preciosService.actualizaOrden(vol, "delete")
+                vol.delete(flush: true)
+            }
+
+        } catch (e) {
+            println "e " + e
+            msg = "Error"
+        }
+
+        render msg
+    }
+
 
 }

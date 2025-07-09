@@ -6,6 +6,9 @@
     <title>
         Agregar Rubros
     </title>
+    <script src="${resource(dir: 'js/jquery/plugins/jquery-validation-1.9.0', file: 'jquery.validate.min.js')}"></script>
+    <script src="${resource(dir: 'js/jquery/plugins/jquery-validation-1.9.0', file: 'messages_es.js')}"></script>
+%{--    <script src="${resource(dir: 'js/jquery/plugins/', file: 'jquery.livequery.js')}"></script>--}%
 </head>
 <body>
 
@@ -242,6 +245,24 @@
             },
             success: function (msg) {
                 $("#divSubpresupuestoSeleccionado").html(msg);
+            }
+        });
+    }
+
+    function caja(texto, titulo){
+        return $.box({
+            imageClass: "box_info",
+            text: texto,
+            title: titulo,
+            iconClose: false,
+            dialog: {
+                resizable: false,
+                draggable: false,
+                width: 350,
+                buttons: {
+                    "Aceptar": function () {
+                    }
+                }
             }
         });
     }

@@ -6,13 +6,13 @@
                 Tipo
             </label>
             <span class="span3">
-                <g:select name="buscadorPor" class="span12 form-control" from="${grupos}" optionKey="id" optionValue="descripcion"/>
+                <g:select name="buscadorSubpresupuestoPor" class="span12 form-control" from="${grupos}" optionKey="id" optionValue="descripcion"/>
             </span>
             <label class="span1 control-label text-info">
                 Criterio
             </label>
             <span class="span4">
-                <g:textField name="span12 buscadorCriterio" id="buscadorCriterio" class="form-control"/>
+                <g:textField name="span12 buscadorSubpresupuestoCriterio" id="buscadorSubpresupuestoCriterio" class="form-control"/>
             </span>
             <span class="span1" style="margin-top: 1px; ">
                 <button class="btn btn-info" id="btnBuscadorSubpre"><i class="fa fa-search"></i></button>
@@ -30,18 +30,18 @@
 <script type="text/javascript">
 
     $("#buscadorPor").change(function () {
-        buscadorSubpre();
+        cargarTablaBuscadorSubpre();
     });
 
-    buscadorSubpre();
+    cargarTablaBuscadorSubpre();
 
     $("#btnBuscadorSubpre").click(function () {
-        buscadorSubpre();
+        cargarTablaBuscadorSubpre();
     });
 
-    function buscadorSubpre() {
-        var buscarPor = $("#buscadorPor option:selected").val();
-        var criterio = $("#buscadorCriterio").val();
+    function cargarTablaBuscadorSubpre() {
+        var buscarPor = $("#buscadorSubpresupuestoPor option:selected").val();
+        var criterio = $("#buscadorSubpresupuestoCriterio").val();
         $.ajax({
             type: "POST",
             url: "${createLink(controller: 'volumenObra', action:'tablaBuscadorSub_ajax')}",
@@ -59,7 +59,7 @@
     $("#buscadorCriterio").keydown(function (ev) {
         if (ev.keyCode === 13) {
             ev.preventDefault();
-            buscadorSubpre();
+            cargarTablaBuscadorSubpre();
             return false;
         }
     });
