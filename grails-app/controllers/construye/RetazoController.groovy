@@ -24,6 +24,7 @@ class RetazoController  {
 
         if(existencias){
             disponible = existencias - (retazosExistentes.cantidad.sum() ?: 0)
+            disponible = disponible > 0 ? disponible : 0
         }else{
             disponible = 0
         }

@@ -1,10 +1,3 @@
-<%--
-  Created by IntelliJ IDEA.
-  User: fabricio
-  Date: 20/10/21
-  Time: 11:19
---%>
-
 <%@ page import="janus.pac.Proveedor" %>
 <!doctype html>
 <html>
@@ -110,11 +103,7 @@
     </div>
 </div>
 
-
-
 <script type="text/javascript">
-    %{--var url = "${resource(dir:'images', file:'spinner_24.gif')}";--}%
-    // var spinner = $("<img style='margin-left:15px;' src='" + url + "' alt='Cargando...'/>");
 
     function guardarRetazo(){
         if($("#frmRetazo").valid()){
@@ -127,13 +116,13 @@
                     $("#dlgLoad").dialog("close");
                     $("#modal-Proveedor").modal("hide");
                     var parts = msg.split("_");
-                    if(parts[0]=='ok'){
-                        caja("Retazo guardado correctamente","Alerta");
+                    if(parts[0]==='ok'){
+                        caja("Retazo guardado correctamente","Guardado");
                         setTimeout(function () {
-                            location.reload(true)
+                            location.reload()
                         }, 800);
                     }else{
-                        if(parts[0] == 'er'){
+                        if(parts[0] === 'er'){
                             caja(parts[1],"Error")
                         }else{
                             caja("Error al guardar el retazo","Error")
@@ -189,7 +178,6 @@
             }
         });
     }
-
 
     $("#frmRetazo").validate({
         errorPlacement : function (error, element) {

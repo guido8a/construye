@@ -35,7 +35,7 @@
                     </span>
                 </td>
                 <td colspan="1">
-                    <g:textField name="cantidad" style="width: 50px" value="${retazoInstance?.cantidad}" class="number form-control required" required=""/>
+                    <g:textField name="cantidad" style="width: 50px" value="${retazoInstance?.cantidad}" class="number form-control required " required=""  />
                 </td>
 
                 <td colspan="1">
