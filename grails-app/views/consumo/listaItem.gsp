@@ -4,7 +4,7 @@
     <tr>
         <th style="width: 10%">Código</th>
         <th style="width: 54%">Descripción</th>
-%{--        <th style="width: 15%">Cantidad</th>--}%
+        <th style="width: 15%">Cantidad</th>
         <th style="width: 12%">Precio U.</th>
         <th style="width: 9%">Seleccionar</th>
     </tr>
@@ -22,7 +22,7 @@
                 <td style="width: 10%">${dt.itemcdgo}</td>
                 <td style="width: 55%">${dt.itemnmbr}</td>
                 <td style="width: 15%">
-%{--                    <g:formatNumber number="${dt.exstcntd}" format="##,#####0" minFractionDigits="2" maxFractionDigits="2" locale="ec"/>--}%
+                    <g:formatNumber number="${dt.exstcntd}" format="##,#####0" minFractionDigits="2" maxFractionDigits="2" locale="ec"/>
                 </td>
                 <td style="width: 12%">${dt.exstpcun}</td>
 %{--                <td style="width: 12%">${dt.krdxpcun}</td>--}%
