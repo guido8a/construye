@@ -48,10 +48,10 @@
         Cancelar
     </a>
 
-    <a href="#" class="btn btn-ajax btn-new" id="calcular" title="Calcular precios">
-        <i class="icon-table"></i>
-        Calcular
-    </a>
+%{--    <a href="#" class="btn btn-ajax btn-new" id="calcular" title="Calcular precios">--}%
+%{--        <i class="icon-table"></i>--}%
+%{--        Calcular--}%
+%{--    </a>--}%
     <a href="#" class="btn btn-ajax btn-new" id="transporte" title="Transporte">
         <i class="icon-truck"></i>
         Transporte
@@ -1844,7 +1844,9 @@
             }
         });
 
-        $("#calcular").click(function () {
+        calcularSiempre();
+
+        function calcularSiempre (){
             if ($(this).hasClass("active")) {
                 $(this).removeClass("active")
                 $(".col_delete").show()
@@ -1910,13 +1912,11 @@
                         $.each(items, function () {
                             datos += $(this).attr("id") + "#"
                         });
-//                        //console.log(datos)
                         $.ajax({type : "POST", url : "${g.createLink(controller: 'rubro',action:'getPrecios')}",
                             data     : datos,
                             success  : function (msg) {
                                 var precios = []
                                 precios = msg.split("&")
-//                                //console.log(precios)
                                 if (precios.length > 1)
                                     for (i = 0; i < precios.length; i++) {
 
@@ -1924,7 +1924,6 @@
                                         var celda = $("#i_" + parts[0])
                                         celda.html(number_format(parts[1], 5, ".", ""))
                                         var padre = celda.parent()
-//                                    //console.log(parts,padre)
                                         var celdaRend = padre.find(".col_rend")
                                         var celdaTotal = padre.find(".col_total")
                                         var celdaCant = padre.find(".cant")
@@ -1935,7 +1934,6 @@
                                         }
                                         if (celdaRend.html()) {
                                             rend = celdaRend.attr("valor") * 1
-//                                            console.log("rend ",celdaRend,rend)
                                         }
                                         celdaTotal.html(number_format(parseFloat(celda.html()) * parseFloat(celdaCant.html()) * parseFloat(rend), 5, ".", ""))
 
@@ -1945,17 +1943,21 @@
                             }
                         });
 
-                        $(".col_delete").hide()
-                        $(".col_tarifa").show()
-                        $(".col_hora").show()
-                        $(".col_total").show()
-                        $(".col_jornal").show()
-                        $(".col_precioUnit").show()
+                        $(".col_delete").hide();
+                        $(".col_tarifa").show();
+                        $(".col_hora").show();
+                        $(".col_total").show();
+                        $(".col_jornal").show();
+                        $(".col_precioUnit").show();
                         $(".col_vacio").show()
                     }
                 }
             }
-        });
+        }
+
+        // $("#calcular").click(function () {
+        //
+        // });
 
         $("#btn_copiarComp").click(function () {
             if ($("#rubro__id").val() * 1 > 0) {
