@@ -100,11 +100,11 @@
                 <th class="alinear" style="width: 10%">Código</th>
                 <th class="alinear" style="width: 39%">Item</th>
                 <th class="alinear" style="width: 5%">Unidad</th>
-                <th class="alinear" style="width: 10%">Fecha</th>
+                <th class="alinear" style="width: 10%">Último movimiento</th>
                 <th class="alinear" style="width: 7%">Existencias</th>
                 <th class="alinear" style="width: 8%">P. Unitario</th>
                 <th class="alinear" style="width: 8%">Valor</th>
-                <th class="alinear" style="width: 2%">Retazos</th>
+%{--                <th class="alinear" style="width: 2%">Retazos</th>--}%
                 <th class="alinear" style="width: 11%"></th>
             </tr>
             </thead>

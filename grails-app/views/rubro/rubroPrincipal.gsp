@@ -1884,24 +1884,24 @@
                     $(this).removeClass("active")
                 } else {
                     var items = $(".item_row")
-                    if (items.size() < 1) {
-                        $.box({
-                            imageClass : "box_info",
-                            text       : "Añada items a la composición del rubro antes de calcular los precios",
-                            title      : "Alerta",
-                            iconClose  : false,
-                            dialog     : {
-                                resizable : false,
-                                draggable : false,
-                                buttons   : {
-                                    "Aceptar" : function () {
-                                    }
-                                },
-                                width     : 500
-                            }
-                        });
-                        $(this).removeClass("active")
-                    } else {
+                    // if (items.size() < 1) {
+                    //     $.box({
+                    //         imageClass : "box_info",
+                    //         text       : "Añada items a la composición del rubro antes de calcular los precios",
+                    //         title      : "Alerta",
+                    //         iconClose  : false,
+                    //         dialog     : {
+                    //             resizable : false,
+                    //             draggable : false,
+                    //             buttons   : {
+                    //                 "Aceptar" : function () {
+                    //                 }
+                    //             },
+                    //             width     : 500
+                    //         }
+                    //     });
+                    //     $(this).removeClass("active")
+                    // } else {
                         var tipo = "C"
                         if ($("#V").hasClass("active"))
                             tipo = "V"
@@ -1950,7 +1950,7 @@
                         $(".col_jornal").show();
                         $(".col_precioUnit").show();
                         $(".col_vacio").show()
-                    }
+                    // }
                 }
             }
         }

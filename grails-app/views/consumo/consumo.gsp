@@ -195,6 +195,9 @@
                     <table class="table table-bordered table-striped table-condensed table-hover" style="margin-top: 10px;">
                         <thead>
                         <tr>
+                            Leyenda del estado
+                        </tr>
+                        <tr>
                             <th>N: Proceso</th>
                             <th>P: Aprobado</th>
                             <th>R: Entregado</th>
@@ -358,16 +361,16 @@
                     </tr>
                     <g:set var="total" value="${total + (item.dtcspcun * item.dtcscntd)}"/>
                 </g:each>
-%{--                <g:if test="${items.size() > 0}">--}%
-%{--                    <tr class="item_row ">--}%
-%{--                        <td class="col_hora" style="text-align: left" colspan="6"></td>--}%
-%{--                        <td class="col_hora" style="text-align: right; font-weight: bold">TOTAL:</td>--}%
-%{--                        <td style="text-align: right; font-weight: bold" class="cant">--}%
-%{--                            <g:formatNumber number="${total}" format="##,#####0" minFractionDigits="5" maxFractionDigits="5" locale="ec"/>--}%
-%{--                        </td>--}%
-%{--                        <td class="col_hora" style="text-align: left"></td>--}%
-%{--                    </tr>--}%
-%{--                </g:if>--}%
+                %{--                <g:if test="${items.size() > 0}">--}%
+                %{--                    <tr class="item_row ">--}%
+                %{--                        <td class="col_hora" style="text-align: left" colspan="6"></td>--}%
+                %{--                        <td class="col_hora" style="text-align: right; font-weight: bold">TOTAL:</td>--}%
+                %{--                        <td style="text-align: right; font-weight: bold" class="cant">--}%
+                %{--                            <g:formatNumber number="${total}" format="##,#####0" minFractionDigits="5" maxFractionDigits="5" locale="ec"/>--}%
+                %{--                        </td>--}%
+                %{--                        <td class="col_hora" style="text-align: left"></td>--}%
+                %{--                    </tr>--}%
+                %{--                </g:if>--}%
                 </tbody>
             </table>
 
