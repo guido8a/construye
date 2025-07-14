@@ -104,13 +104,13 @@
 </div>
 
 <g:if test="${band}">
-    <div class="span12" style="margin-top: 5px">
+    <div class="span12" style="margin-top: 5px" >
         <div class="alert alert-info" style="text-align: center; font-size: 14px">
+            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
             <i class="fa fa-exclamation-triangle fa-2x"></i>  Requisición en proceso (Es necesario completar o anular esta requisición antes de crear una nueva)
         </div>
     </div>
 </g:if>
-
 
 <div id="list-grupo" class="span12" role="main" style="margin-top: 10px;margin-left: -10px">
 
@@ -191,12 +191,10 @@
                                  title="${consumo?.estado == 'R' ? 'Registrado' : 'Ingresado'}" class="span12"/>
                 </div>
 
-                <div class="span1" style="width: 220px; color: #01a; margin-top: 10px">
-                    <table class="table table-bordered table-striped table-condensed table-hover" style="margin-top: 10px;">
+                <div class="span1" style="width: 220px; color: #01a; margin-top: 2px">
+                    Leyenda del estado
+                    <table class="table table-bordered table-striped table-condensed table-hover" style="margin-top: -1px;">
                         <thead>
-                        <tr>
-                            Leyenda del estado
-                        </tr>
                         <tr>
                             <th>N: Proceso</th>
                             <th>P: Aprobado</th>

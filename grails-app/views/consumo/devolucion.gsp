@@ -87,6 +87,7 @@
 <g:if test="${band}">
     <div class="span12" style="margin-top: 5px">
         <div class="alert alert-info" style="text-align: center; font-size: 14px">
+            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
             <i class="fa fa-exclamation-triangle fa-2x"></i>  Ya existe una devolución no registrada en el sistema
         </div>
     </div>
