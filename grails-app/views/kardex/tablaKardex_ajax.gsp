@@ -1,14 +1,13 @@
 <table class="table table-bordered table-hover table-condensed" style="width: 100%">
     <thead>
     <tr>
-        <th class="alinear" style="width: 10%">Código</th>
-        <th class="alinear" style="width: 39%">Item</th>
-        <th class="alinear" style="width: 5%">Unidad</th>
-        <th class="alinear" style="width: 10%">Último movimiento</th>
-        <th class="alinear" style="width: 7%">Existencias</th>
-        <th class="alinear" style="width: 8%">P. Unitario</th>
-        <th class="alinear" style="width: 8%">Valor</th>
-        <th class="alinear" style="width: 11%"></th>
+        <th class="alinear" style="width: 10%">Tipo</th>
+        <th class="alinear" style="width: 17%">Cantidad</th>
+        <th class="alinear" style="width: 15%">P. Unitario</th>
+        <th class="alinear" style="width: 17%">Existencias</th>
+        <th class="alinear" style="width: 20%">P.U. Existencias</th>
+        <th class="alinear" style="width: 20%">Fecha de la transacción</th>
+        <th class="alinear" style="width: 1%"></th>
     </tr>
     </thead>
     <tbody>
@@ -19,21 +18,23 @@
     <table class="table table-bordered table-striped table-condensed table-hover" style="width: 100%">
         <g:if test="${kardexs.size() > 0}">
             <g:each in="${kardexs}" var="kardex" status="i">
-                <tr data-krdx="${dt?.krdx__id}">
-%{--                    <td style="width: 10%">${dt.itemcdgo}</td>--}%
-%{--                    <td style="width: 38%">${dt.itemnmbr}</td>--}%
-%{--                    <td style="width: 5%">${dt.unddcdgo}</td>--}%
-%{--                    <td style="width: 10%">${dt.krdxfcha?.format('dd-MMM-yyyy HH:mm')}</td>--}%
-%{--                    <td style="width: 7%; text-align: center">--}%
-%{--                        <g:formatNumber number="${dt.exstcntd}" format="##,#####0" minFractionDigits="2" maxFractionDigits="2" locale="ec"/>--}%
-%{--                    </td>--}%
-%{--                    <td style="width: 8%; text-align: right">${dt.exstpcun}</td>--}%
-%{--                    <td style="width: 8%; text-align: right">${dt.exstvlor}</td>--}%
-%{--                    <td style="width: 10%; text-align: center">--}%
-%{--                        <a href="#" class="btn btn-primary btn-small btnKardex" data-id="${dt?.item__id}" data-krdx="${dt?.krdx__id}" title="Información del kardex del item">--}%
-%{--                            <i class="fa fa-list"></i>--}%
-%{--                        </a>--}%
-%{--                    </td>--}%
+                <tr>
+                    <td style="width: 10%">${kardex?.tipo == 'I' ? 'INGRESO' : 'EGRESO'}</td>
+                    <td style="width: 17%; text-align: center">
+                        <g:formatNumber number="${kardex?.cantidad}" format="##,#####0" minFractionDigits="2" maxFractionDigits="2" locale="ec"/>
+                    </td>
+                    <td style="width: 15%; text-align: center">
+                        <g:formatNumber number="${kardex?.precioUnitario}" format="##,#####0" minFractionDigits="2" maxFractionDigits="2" locale="ec"/>
+                    </td>
+                    <td style="width: 17%; text-align: center">
+                        <g:formatNumber number="${kardex?.existencias}" format="##,#####0" minFractionDigits="2" maxFractionDigits="2" locale="ec"/>
+                    </td>
+                    <td style="width: 20%; text-align: center">
+                        <g:formatNumber number="${kardex?.precioCosto}" format="##,#####0" minFractionDigits="2" maxFractionDigits="2" locale="ec"/>
+                    </td>
+                    <td style="width: 19%">${kardex?.fecha?.format('dd-MMM-yyyy HH:mm')}</td>
+                    <td style="width: 1%; text-align: center">
+                    </td>
                 </tr>
             </g:each>
         </g:if>
