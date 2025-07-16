@@ -258,9 +258,9 @@ class AdquisicionController {
 
     def listaItemsInterna() {
         println("interna params " + params)
-        def listaItems = ['item.itemnmbr', 'item.itemcdgo']
+        def listaItems = ['rp.itemnmbr', 'rp.itemcdgo']
         def datos;
-        def select = "select * from rp_exst(${params.grupo}, ${params.bodega}) rp, item "
+        def select = "select distinct rp.* from rp_exst(${params.grupo}, ${params.bodega}) rp, item "
         def txwh = "where item.item__id = rp.item__id "
         def sqlTx = ""
         def bsca = listaItems[params.buscarPor.toInteger()-1]
