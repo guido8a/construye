@@ -104,7 +104,7 @@
                 <th class="alinear" style="width: 7%">Existencias</th>
                 <th class="alinear" style="width: 8%">P. Unitario</th>
                 <th class="alinear" style="width: 8%">Valor</th>
-%{--                <th class="alinear" style="width: 2%">Retazos</th>--}%
+                <th class="alinear" style="width: 2%">Retazos</th>
                 <th class="alinear" style="width: 11%"></th>
             </tr>
             </thead>
