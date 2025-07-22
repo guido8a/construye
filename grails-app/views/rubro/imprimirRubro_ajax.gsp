@@ -36,7 +36,7 @@
                 <g:else>
                     <label class="text-success">Archivo Actual:  ${rubro?.logo}</label>
 
-                %{--                    <img alt="" src="${request.contextPath}/rubro/getLogo?id=${rubro?.id}" style="width: 100%; height: auto"/>--}%
+                                    <img alt="" src="${request.contextPath}/rubro/getLogo?id=${rubro?.id}" style="width: 100%; height: auto"/>
 
                 </g:else>
             </fieldset>
