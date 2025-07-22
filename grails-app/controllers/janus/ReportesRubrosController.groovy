@@ -593,7 +593,7 @@ class ReportesRubrosController extends Shield {
             def logoPath = "/var/cngz/logos/" + rubro.logo
             java.awt.Image awtImage = Toolkit.getDefaultToolkit().createImage(logoPath);
             com.lowagie.text.Image logo = com.lowagie.text.Image.getInstance(awtImage, null)
-            logo.scaleToFit(300,300)
+            logo.scaleToFit(120,120)
 
             reportesPdfService.addCellTb(tablaCabecera, new Paragraph("", times10bold), prmsHeaderHoja)
             reportesPdfService.addCellTb(tablaCabecera, logo, prmsFila)
