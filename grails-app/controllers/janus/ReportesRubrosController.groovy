@@ -443,8 +443,7 @@ class ReportesRubrosController extends Shield {
 
 
     def reporteRubrosV2() {
-
-//        println("params " + params)
+        println("params " + params)
         def auxiliar = Auxiliar.get(1)
         def obra
         def fecha
@@ -504,9 +503,7 @@ class ReportesRubrosController extends Shield {
                             align : Element.ALIGN_RIGHT, valign: Element.ALIGN_MIDDLE]
         def prmsNum = [border: Color.BLACK, align: Element.ALIGN_RIGHT, valign: Element.ALIGN_MIDDLE]
 
-//        def celdaCabecera = [border: Color.BLACK, bg: Color.LIGHT_GRAY, align: Element.ALIGN_CENTER, valign: Element.ALIGN_MIDDLE]
         def celdaCabecera = [border: Color.BLACK, bg: new Color(220, 220, 220), align: Element.ALIGN_CENTER, valign: Element.ALIGN_MIDDLE, bordeBot: "1"]
-//        def celdaCabecera = [border: Color.BLACK, bg: Color.WHITE, align: Element.ALIGN_CENTER, valign: Element.ALIGN_MIDDLE, bordeBot: "1", bordeTop: "1"]
         def celdaCabeceraIzquierda = [bct: Color.BLACK, bcl: Color.WHITE, bcr:Color.WHITE, bcb: Color.WHITE, align: Element.ALIGN_LEFT, valign: Element.ALIGN_MIDDLE]
         def celdaCabeceraDerecha = [bct: Color.BLACK, bcl: Color.WHITE, bcr:Color.WHITE, bcb: Color.WHITE, align: Element.ALIGN_RIGHT, valign: Element.ALIGN_MIDDLE]
         def celdaCabeceraCentro = [bct: Color.BLACK, bcl: Color.WHITE, bcr:Color.WHITE, bcb: Color.WHITE, align: Element.ALIGN_CENTER, valign: Element.ALIGN_MIDDLE]
@@ -555,14 +552,37 @@ class ReportesRubrosController extends Shield {
         document.addAuthor("OBRAS");
         document.addCreator("Tedein SA");
 
-        Paragraph headers = new Paragraph();
-//        addEmptyLine(headers, 1);
-        headers.setAlignment(Element.ALIGN_CENTER);
-        headers.add(new Paragraph(auxiliar?.titulo, times14bold));
-        headers.add(new Paragraph(auxiliar?.memo1, times10bold));
-        headers.add(new Paragraph("ANÁLISIS DE PRECIOS UNITARIOS", times10bold));
-        headers.add(new Paragraph(" ", times10bold));
-        document.add(headers)
+//        Paragraph headers = new Paragraph();
+//        headers.setAlignment(Element.ALIGN_CENTER);
+//        headers.add(new Paragraph(rubro?.tituloImpresion ?: auxiliar?.titulo, times14bold));
+//        headers.add(new Paragraph(auxiliar?.memo1, times10bold));
+//        headers.add(new Paragraph("ANÁLISIS DE PRECIOS UNITARIOS", times10bold));
+//        headers.add(new Paragraph(" ", times10bold));
+//        document.add(headers)
+
+        PdfPTable tablaCabecera = new PdfPTable(3);
+        tablaCabecera.setWidthPercentage(100);
+        tablaCabecera.setWidths(arregloEnteros([30,40,30]))
+
+        if(rubro?.logo){
+            def logoPath = "/var/cngz/logos/" + rubro.logo
+            java.awt.Image awtImage = Toolkit.getDefaultToolkit().createImage(logoPath);
+            com.lowagie.text.Image logo = com.lowagie.text.Image.getInstance(awtImage, null)
+            logo.scaleToFit(300,300)
+
+            reportesPdfService.addCellTb(tablaCabecera, new Paragraph("", times10bold), prmsHeaderHoja)
+            reportesPdfService.addCellTb(tablaCabecera, logo, prmsFila)
+            reportesPdfService.addCellTb(tablaCabecera, new Paragraph("", times10bold), prmsHeaderHoja)
+        }
+
+        reportesPdfService.addCellTb(tablaCabecera, new Paragraph("", times14bold), prmsHeaderHoja)
+        reportesPdfService.addCellTb(tablaCabecera, new Paragraph(rubro?.tituloImpresion ?: auxiliar?.titulo, times14bold), prmsFila)
+        reportesPdfService.addCellTb(tablaCabecera, new Paragraph("", times10bold), prmsHeaderHoja)
+
+        reportesPdfService.addCellTb(tablaCabecera, new Paragraph("", times14bold), prmsHeaderHoja)
+        reportesPdfService.addCellTb(tablaCabecera, new Paragraph("ANÁLISIS DE PRECIOS UNITARIOS", times10bold), prmsFila)
+        reportesPdfService.addCellTb(tablaCabecera, new Paragraph("", times10bold), prmsHeaderHoja)
+
 
         PdfPTable tablaCoeficiente = new PdfPTable(6);
         tablaCoeficiente.setWidthPercentage(100);
@@ -894,6 +914,8 @@ class ReportesRubrosController extends Shield {
         reportesPdfService.addCellTb(tablaTotales, new Paragraph("RELATIVO", times8bold), celdaCabeceraCentro2)
         reportesPdfService.addCellTb(tablaTotales, new Paragraph("(%)", times8bold), celdaCabeceraCentro2)
 
+
+        document.add(tablaCabecera)
         document.add(tablaCoeficiente)
         document.add(tablaEquipos)
         document.add(tablaManoObra)

@@ -48,10 +48,10 @@
         Cancelar
     </a>
 
-%{--    <a href="#" class="btn btn-ajax btn-new" id="calcular" title="Calcular precios">--}%
-%{--        <i class="icon-table"></i>--}%
-%{--        Calcular--}%
-%{--    </a>--}%
+    %{--    <a href="#" class="btn btn-ajax btn-new" id="calcular" title="Calcular precios">--}%
+    %{--        <i class="icon-table"></i>--}%
+    %{--        Calcular--}%
+    %{--    </a>--}%
     <a href="#" class="btn btn-ajax btn-new" id="transporte" title="Transporte">
         <i class="icon-truck"></i>
         Transporte
@@ -120,20 +120,20 @@
                 %{--                    <p class="help-block ui-helper-hidden"></p>--}%
 
                     <g:if test="${rubro?.id}">
-                        %{--<g:if test="${rubro?.codigo?.contains(empresa?.codigo?.toString()?.toUpperCase())}">--}%
-                            %{--<div class="input-prepend">--}%
-                                %{--<span class="add-on">${empresa?.codigo?.toUpperCase() + "-"}</span>--}%
-                                %{--<g:textField name="rubro.codigo" id="input_codigo" class="allCaps required input-small" maxlength="30" minlength="3" value="${rubro?.codigo ? (rubro?.codigo?.contains("-") ? rubro?.codigo?.split("-")[1] : rubro?.codigo) : ''}"/>--}%
-%{----}%
-                                %{--<p class="help-block ui-helper-hidden"></p>--}%
-                            %{--</div>--}%
-                        %{--</g:if>--}%
-                        %{--<g:else>--}%
-                            %{--<input type="text" name="rubro.codigo" class="span20 allCaps required input-small" value="${rubro?.codigo ? (rubro?.codigo?.contains("-") ? rubro?.codigo?.split("-")[1] : rubro?.codigo) : ''}"--}%
-                            <input type="text" name="rubro.codigo" class="span20 allCaps required input-small" value="${rubro?.codigo}"
-                                   id="input_codigo" maxlength="30" minlength="3">
-                            <p class="help-block ui-helper-hidden"></p>
-                        %{--</g:else>--}%
+                    %{--<g:if test="${rubro?.codigo?.contains(empresa?.codigo?.toString()?.toUpperCase())}">--}%
+                    %{--<div class="input-prepend">--}%
+                    %{--<span class="add-on">${empresa?.codigo?.toUpperCase() + "-"}</span>--}%
+                    %{--<g:textField name="rubro.codigo" id="input_codigo" class="allCaps required input-small" maxlength="30" minlength="3" value="${rubro?.codigo ? (rubro?.codigo?.contains("-") ? rubro?.codigo?.split("-")[1] : rubro?.codigo) : ''}"/>--}%
+                    %{----}%
+                    %{--<p class="help-block ui-helper-hidden"></p>--}%
+                    %{--</div>--}%
+                    %{--</g:if>--}%
+                    %{--<g:else>--}%
+                    %{--<input type="text" name="rubro.codigo" class="span20 allCaps required input-small" value="${rubro?.codigo ? (rubro?.codigo?.contains("-") ? rubro?.codigo?.split("-")[1] : rubro?.codigo) : ''}"--}%
+                        <input type="text" name="rubro.codigo" class="span20 allCaps required input-small" value="${rubro?.codigo}"
+                               id="input_codigo" maxlength="30" minlength="3">
+                        <p class="help-block ui-helper-hidden"></p>
+                    %{--</g:else>--}%
                     </g:if>
                     <g:else>
                         <div class="input-prepend">
@@ -670,19 +670,29 @@
         <a href="#" data-dismiss="modal" class="btn btn-primary">OK</a>
     </div>
 
-    <div id="imprimirTransporteDialog">
-        <fieldset>
-            <div class="span4" style="margin-top: 10px">
-                Se imprime a la Fecha de:
-                <elm:datepicker  name="fechaSalida" class="span8" id="fechaSalidaId" value="${rubro?.fechaModificacion}"
-                                 style="width: 100px"/>
-            </div>
+    %{--    <div id="imprimirTransporteDialog">--}%
+    %{--        <fieldset>--}%
+    %{--            <div class="span4" style="margin-top: 10px">--}%
+    %{--                Texto de cabecera para la impresión--}%
+    %{--                <g:textArea name="textoCabeceraImpresion" id="textoCabeceraImpresion" class="span4 allCaps" value="${''}" style="resize: none; height: 80px"/>--}%
+    %{--            </div>--}%
 
-            <div class="span4" style="margin-top: 10px;">
-                <strong>¿Desea imprimir el reporte desglosando el transporte?</strong>
-            </div>
-        </fieldset>
-    </div>
+    %{--            <div class="span4" style="margin-top: 10px">--}%
+    %{--                Logo para impresión--}%
+
+    %{--            </div>--}%
+
+    %{--            <div class="span4" style="margin-top: 10px">--}%
+    %{--                Se imprime a la Fecha de:--}%
+    %{--                <elm:datepicker name="fechaSalida" class="span8" id="fechaSalidaId" value="${rubro?.fechaModificacion}"--}%
+    %{--                                 style="width: 100px"/>--}%
+    %{--            </div>--}%
+
+    %{--            <div class="span4" style="margin-top: 10px;">--}%
+    %{--                <strong>¿Desea imprimir el reporte desglosando el transporte?</strong>--}%
+    %{--            </div>--}%
+    %{--        </fieldset>--}%
+    %{--    </div>--}%
 
     <div id="copiar_dlg">
         <input type="hidden" id="rub_select">
@@ -749,6 +759,126 @@
 </div>
 
 <script type="text/javascript">
+
+    var imrb;
+
+    $("#imprimir").click(function () {
+        dialogoImprimirRubro()
+    });
+
+    function dialogoImprimirRubro() {
+        $.ajax({
+            type    : "POST",
+            url: "${createLink(controller: 'rubro', action:'imprimirRubro_ajax')}",
+            data    : {
+                id: '${rubro?.id}'
+            },
+            success : function (msg) {
+                imrb = bootbox.dialog({
+                    id      : "dlgImprimirRubro",
+                    title   : "Impresión del rubro",
+                    // className: 'large',
+                    message : msg,
+                    buttons : {
+                        siVae : {
+                            label     : "<i class='fa fa-print'></i> Si Vae",
+                            className : "btn-primary",
+                            callback  : function () {
+                                var dsp0 = $("#dist_p1").val();
+                                var dsp1 = $("#dist_p2").val();
+                                var dsv0 = $("#dist_v1").val();
+                                var dsv1 = $("#dist_v2").val();
+                                var dsv2 = $("#dist_v3").val();
+                                var listas = $("#lista_1").val() + "," + $("#lista_2").val() + "," + $("#lista_3").val() + "," + $("#lista_4").val() + "," + $("#lista_5").val() + "," + $("#ciudad").val()
+                                var volqueta = $("#costo_volqueta").val();
+                                var chofer = $("#costo_chofer").val();
+                                var fechaSalida = $("#fechaSalidaId").val();
+
+                                datos = "dsp0=" + dsp0 + "&dsp1=" + dsp1 + "&dsv0=" + dsv0 + "&dsv1=" + dsv1 + "&dsv2=" + dsv2
+                                    + "&prvl=" + volqueta + "&prch=" + chofer + "&fecha=" + $("#fecha_precios").val()
+                                    + "&id=${rubro?.id}&lugar=" + $("#ciudad").val() + "&listas=" + listas + "&chof=" + $("#cmb_chof").val() + "&volq="
+                                    + $("#cmb_vol").val() + "&indi=" + $("#costo_indi").val() + "&fechaSalida=" + fechaSalida;
+                                location.href = "${g.createLink(controller: 'reportesRubros',action: 'reporteRubrosV2')}?" + datos;
+                            }
+                        },
+                        noVae : {
+                            label     : "<i class='fa fa-print'></i> No Vae",
+                            className : "btn-primary",
+                            callback  : function () {
+                                var dsp0 = $("#dist_p1").val();
+                                var dsp1 = $("#dist_p2").val();
+                                var dsv0 = $("#dist_v1").val();
+                                var dsv1 = $("#dist_v2").val();
+                                var dsv2 = $("#dist_v3").val();
+                                var listas = $("#lista_1").val() + "," + $("#lista_2").val() + "," + $("#lista_3").val() + "," + $("#lista_4").val() + "," + $("#lista_5").val() + "," + $("#ciudad").val();
+                                var volqueta = $("#costo_volqueta").val();
+                                var chofer = $("#costo_chofer").val();
+                                var fechaSalida = $("#fechaSalidaId").val();
+
+                                datos = "dsp0=" + dsp0 + "&dsp1=" + dsp1 + "&dsv0=" + dsv0 + "&dsv1=" + dsv1 + "&dsv2=" + dsv2
+                                    + "&prvl=" + volqueta + "&prch=" + chofer + "&fecha=" + $("#fecha_precios").val()
+                                    + "&id=${rubro?.id}&lugar=" + $("#ciudad").val() + "&listas=" + listas + "&chof=" + $("#cmb_chof").val() + "&volq="
+                                    + $("#cmb_vol").val() + "&indi=" + $("#costo_indi").val() + "&trans=no" + "&fechaSalida=" + fechaSalida;
+                                location.href = "${g.createLink(controller: 'reportesRubros',action: 'reporteRubrosV2')}?" + datos;
+                            }
+                        },
+                        si : {
+                            label     : "<i class='fa fa-print'></i> Si",
+                            className : "btn-primary",
+                            callback  : function () {
+                                var dsp0 = $("#dist_p1").val();
+                                var dsp1 = $("#dist_p2").val();
+                                var dsv0 = $("#dist_v1").val();
+                                var dsv1 = $("#dist_v2").val();
+                                var dsv2 = $("#dist_v3").val();
+                                var listas = $("#lista_1").val() + "," + $("#lista_2").val() + "," + $("#lista_3").val() + "," + $("#lista_4").val() + "," + $("#lista_5").val() + "," + $("#ciudad").val();
+                                var volqueta = $("#costo_volqueta").val();
+                                var chofer = $("#costo_chofer").val();
+                                var fechaSalida = $("#fechaSalidaId").val();
+
+                                datos = "dsp0=" + dsp0 + "&dsp1=" + dsp1 + "&dsv0=" + dsv0 + "&dsv1=" + dsv1 + "&dsv2=" + dsv2
+                                    + "&prvl=" + volqueta + "&prch=" + chofer + "&fecha=" + $("#fecha_precios").val()
+                                    + "&id=${rubro?.id}&lugar=" + $("#ciudad").val() + "&listas=" + listas + "&chof="
+                                    + $("#cmb_chof").val() + "&volq=" + $("#cmb_vol").val() + "&indi=" + $("#costo_indi").val() + "&fechaSalida=" + fechaSalida;
+                                location.href = "${g.createLink(controller: 'reportesRubros',action: 'reporteRubrosTransporteV2')}?" + datos;
+                            }
+                        },
+                        no : {
+                            label     : "<i class='fa fa-print'></i> No",
+                            className : "btn-primary",
+                            callback  : function () {
+                                var dsp0 = $("#dist_p1").val();
+                                var dsp1 = $("#dist_p2").val();
+                                var dsv0 = $("#dist_v1").val();
+                                var dsv1 = $("#dist_v2").val();
+                                var dsv2 = $("#dist_v3").val();
+                                var listas = $("#lista_1").val() + "," + $("#lista_2").val() + "," + $("#lista_3").val() + "," + $("#lista_4").val() + "," + $("#lista_5").val() + "," + $("#ciudad").val();
+                                var volqueta = $("#costo_volqueta").val();
+                                var chofer = $("#costo_chofer").val();
+                                var fechaSalida = $("#fechaSalidaId").val();
+
+                                datos = "dsp0=" + dsp0 + "&dsp1=" + dsp1 + "&dsv0=" + dsv0 + "&dsv1=" + dsv1 + "&dsv2=" + dsv2 + "&prvl=" + volqueta + "&prch=" + chofer + "&fecha=" + $("#fecha_precios").val()
+                                    + "&id=${rubro?.id}&lugar=" + $("#ciudad").val() + "&listas=" + listas + "&chof=" + $("#cmb_chof").val() + "&volq=" + $("#cmb_vol").val()
+                                    + "&indi=" + $("#costo_indi").val() + "&trans=no" + "&fechaSalida=" + fechaSalida;
+                                location.href = "${g.createLink(controller: 'reportesRubros',action: 'reporteRubrosTransporteV2')}?" + datos;
+
+                            }
+                        },
+                        cancelar : {
+                            label     : "<i class='fa fa-times'></i> Cancelar",
+                            className : "btn-primary",
+                            callback  : function () {
+                            }
+                        }
+                    } //buttons
+                }); //dialog
+            } //success
+        }); //ajax
+    }
+
+    function cerrarImprimirRubro() {
+        imrb.modal("hide");
+    }
 
     function validarNumDec(ev) {
         /*
@@ -1690,9 +1820,9 @@
             location.href = url
         });
 
-        $("#imprimir").click(function () {
-            $("#imprimirTransporteDialog").dialog("open");
-        });
+        // $("#imprimir").click(function () {
+        //     $("#imprimirTransporteDialog").dialog("open");
+        // });
 
         $("#transporte").click(function () {
             if ($("#fecha_precios").val().length < 8) {
@@ -1902,54 +2032,54 @@
                     //     });
                     //     $(this).removeClass("active")
                     // } else {
-                        var tipo = "C"
-                        if ($("#V").hasClass("active"))
-                            tipo = "V"
-                        var listas = ""
-                        listas += $("#lista_1").val() + "#" + $("#lista_2").val() + "#" + $("#lista_3").val() + "#" + $("#lista_4").val() + "#" + $("#lista_5").val() + "#" + $("#ciudad").val()
+                    var tipo = "C"
+                    if ($("#V").hasClass("active"))
+                        tipo = "V"
+                    var listas = ""
+                    listas += $("#lista_1").val() + "#" + $("#lista_2").val() + "#" + $("#lista_3").val() + "#" + $("#lista_4").val() + "#" + $("#lista_5").val() + "#" + $("#ciudad").val()
 
-                        var datos = "fecha=" + $("#fecha_precios").val() + "&ciudad=" + $("#ciudad").val() + "&tipo=" + tipo + "&listas=" + listas + "&ids="
-                        $.each(items, function () {
-                            datos += $(this).attr("id") + "#"
-                        });
-                        $.ajax({type : "POST", url : "${g.createLink(controller: 'rubro',action:'getPrecios')}",
-                            data     : datos,
-                            success  : function (msg) {
-                                var precios = []
-                                precios = msg.split("&")
-                                if (precios.length > 1)
-                                    for (i = 0; i < precios.length; i++) {
+                    var datos = "fecha=" + $("#fecha_precios").val() + "&ciudad=" + $("#ciudad").val() + "&tipo=" + tipo + "&listas=" + listas + "&ids="
+                    $.each(items, function () {
+                        datos += $(this).attr("id") + "#"
+                    });
+                    $.ajax({type : "POST", url : "${g.createLink(controller: 'rubro',action:'getPrecios')}",
+                        data     : datos,
+                        success  : function (msg) {
+                            var precios = []
+                            precios = msg.split("&")
+                            if (precios.length > 1)
+                                for (i = 0; i < precios.length; i++) {
 
-                                        var parts = precios[i].split(";")
-                                        var celda = $("#i_" + parts[0])
-                                        celda.html(number_format(parts[1], 5, ".", ""))
-                                        var padre = celda.parent()
-                                        var celdaRend = padre.find(".col_rend")
-                                        var celdaTotal = padre.find(".col_total")
-                                        var celdaCant = padre.find(".cant")
-                                        var celdaHora = padre.find(".col_hora")
-                                        var rend = 1;
-                                        if (celdaHora.hasClass("col_hora")) {
-                                            celdaHora.html(number_format(parseFloat(celda.html()) * parseFloat(celdaCant.html()), 5, ".", ""))
-                                        }
-                                        if (celdaRend.html()) {
-                                            rend = celdaRend.attr("valor") * 1
-                                        }
-                                        celdaTotal.html(number_format(parseFloat(celda.html()) * parseFloat(celdaCant.html()) * parseFloat(rend), 5, ".", ""))
-
+                                    var parts = precios[i].split(";")
+                                    var celda = $("#i_" + parts[0])
+                                    celda.html(number_format(parts[1], 5, ".", ""))
+                                    var padre = celda.parent()
+                                    var celdaRend = padre.find(".col_rend")
+                                    var celdaTotal = padre.find(".col_total")
+                                    var celdaCant = padre.find(".cant")
+                                    var celdaHora = padre.find(".col_hora")
+                                    var rend = 1;
+                                    if (celdaHora.hasClass("col_hora")) {
+                                        celdaHora.html(number_format(parseFloat(celda.html()) * parseFloat(celdaCant.html()), 5, ".", ""))
                                     }
-                                calcularTotales()
+                                    if (celdaRend.html()) {
+                                        rend = celdaRend.attr("valor") * 1
+                                    }
+                                    celdaTotal.html(number_format(parseFloat(celda.html()) * parseFloat(celdaCant.html()) * parseFloat(rend), 5, ".", ""))
 
-                            }
-                        });
+                                }
+                            calcularTotales()
 
-                        $(".col_delete").hide();
-                        $(".col_tarifa").show();
-                        $(".col_hora").show();
-                        $(".col_total").show();
-                        $(".col_jornal").show();
-                        $(".col_precioUnit").show();
-                        $(".col_vacio").show()
+                        }
+                    });
+
+                    $(".col_delete").hide();
+                    $(".col_tarifa").show();
+                    $(".col_hora").show();
+                    $(".col_total").show();
+                    $(".col_jornal").show();
+                    $(".col_precioUnit").show();
+                    $(".col_vacio").show()
                     // }
                 }
             }
@@ -2367,7 +2497,7 @@
             modal     : true,
             dragable  : false,
             width     : 470,
-            height    : 200,
+            height    : 400,
             position  : 'center',
             title     : 'Imprimir Rubro',
             buttons   : {

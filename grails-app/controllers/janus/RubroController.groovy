@@ -3,6 +3,9 @@ package janus
 import janus.apus.ArchivoEspecificacion
 import org.springframework.dao.DataIntegrityViolationException
 
+import javax.imageio.ImageIO
+import java.awt.image.BufferedImage
+
 class RubroController extends janus.seguridad.Shield {
 
     static allowedMethods = [save: "POST", update: "POST", delete: "POST"]
@@ -1040,5 +1043,114 @@ class RubroController extends janus.seguridad.Shield {
         println "data: ${datos[0]}"
         [data: datos]
     }
+
+    def imprimirRubro_ajax(){
+        println("params " + params)
+        def rubro = Item.get(params.id)
+        return [rubro: rubro]
+    }
+
+    def subirLogo() {
+        println ("params subir logo "  + params)
+
+        def acceptedExt = ["jpg", "png", "gif", "jpeg"]
+
+//        def path = servletContext.getRealPath("/") + "rubros/"   //web-app/rubros
+        def path = "/var/cngz/logos/"
+        new File(path).mkdirs()
+        def rubro = Item.get(params.rubro)
+        def logo = rubro.logo
+
+        def f = request.getFile('file')  //archivo = name del input type file
+        if (f && !f.empty) {
+            def fileName = f.getOriginalFilename() //nombre original del archivo
+            def ext
+            def parts = fileName.split("\\.")
+            fileName = ""
+            parts.eachWithIndex { obj, i ->
+                if (i < parts.size() - 1) {
+                    fileName += obj
+                } else {
+                    ext = obj
+                }
+            }
+            if (acceptedExt.contains(ext.toLowerCase())) {
+                fileName = "logo" + "_" + rubro.id
+                fileName = fileName + "." + ext
+                def pathFile = path + fileName
+                def file = new File(pathFile)
+                println "subiendo archivo: $fileName"
+
+                f.transferTo(file)
+
+                def old = logo
+                if (old && old.trim() != "") {
+                    def oldPath = "/var/cngz/logos/" + old
+                    def oldFile = new File(oldPath)
+                    if (oldFile.exists()) {
+                        oldFile.delete()
+                    }
+                }
+
+                rubro.logo = fileName
+                rubro.save(flush: true)
+
+                render "ok_Subido correctamente"
+
+            } else {
+                render "no_Los formatos permitidos son: JPG, JPEG, GIF, PNG"
+            }
+        } else {
+            render "no_Los formatos permitidos son: JPG, JPEG, GIF, PNG"
+        }
+    }
+
+    def descargarLogo_ajax() {
+        def rubro = Item.get(params.id)
+        def filePath = rubro.logo
+        def ext = filePath.split("\\.")
+        ext = ext[ext.size() - 1]
+        def path = "/var/cngz/logos/" + filePath
+        def file = new File(path)
+        if(file.exists()){
+            def b = file.getBytes()
+            response.setContentType("image/" + ext)
+            response.setHeader("Content-disposition", "attachment; filename=" + filePath)
+            response.setContentLength(b.length)
+            response.getOutputStream().write(b)
+        }else{
+        }
+    }
+
+    def getLogo(){
+//        println "getFoto: $params"
+        def item = Item.get(params.id)
+        def path = "/var/cngz/logos/" +  item?.logo
+        def fileext = path.substring(path.indexOf(".")+1, path.length())
+
+        BufferedImage imagen = ImageIO.read(new File(path));
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        ImageIO.write( imagen, fileext, baos );
+        baos.flush();
+        byte[] img = baos.toByteArray();
+        baos.close();
+        response.setHeader('Content-length', img.length.toString())
+        response.contentType = "image/"+fileext // or the appropriate image content type
+        response.outputStream << img
+        response.outputStream.flush()
+    }
+
+    def guardarTitulo_ajax(){
+        def rubro = Item.get(params.id)
+        rubro.tituloImpresion = params.titulo.toUpperCase()
+
+        if(!rubro.save(flush: true)){
+            render "no_Error al guardar el título"
+        }else{
+            render "ok_Guardado correctamente"
+        }
+
+    }
+
 
 } //fin controller
