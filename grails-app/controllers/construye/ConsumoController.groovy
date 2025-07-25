@@ -61,6 +61,8 @@ class ConsumoController extends janus.seguridad.Shield {
             items = cn.rows(sql.toString())
         }
 
+//        println("items " + items)
+
         [consumo: consumo, recibe: recibe, bodegas:bodegas, listaCnsm: listaConsumo, listaItems: listaItems,
          listaObra: listaObra, items: items, band: band ]
     }

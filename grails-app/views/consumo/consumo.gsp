@@ -324,7 +324,7 @@
                                             maxFractionDigits="2" locale="ec"/>
                         </td>
                         <td style="text-align: right" class="cant">
-                            <g:formatNumber number="${item.compcntd?.toDouble() - item.cnsmacml?.toDouble()}" format="##,###0" minFractionDigits="2"
+                            <g:formatNumber number="${(item.compcntd && item.cnsmacml) ? (item.compcntd?.toDouble() - item.cnsmacml?.toDouble()) : 0}" format="##,###0" minFractionDigits="2"
                                             maxFractionDigits="2" locale="ec"/>
                         </td>
                         <td style="text-align: right" class="cant">
