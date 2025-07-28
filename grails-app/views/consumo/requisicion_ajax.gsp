@@ -23,18 +23,20 @@
     $(".req").change(function () {
         var idReq = $(this).val();
         <g:if test="${consumo?.id}">
-            <g:if test="${items.size() > 0}">
-                <g:if test="${consumo?.estado != 'A'}">
-                     guardarRequisicion(idReq);
-                </g:if>
-            </g:if>
+        <g:if test="${items.size() > 0}">
+        <g:if test="${consumo?.estado != 'A'}">
+        guardarRequisicion(idReq);
+        </g:if>
+        </g:if>
         </g:if>
         <g:else>
-              cargarBodega(idReq);
+        cargarBodega(idReq);
         </g:else>
     });
 
+    <g:if test="${consumo?.id}">
     guardarRequisicion($(".req").val());
+    </g:if>
 
     function guardarRequisicion(id){
         $("#dlgLoad").dialog("open");

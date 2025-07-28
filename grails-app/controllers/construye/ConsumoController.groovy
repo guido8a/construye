@@ -433,7 +433,7 @@ class ConsumoController extends janus.seguridad.Shield {
     }
 
     def requisicion_ajax(){
-        println("params requisicion_ajax " + params)
+//        println("params requisicion_ajax " + params)
         def obra = Obra.get(params.id)
         def tipoConsumo = TipoConsumo.get(1)
         def requisiciones = Consumo.findAllByObraAndTipoConsumoAndEstado(obra, tipoConsumo, 'R')
@@ -499,7 +499,7 @@ class ConsumoController extends janus.seguridad.Shield {
 
 
     def guardarRequisicion_ajax(){
-//        println("params gur " + params)
+        println("params gur " + params)
         def consumo = Consumo.get(params.id)
         def requisicion = Consumo.get(params.req)
 
