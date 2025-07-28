@@ -178,76 +178,77 @@
             </div>
         </g:form>
     </div>
-    <g:if test="${consumo?.estado == 'N'}">
-        <g:if test="${consumo?.id}">
-            <div style="border-bottom: 1px solid black;padding-left: 50px;margin-top: 10px;position: relative;">
-                <p class="css-vertical-text">Items</p>
+    <div id="divItemDevolucion"></div>
+%{--    <g:if test="${consumo?.estado == 'N'}">--}%
+%{--        <g:if test="${consumo?.id}">--}%
+%{--            <div style="border-bottom: 1px solid black;padding-left: 50px;margin-top: 10px;position: relative;">--}%
+%{--                <p class="css-vertical-text">Items</p>--}%
 
-                <div class="linea" style="height: 100px;"></div>
+%{--                <div class="linea" style="height: 100px;"></div>--}%
 
-                <div class="row-fluid" style="margin-bottom: 5px">
+%{--                <div class="row-fluid" style="margin-bottom: 5px">--}%
 
-                    <div class="span2">
+%{--                    <div class="span2">--}%
 
-                        <div style="display: inline-block">
-                            Código
-                        </div>
-                        <input type="text" name="item.codigo" id="cdgo_buscar" class="span12" readonly="true">
-                        <input type="hidden" id="item_id">
-                        <input type="hidden" id="idItems">
-                    </div>
+%{--                        <div style="display: inline-block">--}%
+%{--                            Código--}%
+%{--                        </div>--}%
+%{--                        <input type="text" name="item.codigo" id="cdgo_buscar" class="span12" readonly="true">--}%
+%{--                        <input type="hidden" id="item_id">--}%
+%{--                        <input type="hidden" id="idItems">--}%
+%{--                    </div>--}%
 
-                    <g:if test="${consumo?.estado == 'N'}">
-                        <div class="span1" style="margin-top: 20px; width: 80px">
-                            <a class="btn btn-small btn-primary btn-ajax" href="#" rel="tooltip" title="Agregar Item" id="btnBuscarItem">
-                                <i class="icon-search"></i> Buscar
-                            </a>
-                        </div>
-                    </g:if>
+%{--                    <g:if test="${consumo?.estado == 'N'}">--}%
+%{--                        <div class="span1" style="margin-top: 20px; width: 80px">--}%
+%{--                            <a class="btn btn-small btn-primary btn-ajax" href="#" rel="tooltip" title="Agregar Item" id="btnBuscarItem">--}%
+%{--                                <i class="icon-search"></i> Buscar--}%
+%{--                            </a>--}%
+%{--                        </div>--}%
+%{--                    </g:if>--}%
 
-                    <div class="span5">
-                        Descripción
-                        <input type="text" name="item.descripcion" id="item_desc" class="span11" disabled="disabled">
-                    </div>
+%{--                    <div class="span5">--}%
+%{--                        Descripción--}%
+%{--                        <input type="text" name="item.descripcion" id="item_desc" class="span11" disabled="disabled">--}%
+%{--                    </div>--}%
 
-                    <div class="span1" style="margin-right: 0px;margin-left: -30px;">
-                        Unidad
-                        <input type="text" name="item.unidad" id="item_unidad" class="span8" disabled="true">
-                    </div>
+%{--                    <div class="span1" style="margin-right: 0px;margin-left: -30px;">--}%
+%{--                        Unidad--}%
+%{--                        <input type="text" name="item.unidad" id="item_unidad" class="span8" disabled="true">--}%
+%{--                    </div>--}%
 
-                    <div class="span1" style="margin-left: -5px !important;">
-                        <g:hiddenField name="item_cantidad_hide" value="${0}"/>
-                        Cantidad
-                        <input type="text" name="item.cantidad" class="span12" id="item_cantidad" value="1" style="text-align: right">
-                    </div>
+%{--                    <div class="span1" style="margin-left: -5px !important;">--}%
+%{--                        <g:hiddenField name="item_cantidad_hide" value="${0}"/>--}%
+%{--                        Cantidad--}%
+%{--                        <input type="text" name="item.cantidad" class="span12" id="item_cantidad" value="1" style="text-align: right">--}%
+%{--                    </div>--}%
 
-                    <div class="span2">
-                        P. Unitario
-                        <input type="text" name="item.precio" class="span8" id="item_precio" value="1" disabled="true"  style="text-align: right; color: #44a;">
-                    </div>
+%{--                    <div class="span2">--}%
+%{--                        P. Unitario--}%
+%{--                        <input type="text" name="item.precio" class="span8" id="item_precio" value="1" disabled="true"  style="text-align: right; color: #44a;">--}%
+%{--                    </div>--}%
 
-                    <g:if test="${consumo?.estado != 'R' || consumo?.estado != 'A'}">
-                        <div class="span1" style="border: 0px solid black;height: 45px;padding-top: 22px;margin-left: 10px">
-                            <a class="btn btn-small btn-primary btn-ajax" href="#" rel="tooltip" title="Agregar"
-                               id="btn_agregarItem">
-                                <i class="icon-plus"></i>
-                            </a>
-                            <a class="btn btn-small btn-primary btn-ajax hidden" href="#" rel="tooltip" title="Guardar"
-                               id="btn_guardarItem">
-                                <i class="icon-save"></i>
-                            </a>
-                            <a class="btn btn-small btn-primary btn-ajax" href="#" rel="tooltip" title="Cancelar edición"
-                               id="btnCancelarEdicion">
-                                <i class="icon-remove"></i>
-                            </a>
-                        </div>
-                    </g:if>
-                </div>
-            </div>
+%{--                    <g:if test="${consumo?.estado != 'R' || consumo?.estado != 'A'}">--}%
+%{--                        <div class="span1" style="border: 0px solid black;height: 45px;padding-top: 22px;margin-left: 10px">--}%
+%{--                            <a class="btn btn-small btn-primary btn-ajax" href="#" rel="tooltip" title="Agregar"--}%
+%{--                               id="btn_agregarItem">--}%
+%{--                                <i class="icon-plus"></i>--}%
+%{--                            </a>--}%
+%{--                            <a class="btn btn-small btn-primary btn-ajax hidden" href="#" rel="tooltip" title="Guardar"--}%
+%{--                               id="btn_guardarItem">--}%
+%{--                                <i class="icon-save"></i>--}%
+%{--                            </a>--}%
+%{--                            <a class="btn btn-small btn-primary btn-ajax" href="#" rel="tooltip" title="Cancelar edición"--}%
+%{--                               id="btnCancelarEdicion">--}%
+%{--                                <i class="icon-remove"></i>--}%
+%{--                            </a>--}%
+%{--                        </div>--}%
+%{--                    </g:if>--}%
+%{--                </div>--}%
+%{--            </div>--}%
 
-            <input type="hidden" id="actual_row">
-        </g:if>
-    </g:if>
+%{--            <input type="hidden" id="actual_row">--}%
+%{--        </g:if>--}%
+%{--    </g:if>--}%
 
     <g:if test="${consumo?.id}">
         <div style="border-bottom: 1px solid black;padding-left: 50px;position: relative;float: left;width: 95%; min-height: 200px" id="tablas">
@@ -433,9 +434,11 @@
                           style="width: 100%" optionKey="key"
                           optionValue="value"/></div>
 
-            <div class="span2" style="margin-left: 60px"><button class="btn btn-info" id="btn-consultar"><i
-                    class="icon-check"></i> Consultar
-            </button></div>
+            <div class="span2" style="margin-left: 60px">
+                <button class="btn btn-info" id="btn-consultar"><i
+                        class="icon-check"></i> Consultar
+                </button>
+            </div>
 
         </div>
     </fieldset>
@@ -547,7 +550,7 @@
                 height: 180,
                 buttons: {
                     "Aceptar": function () {
-                        $("#dlgLoad").dialog("open")
+                        $("#dlgLoad").dialog("open");
                         $.ajax({
                             type: 'POST',
                             url: '${createLink(controller: 'consumo', action: 'eliminarItem_ajax')}',
@@ -583,14 +586,14 @@
         var nombre = $(this).data("nombre");
         var precio = $(this).data("precio");
         var codigo = $(this).data("codigo");
-        var nombre = $(this).data("unidad");
+        var unidad = $(this).data("unidad");
         $("#idItems").val(id);
         $("#item_id").val(comp);
         $("#item_cantidad").val(cantidad);
         $("#item_desc").val(nombre).addClass("readonly");
         $("#item_precio").val(precio).addClass("readonly").attr("disabled", true);
         $("#item_unidad").val(unidad).addClass("readonly");
-        $("#cdgo_buscar").val(codigo)
+        $("#cdgo_buscar").val(codigo);
         $("#btn_guardarItem").removeClass("hidden");
         $("#btn_agregarItem").addClass("hidden");
         // $("#btnCancelarEdicion").removeClass("hidden");
@@ -603,7 +606,7 @@
         $("#item_desc").val("").removeClass("readonly");
         $("#item_precio").val(1);
         $("#item_unidad").val("");
-        $("#cdgo_buscar").val("")
+        $("#cdgo_buscar").val("");
         $("#btn_guardarItem").addClass("hidden");
         $("#btn_agregarItem").removeClass("hidden")
         // $("#btnCancelarEdicion").addClass("hidden")
@@ -633,7 +636,7 @@
                                 id: idRubro
                             },
                             success: function (msg) {
-                                if (msg == 'ok') {
+                                if (msg === 'ok') {
                                     $("#spanOk").html("Devolución registrado correctamente");
                                     $("#divOk").show();
                                     setTimeout(function () {
@@ -677,7 +680,7 @@
                                 id: idRubroR
                             },
                             success: function (msg) {
-                                if (msg == 'ok') {
+                                if (msg === 'ok') {
                                     $("#spanOk").html("Se ha retirado el registro de devolución correctamente");
                                     $("#divOk").show();
                                     setTimeout(function () {
@@ -738,15 +741,13 @@
         });
     }
 
-    <g:if test="${consumo?.id}">
-
-    // $("#cdgo_buscar").dblclick(function () {
-    $("#btnBuscarItem").click(function () {
-        $("#busqueda").dialog("open");
-        $(".ui-dialog-titlebar-close").html("x");
-        return false;
-    });
-    </g:if>
+    %{--    <g:if test="${consumo?.id}">--}%
+    %{--    $("#btnBuscarItem").click(function () {--}%
+    %{--        $("#busqueda").dialog("open");--}%
+    %{--        $(".ui-dialog-titlebar-close").html("x");--}%
+    %{--        return false;--}%
+    %{--    });--}%
+    %{--    </g:if>--}%
 
     $("#busqueda").dialog({
         autoOpen: false,
@@ -784,14 +785,11 @@
         });
     }
 
-    %{--        <g:if test="${!consumo?.id}">--}%
-    // $("#input_codigo").dblclick(function () {
     $("#buscar_codigo").click(function () {
         $("#buscarObra").dialog("open");
-        $(".ui-dialog-titlebar-close").html("x")
+        $(".ui-dialog-titlebar-close").html("x");
         return false;
     });
-    %{--        </g:if>--}%
 
     $("#buscarObra").dialog({
         autoOpen: false,

@@ -543,4 +543,10 @@ class ConsumoController extends janus.seguridad.Shield {
             render "no"
         }
     }
+
+    def itemDevolucion_ajax(){
+        println("params id " + params)
+        def consumo = Consumo.get(params.consumo)
+        return [consumo: consumo]
+    }
 }
