@@ -114,7 +114,7 @@ class LoginController {
         def perfilesUsr = Sesn.findAllByUsuario(usuarioLog)
         def empr = Parametros.get(1)
         def perfiles = perfilesUsr.sort{it.perfil.descripcion}
-//        println "perfiles: ${perfiles.perfil.descripcion}"
+        println "perfiles: ${perfiles.perfil.descripcion}"
 
         return [perfilesUsr: perfiles, empr: empr]
     }
