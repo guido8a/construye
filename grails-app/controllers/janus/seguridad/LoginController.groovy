@@ -75,6 +75,7 @@ class LoginController {
         } else if (user.size() > 1) {
             flash.message = "Ha ocurrido un error grave"
         } else {
+            println "usuario: $user"
             user = user[0]
             session.usuario = user
             session.usuarioKerberos = user.login
@@ -82,7 +83,7 @@ class LoginController {
             redirect(action: "perfiles")
 
             // registra sesion activa ------------------------------
-            //                println  "sesion ingreso: $session.id  desde ip: ${request.getRemoteAddr()}"  //activo
+//            println  "sesion ingreso: $session.id  desde ip: ${request.getRemoteAddr()}"  //activo
             def activo = new SesionActiva()
             activo.idSesion = session.id
             activo.fechaInicio = new Date()
