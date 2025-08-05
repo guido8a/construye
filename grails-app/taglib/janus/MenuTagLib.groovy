@@ -2,59 +2,82 @@ package janus
 
 class MenuTagLib {
     static namespace = "mn"
+    def dbConnectionService
 
     def menu = { attrs ->
-
+        def cn = dbConnectionService.getConnection()
+        def sql=''
         def items = [:]
         def usuario = session.usuario
         def perfil = session.perfil
         if (usuario) {
-            def acciones = janus.seguridad.Prms.findAllByPerfil(perfil).accion.sort { it.modulo.orden }
-//            println "Acciones:" + acciones
 
-            acciones.each { ac ->
-                if(ac.tipo.id.toInteger()==1) {
-                    if (!items[ac.modulo.nombre]) {
-                        items.put(ac.modulo.nombre, [ac.accnDescripcion, g.createLink(controller: ac.control.ctrlNombre, action: ac.accnNombre)])
-                    } else {
-                        items[ac.modulo.nombre].add(ac.accnDescripcion)
-                        items[ac.modulo.nombre].add(g.createLink(controller: ac.control.ctrlNombre, action: ac.accnNombre))
-                    }
+            sql = "select accn.accn__id, tpac__id, accnnmbr, accndscr, ctrlnmbr, mdlonmbr " +
+                    "from prms, accn, ctrl, mdlo " +
+                    "where prfl__id = ${perfil.id} and accn.accn__id = prms.accn__id and " +
+                    "ctrl.ctrl__id = accn.ctrl__id and ctrlnmbr != 'No Asignado' and " +
+                    "mdlo.mdlo__id = accn.mdlo__id and tpac__id = 1 " +
+                    "order by mdloordn, accndscr"
+            println "sqlMenu: $sql"
+
+            cn.eachRow(sql.toString()) { d ->
+                if (!items[d.mdlonmbr]) {
+                    items.put(d.mdlonmbr, [d.accndscr, g.createLink(controller: d.ctrlnmbr, action: d.accnnmbr)])
+                } else {
+                    items[d.mdlonmbr].add(d.accndscr)
+                    items[d.mdlonmbr].add(g.createLink(controller: d.ctrlnmbr, action: d.accnnmbr))
                 }
-//                if (!items[ac.modulo.nombre]) {
-//                    def temp =[:]
-//                    temp.put(ac.accnDescripcion, g.createLink(controller: ac.control.ctrlNombre, action: ac.accnNombre))
-//                    items.put(ac.modulo.nombre, temp)
+            }
+
+//            def acciones = janus.seguridad.Prms.findAllByPerfil(perfil).accion.sort { it.modulo.orden }
+////            println "Acciones:" + acciones
 //
-//                } else {
-//                    items[ac.modulo.nombre].put(ac.accnDescripcion,g.createLink(controller: ac.control.ctrlNombre, action: ac.accnNombre))
-//
+//            acciones.each { ac ->
+//                if(ac.tipo.id.toInteger()==1) {
+//                    if (!items[ac.modulo.nombre]) {
+//                        items.put(ac.modulo.nombre, [ac.accnDescripcion, g.createLink(controller: ac.control.ctrlNombre, action: ac.accnNombre)])
+//                    } else {
+//                        items[ac.modulo.nombre].add(ac.accnDescripcion)
+//                        items[ac.modulo.nombre].add(g.createLink(controller: ac.control.ctrlNombre, action: ac.accnNombre))
+//                    }
 //                }
-            }
+////                if (!items[ac.modulo.nombre]) {
+////                    def temp =[:]
+////                    temp.put(ac.accnDescripcion, g.createLink(controller: ac.control.ctrlNombre, action: ac.accnNombre))
+////                    items.put(ac.modulo.nombre, temp)
+////
+////                } else {
+////                    items[ac.modulo.nombre].put(ac.accnDescripcion,g.createLink(controller: ac.control.ctrlNombre, action: ac.accnNombre))
+////
+////                }
+//            }
 
 
-            items.each { item ->
-//               println "item "+item.value
-                for (int i = 0; i < item.value.size(); i += 2) {
-                    for (int j = 2; j < item.value.size() - 1; j += 2) {
-//                       println "compare "+item.value[i]+" <<>> "+item.value[j]+" --> "+item.value[i].compareTo(item.value[j])
-                        def val = item.value[i].trim().compareTo(item.value[j].trim())
-                        if (val > 0 && i < j) {
-                            def tmp = [item.value[j], item.value[j + 1]]
-                            item.value[j] = item.value[i]
-                            item.value[j + 1] = item.value[i + 1]
-                            item.value[i] = tmp[0]
-                            item.value[i + 1] = tmp[1]
-                        }
-
-                    }
-//                   println "iteracion "+item.value
-                }
-//                println "item sort "+item.value
-
-            }
+//            items.each { item ->
+////               println "item "+item.value
+//                for (int i = 0; i < item.value.size(); i += 2) {
+//                    for (int j = 2; j < item.value.size() - 1; j += 2) {
+////                       println "compare "+item.value[i]+" <<>> "+item.value[j]+" --> "+item.value[i].compareTo(item.value[j])
+//                        def val = item.value[i].trim().compareTo(item.value[j].trim())
+//                        if (val > 0 && i < j) {
+//                            def tmp = [item.value[j], item.value[j + 1]]
+//                            item.value[j] = item.value[i]
+//                            item.value[j + 1] = item.value[i + 1]
+//                            item.value[i] = tmp[0]
+//                            item.value[i + 1] = tmp[1]
+//                        }
+//
+//                    }
+////                   println "iteracion "+item.value
+//                }
+////                println "item sort "+item.value
+//
+//            }
             //items = items.sort{it.key.toString()}
 //            println items
+
+
+
 
             def strItems = ""
             items.each { item ->
