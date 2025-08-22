@@ -925,19 +925,43 @@ class RubroController extends janus.seguridad.Shield {
     }
 
 
+//    def verificaRubro(){
+//        def rubro = Item.get(params.id)
+//        def volumenes = VolumenesObra.findAllByItem(rubro);
+//        def obras = volumenes.obra.nombre.unique()
+//        def respuesta = "<ul>"
+//        if(volumenes.size()>0) {
+//            obras.each {
+//                respuesta += "<li>$it </li>"
+//            }
+//            respuesta += "</ul>"
+//            render "1_${respuesta}"
+//        } else {
+//            render "0"
+//        }
+//    }
+
     def verificaRubro(){
-//        println "verifica rubro "+params
         def rubro = Item.get(params.id)
-        def volumenes = VolumenesObra.findAllByItem(rubro);
-        def obras = volumenes.obra.nombre.unique()
         def respuesta = "<ul>"
-//        println "vol... obras:  ${obras}"
+
+        /* todo con SQL */
+        def volumenes = VolumenesObra.withCriteria{
+            eq("item",rubro)
+            obra{
+                eq("estado", 'R')
+                distinct("nombre")
+                resultTransformer org.hibernate.Criteria.DISTINCT_ROOT_ENTITY
+            }
+        }
+
+        volumenes.unique{it.obra.nombre}
+
         if(volumenes.size()>0) {
-            obras.each {
-                respuesta += "<li>$it </li>"
+            volumenes.each {
+                respuesta += "<li>" + it.obra.codigo + " - " + it.obra.nombre + "</li>"
             }
             respuesta += "</ul>"
-//            println ">>>> 1_${respuesta}"
             render "1_${respuesta}"
         } else {
             render "0"
@@ -1149,7 +1173,22 @@ class RubroController extends janus.seguridad.Shield {
         }else{
             render "ok_Guardado correctamente"
         }
+    }
 
+    def listaObrasUsadas_ajax(){
+        def rubro = Item.get(params.id)
+
+        def volumenes = VolumenesObra.withCriteria{
+            eq("item",rubro)
+            obra{
+                distinct("nombre")
+                resultTransformer org.hibernate.Criteria.DISTINCT_ROOT_ENTITY
+            }
+        }
+
+        volumenes.unique{it.obra.nombre}
+
+        return [volumenes: volumenes, tipo: params.tipo]
     }
 
 
